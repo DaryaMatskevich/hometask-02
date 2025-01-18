@@ -3,7 +3,7 @@ import { blogs } from "./blogsRepository";
 
 export let posts: PostViewModel = []
 
-export const clearPosts = () => {
+export function clearPostsData(): void {
     posts = []; 
   }
 

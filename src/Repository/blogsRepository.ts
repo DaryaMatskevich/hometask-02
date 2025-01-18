@@ -2,6 +2,9 @@ import { BlogViewModel } from "../types/BlogsViewModel";
 
 export let blogs: BlogViewModel = []
 
+export function clearBlogsData(): void {
+  blogs = []; 
+}
 
 export const blogsRepository = {
 
