@@ -2,14 +2,11 @@ import { BlogViewModel } from "../types/BlogsViewModel";
 
 export let blogs: BlogViewModel = []
 
-export const clearBlogs = () => {
-  blogs = []; 
-}
 
 export const blogsRepository = {
 
   findAllBlogs() {
-    let allBlogs = blogs;
+    const allBlogs = blogs;
     return blogs;
   },
 
