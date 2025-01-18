@@ -3,7 +3,7 @@ import { ADMIN_AUTH } from '../settings.js'
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) =>  {
 const auth = req.headers['authorization'] as string;
 if (!auth) {
-    res.status(400).json({});
+    res.status(401).json({});
     return;
 }
 const buff = Buffer.from(auth.slice(6), 'base64')
