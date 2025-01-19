@@ -21,7 +21,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
 postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, (req: Request, res: Response) => {
     const { title, shortDescription, content, blogId } = req.body;
     const newPost = postsRepository.createPost(title, shortDescription, content, blogId);
-    res.sendStatus(201).send(newPost)
+    res.status(201).send(newPost)
 })
 
 postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, (req: Request, res: Response) => {
