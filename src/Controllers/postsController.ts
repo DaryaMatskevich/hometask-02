@@ -13,7 +13,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
 postsRouter.get('/:id', (req: Request, res: Response) => {
     let post = postsRepository.findPostById(req.params.id)
     if (post) {
-        res.sendStatus(200).send(post)
+        res.status(200).send(post)
     }
     else { res.sendStatus(404) }
 })
@@ -30,7 +30,7 @@ postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidat
     if (isUpdated) {
         res.sendStatus(204)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 }
 )
@@ -38,8 +38,8 @@ postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidat
 postsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
     const isDeleted = postsRepository.deletePostById(req.params.id)
     if (isDeleted) {
-        res.send(204)
+        res.sendStatus(204)
     }
-    res.send(404)
+    res.sendStatus(404)
 })
 
