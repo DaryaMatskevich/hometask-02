@@ -31,7 +31,7 @@ export const postsRepository = {
         }
 
         const newPost = {
-        id: (new Date()).toString(),
+        id: (Date.now() + Math.random()).toString(),
         title: title,
         shortDescription: shortDescription,
         content: content,
