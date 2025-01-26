@@ -23,7 +23,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 
 blogsRouter.post('/', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
   const { name, description, websiteUrl } = req.body;
-  const newBlog = await blogsRepository.createBlog(name, description, websiteUrl)
+  const newBlog = await blogsRepository.createBlog(name, description, websiteUrl )
 if(newBlog) {
   res.status(201).send(newBlog)}
 })

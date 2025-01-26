@@ -24,7 +24,7 @@ export const blogsRepository = {
     }
 },
 
-  async createBlog(name: string, description: string, websiteUrl: string): Promise<any> {
+  async createBlog(name: string, description: string, websiteUrl: string): Promise<any>  {
     const newBlog = {
       id: (Date.now() + Math.random()).toString(),
       name: name,
@@ -34,8 +34,8 @@ export const blogsRepository = {
       isMembership: false
     }
     const result = await blogsCollection.insertOne(newBlog);
-    const newBlogElement = await blogsCollection.findOne({_id: result.insertedId})
-        return newBlogElement
+    const createdBlog = await blogsCollection.findOne({_id: result.insertedId})
+           return createdBlog
       },
 
     async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise < boolean > {
