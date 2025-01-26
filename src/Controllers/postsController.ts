@@ -5,28 +5,28 @@ import { blogIdValidation, contentValidation, inputValidationMiddleware, shortDe
 
 export const postsRouter = Router({})
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const foundPosts = postsRepository.findPosts()
+postsRouter.get('/', async (req: Request, res: Response) => {
+    const foundPosts = await postsRepository.findPosts()
     res.send(foundPosts)
 })
 
-postsRouter.get('/:id', (req: Request, res: Response) => {
-    let post = postsRepository.findPostById(req.params.id)
+postsRouter.get('/:id', async (req: Request, res: Response) => {
+    let post = await postsRepository.findPostById(req.params.id)
     if (post) {
         res.status(200).send(post)
     }
     else { res.sendStatus(404) }
 })
 
-postsRouter.post('/', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.post('/', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const { title, shortDescription, content, blogId } = req.body;
-    const newPost = postsRepository.createPost(title, shortDescription, content, blogId);
+    const newPost = await postsRepository.createPost(title, shortDescription, content, blogId);
     res.status(201).send(newPost)
 })
 
-postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const { title, shortDescription, content, blogId } = req.body;
-    let isUpdated = postsRepository.updatePost(req.params.id, title, shortDescription, content, blogId)
+    let isUpdated = await postsRepository.updatePost(req.params.id, title, shortDescription, content, blogId)
     if (isUpdated) {
         res.sendStatus(204)
     } else {
@@ -35,8 +35,8 @@ postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, short
 }
 )
 
-postsRouter.delete('/:id', authMiddleware, (req: Request, res: Response) => {
-    const isDeleted = postsRepository.deletePostById(req.params.id)
+postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+    const isDeleted = await postsRepository.deletePostById(req.params.id)
     if (isDeleted) {
         res.sendStatus(204)
     }
