@@ -3,7 +3,7 @@ import { BlogViewModel } from "../types/BlogsViewModel";
 import { blogsCollection } from "./db";
 
 export let blogs: BlogViewModel[] = []
-
+   
 export async function clearBlogsData() {
   await blogsCollection.deleteMany({})
 }
