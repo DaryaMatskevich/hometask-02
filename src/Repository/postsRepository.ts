@@ -26,7 +26,7 @@ export const postsRepository = {
 
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewModel | null> {
 
-        const blog: BlogViewModel | null = await blogsCollection.findOne({ id: blogId })
+        const blog = await blogsCollection.findOne({ id: blogId })
         if (blog) {
 
             const newPost = {
