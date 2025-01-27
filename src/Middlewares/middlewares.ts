@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
-import { blogs } from "../Repository/blogsRepository"
+import { blogs, blogsRepository } from "../Repository/blogsRepository"
+import { blogsCollection } from "../Repository/db"
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -19,8 +20,16 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
   }
 }
 
+// const blogExists = (value: string) => {
+//   const blog = blogs.find(blog => blog.id === value)
+//   if (!blog) {
+//     throw new Error('Блог не существует');
+//   } 
+//   return true;
+// };
+
 const blogExists = (value: string) => {
-  const blog = blogs.find(blog => blog.id === value)
+  const blog = blogsCollection.findOne({id: value})
   if (!blog) {
     throw new Error('Блог не существует');
   } 

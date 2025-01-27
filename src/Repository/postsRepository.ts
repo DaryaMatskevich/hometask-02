@@ -27,7 +27,7 @@ export const postsRepository = {
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewModel | null> {
 
         const blog = await blogsCollection.findOne({ id: blogId })
-        if (blog) {
+         if (blog) {
 
             const newPost = {
                 id: (Date.now() + Math.random()).toString(),
@@ -43,7 +43,7 @@ export const postsRepository = {
             return foundNewPost;
         } else {
             return null;
-        }
+         }
     },
 
     async updatePost(id: string, title: string, shortDescription: string,
