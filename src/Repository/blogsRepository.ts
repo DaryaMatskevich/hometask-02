@@ -15,7 +15,7 @@ export const blogsRepository = {
     return blogsCollection.find({}).toArray();
   },
 
-  async findBlogById(id: string): Promise<BlogViewModel | null> {
+  async findBlogById(id: string): Promise<any | null> {
     let blog: BlogViewModel | null = await blogsCollection.findOne({ id: id });
     if (blog) {
       return blog
