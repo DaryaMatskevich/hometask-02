@@ -12,11 +12,11 @@ export async function clearPostsData() {
 export const postsRepository = {
 
     async findPosts(): Promise<PostViewModel[]> {
-        return postsCollection.find({}).toArray();
+        return postsCollection.find({}, {projection:{_id:0}}).toArray();
     },
 
     async findPostById(id: string): Promise<PostViewModel | null> {
-        let post: PostViewModel | null = await postsCollection.findOne({ id: id })
+        let post: PostViewModel | null = await postsCollection.findOne({ id: id }, {projection:{_id:0}})
         if (post) {
             return post
         } else {
@@ -39,7 +39,8 @@ export const postsRepository = {
                 createdAt: (new Date()).toISOString()
             };
             const result = await postsCollection.insertOne(newPost);
-            return newPost;
+            const foundNewPost = await postsCollection.findOne({_id: result.insertedId}, {projection:{_id:0}})
+            return foundNewPost;
         } else {
             return null;
         }
