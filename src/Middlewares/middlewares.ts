@@ -28,8 +28,8 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
 //   return true;
 // };
 
-const blogExists = (value: string) => {
-  const blog = blogsCollection.findOne({id: value})
+const blogExists = async (value: string) => {
+  const blog = await blogsCollection.findOne({id: value})
   if (!blog) {
     throw new Error('Блог не существует');
   } 
