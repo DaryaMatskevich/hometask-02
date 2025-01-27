@@ -12,11 +12,11 @@ export async function clearBlogsData() {
 export const blogsRepository = {
 
   async findAllBlogs(): Promise<BlogViewModel[]> {
-    return blogsCollection.find({}).toArray();
+    return blogsCollection.find({}, {projection:{_id:0}}).toArray();
   },
 
   async findBlogById(id: string): Promise<any | null> {
-    let blog: BlogViewModel | null = await blogsCollection.findOne({ id: id });
+    let blog: BlogViewModel | null = await blogsCollection.findOne({ id: id },{projection:{_id:0}});
     if (blog) {
       return blog
     } else {
