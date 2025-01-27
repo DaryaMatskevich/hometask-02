@@ -24,7 +24,7 @@ export const blogsRepository = {
     }
 },
 
-  async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogViewModel>  {
+  async createBlog(name: string, description: string, websiteUrl: string): Promise<any>  {
     const newBlog = {
       id: (Date.now() + Math.random()).toString(),
       name: name,
@@ -34,7 +34,8 @@ export const blogsRepository = {
       isMembership: false
     }
     const result = await blogsCollection.insertOne(newBlog);
-           return newBlog
+    const foundNewBlog = await blogsCollection.findOne({ _id: result.insertedId },{projection:{_id:0}})
+           return foundNewBlog
       },
 
     async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise < boolean > {
