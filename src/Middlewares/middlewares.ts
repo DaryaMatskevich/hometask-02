@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
 import { blogs, blogsRepository } from "../Repository/blogsRepository"
 import { blogsCollection } from "../Repository/db"
+import { blogsService } from "../domain/blogs-service"
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -20,13 +21,14 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
   }
 }
 
-// const blogExists = (value: string) => {
-//   const blog = blogs.find(blog => blog.id === value)
-//   if (!blog) {
-//     throw new Error('Блог не существует');
-//   } 
-//   return true;
-// };
+export const blodIdExistenseMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  const blogId = req.params.id;
+  const blog = await blogsService.findBlogById(blogId)
+  if (!blog) {
+    res.sendStatus(404)
+  } 
+next()
+}
 
 const blogExists = async (value: string) => {
   const blog = await blogsCollection.findOne({id: value})
