@@ -14,9 +14,9 @@ export const postsRepository = {
         pageSize: number,
         sortBy: string,
         sortDirection: 'asc' | 'desc',
-        blogId?: string,
+        filter: {} = {},
     ): Promise<any> {
-        const filter = blogId ? { blogId } : {}
+        
         return postsCollection.find(filter, { projection: { _id: 0 } })
             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .skip((pageNumber - 1) * pageSize)

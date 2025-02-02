@@ -11,14 +11,15 @@ export const postsService = {
         sortDirection: 'asc' | 'desc',
         blogId?: string)
         : Promise<any> {
-           
+        const filter = blogId ? {blogId}:{}
         const posts = await postsRepository.findPosts(
             pageNumber,
             pageSize,
             sortBy,
             sortDirection,
-        )
-        const postsCount = await postsRepository.getPostsCount()
+            filter
+        );
+        const postsCount = await postsRepository.getPostsCount(filter)
         return {
             pagesCount: Math.ceil(postsCount / pageSize),
             page: pageNumber,
