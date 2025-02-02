@@ -21,9 +21,9 @@ export const blogsRepository = {
   ): Promise<any> {
     const filter:any = {}
     if(searchNameTerm) {
-      filter.title = { $regex: searchNameTerm, $options: 'i' }
+      filter.title = { $regex: searchNameTerm, $options: '1' }
     }
-    return blogsCollection.find(filter).sort({[sortBy]: sortDirection === 'asc'? 1: -1})
+    return blogsCollection.find(filter, {projection:{_id:0}}).sort({[sortBy]: sortDirection === 'asc'? 1: -1})
     .skip((pageNumber-1)* pageSize)
     .limit(pageSize)
     .toArray();
@@ -32,7 +32,7 @@ export const blogsRepository = {
   async getBlogsCount(searchNameTerm: string | null): Promise<number> {
 const filter: any = {}
 if (searchNameTerm) {
-  filter.title = {$regex: searchNameTerm, $options: 'i'}
+  filter.title = {$regex: searchNameTerm, $options: '1'}
 }
 return blogsCollection.countDocuments(filter)
   },
