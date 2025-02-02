@@ -21,13 +21,13 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
   }
 }
 
-export const blodIdExistenseMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const blogIdExistenseMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const blogId = req.params.id;
   const blog = await blogsService.findBlogById(blogId)
   if (!blog) {
     res.sendStatus(404)
   } 
-next()
+  next()
 }
 
 const blogExists = async (value: string) => {

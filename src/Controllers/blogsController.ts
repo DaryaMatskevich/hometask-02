@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
 import { blogsService } from "../domain/blogs-service";
-import { contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation, blogIdValidation } from "../Middlewares/middlewares";
+import { contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation } from "../Middlewares/middlewares";
 import { body } from "express-validator";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { SortDirection } from "mongodb";
 import { postsService } from "../domain/posts-service";
+import {blogIdExistenseMiddleware } from "../Middlewares/middlewares"
 
 
 export const blogsRouter = Router({})
@@ -31,7 +32,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
   res.status(200).send(foundBlogs)
 })
 
-blogsRouter.get('/:id', async (req: Request, res: Response) => {
+blogsRouter.get('/:id', blogIdExistenseMiddleware, async (req: Request, res: Response) => {
   let blog = await blogsService.findBlogById(req.params.id)
   if (blog) {
     res.status(200).send(blog)
