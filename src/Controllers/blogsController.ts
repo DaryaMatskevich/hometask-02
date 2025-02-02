@@ -68,14 +68,11 @@ blogsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
 })
 
 
-blogsRouter.post('/:id/posts', authMiddleware, titleValidation,
+blogsRouter.post('/:id/posts', authMiddleware, blogIdExistenseMiddleware, titleValidation,
   shortDescriptionValidation, contentValidation, inputValidationMiddleware,
   async (req: Request, res: Response) => {
     const blogId = req.params.id;
-    const blog = await blogsService.findBlogById(blogId)
-    if (!blog) {
-      res.sendStatus(404)
-    }
+    
     const { title, shortDescription, content } = req.body;
     const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(201).send(newPost)
