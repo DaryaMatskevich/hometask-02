@@ -57,9 +57,4 @@ export const blogsService = {
 
     return await blogsRepository.deleteBlog(id)
   },
-
-  async createPostForSpecificBlog(blogId: string, title: string, shortDescription: string,
-    content: string): Promise<PostViewModel | null> {
-    return await postsRepository.createPost(title, shortDescription, content, blogId)
-  },
 }

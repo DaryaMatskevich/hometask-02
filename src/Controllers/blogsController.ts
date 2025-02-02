@@ -76,14 +76,17 @@ blogsRouter.post('/:id/posts', authMiddleware, titleValidation,
       res.sendStatus(404)
     }
     const { title, shortDescription, content } = req.body;
-    const newPost = await blogsService.createPostForSpecificBlog(title, shortDescription, content, blogId);
+    const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(201).send(newPost)
   })
 
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
   const blogId = req.params.id;
-
+  const blog = await blogsService.findBlogById(blogId)
+  if (!blog) {
+    res.sendStatus(404)
+  }
     let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
   let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
   let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
