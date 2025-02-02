@@ -32,7 +32,7 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
   res.status(200).send(foundBlogs)
 })
 
-blogsRouter.get('/:id', blogIdExistenseMiddleware, async (req: Request, res: Response) => {
+blogsRouter.get('/:id', async (req: Request, res: Response) => {
   let blog = await blogsService.findBlogById(req.params.id)
   if (blog) {
     res.status(200).send(blog)
@@ -82,7 +82,7 @@ blogsRouter.post('/:id/posts', authMiddleware, titleValidation,
   })
 
 
-blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
+blogsRouter.get('/:id/posts', blogIdExistenseMiddleware, async (req: Request, res: Response) => {
   const blogId = req.params.id;
 
   let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
