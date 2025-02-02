@@ -11,8 +11,30 @@ export async function clearBlogsData() {
 
 export const blogsRepository = {
 
-  async findAllBlogs(): Promise<BlogViewModel[]> {
-    return blogsCollection.find({}, {projection:{_id:0}}).toArray();
+  async findAllBlogs(
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: 'asc'|'desc',
+    searchNameTerm: string | null
+
+  ): Promise<any> {
+    const filter:any = {}
+    if(searchNameTerm) {
+      filter.title = {$regex: searchNameTerm, $options: '1', projection:{_id:0}}
+    }
+    return blogsCollection.find(filter).sort({[sortBy]: sortDirection === 'asc'? 1: -1})
+    .skip((pageNumber-1)* pageSize)
+    .limit(pageSize)
+    .toArray();
+  },
+
+  async getBlogsCount(searchNameTerm: string | null): Promise<number> {
+const filter: any = {}
+if (searchNameTerm) {
+  filter.title = {$regex: {searchNameTerm}, $options: '1'}
+}
+return blogsCollection.countDocuments(filter)
   },
 
   async findBlogById(id: string): Promise<any | null> {
@@ -24,15 +46,8 @@ export const blogsRepository = {
     }
 },
 
-  async createBlog(name: string, description: string, websiteUrl: string): Promise<any>  {
-    const newBlog = {
-      id: (Date.now() + Math.random()).toString(),
-      name: name,
-      description: description,
-      websiteUrl: websiteUrl,
-      createdAt: (new Date()).toISOString(),
-      isMembership: false
-    }
+  async createBlog(newBlog: any): Promise<any>  {
+    
     const result = await blogsCollection.insertOne(newBlog);
     const foundNewBlog = await blogsCollection.findOne({ _id: result.insertedId },{projection:{_id:0}})
            return foundNewBlog

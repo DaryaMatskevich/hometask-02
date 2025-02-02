@@ -1,17 +1,31 @@
 import { Request, Response, Router } from "express"
-import { postsRepository } from "../Repository/postsRepository"
+import { postsService } from "../domain/posts-service"
 import { authMiddleware } from "../Middlewares/authMiddleware"
 import { blogIdValidation, contentValidation, inputValidationMiddleware, shortDescriptionValidation, titleValidation } from "../Middlewares/middlewares"
+import { SortDirection } from "mongodb"
 
 export const postsRouter = Router({})
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const foundPosts = await postsRepository.findPosts()
+    let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
+    let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+    let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
+    let sortDirection: SortDirection =
+        req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
+            ? 'asc'
+            : 'desc'
+
+    const foundPosts = await postsService.findPosts(
+        pageNumber,
+        pageSize,
+        sortBy,
+        sortDirection
+    )
     res.send(foundPosts)
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-    let post = await postsRepository.findPostById(req.params.id)
+    let post = await postsService.findPostById(req.params.id)
     if (post) {
         res.status(200).send(post)
     }
@@ -20,13 +34,13 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.post('/', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const { title, shortDescription, content, blogId } = req.body;
-    const newPost = await postsRepository.createPost(title, shortDescription, content, blogId);
+    const newPost = await postsService.createPost(title, shortDescription, content, blogId);
     res.status(201).send(newPost)
 })
 
 postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const { title, shortDescription, content, blogId } = req.body;
-    let isUpdated = await postsRepository.updatePost(req.params.id, title, shortDescription, content, blogId)
+    let isUpdated = await postsService.updatePost(req.params.id, title, shortDescription, content, blogId)
     if (isUpdated) {
         res.sendStatus(204)
     } else {
@@ -36,7 +50,7 @@ postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, short
 )
 
 postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-    const isDeleted = await postsRepository.deletePostById(req.params.id)
+    const isDeleted = await postsService.deletePostById(req.params.id)
     if (isDeleted) {
         res.sendStatus(204)
     }
