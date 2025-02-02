@@ -23,7 +23,7 @@ export const blogsRepository = {
     if(searchNameTerm) {
       filter.title = { $regex: searchNameTerm, $options: 'i' }
     }
-    return blogsCollection.find(filter, {projection:{_id:0}}).sort({[sortBy]: sortDirection === 'asc'? 1: -1})
+    return blogsCollection.find(filter).sort({[sortBy]: sortDirection === 'asc'? 1: -1})
     .skip((pageNumber-1)* pageSize)
     .limit(pageSize)
     .toArray();
