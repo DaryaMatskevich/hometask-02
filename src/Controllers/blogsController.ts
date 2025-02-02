@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { blogsService } from "../domain/blogs-service";
-import { contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation } from "../Middlewares/middlewares";
+import { contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation, blogIdValidation } from "../Middlewares/middlewares";
 import { body } from "express-validator";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { SortDirection } from "mongodb";
@@ -67,7 +67,7 @@ blogsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
 })
 
 
-blogsRouter.post('/:id/posts', authMiddleware, titleValidation,
+blogsRouter.post('/:id/posts', authMiddleware, blogIdValidation, titleValidation,
   shortDescriptionValidation, contentValidation, inputValidationMiddleware,
   async (req: Request, res: Response) => {
     const blogId = req.params.id;
@@ -79,7 +79,7 @@ blogsRouter.post('/:id/posts', authMiddleware, titleValidation,
 
 blogsRouter.get('/:id/posts', async (req: Request, res: Response) => {
   const blogId = req.params.id;
-  let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
+    let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
   let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
   let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
   let sortDirection: SortDirection =
