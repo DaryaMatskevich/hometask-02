@@ -32,7 +32,7 @@ export const blogsRepository = {
   async getBlogsCount(searchNameTerm: string | null): Promise<number> {
 const filter: any = {}
 if (searchNameTerm) {
-  filter.title = {$regex: {searchNameTerm}, $options: '1'}
+  filter.title = {$regex: {searchNameTerm}, $options: 'i'}
 }
 return blogsCollection.countDocuments(filter)
   },

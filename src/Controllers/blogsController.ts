@@ -55,8 +55,8 @@ blogsRouter.put('/:id', authMiddleware, nameValidation, descriptionValidation, w
   } else {
     res.sendStatus(404)
   }
-}
-)
+})
+
 
 blogsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   const isDeleted = await blogsService.deleteBlog(req.params.id)
