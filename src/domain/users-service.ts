@@ -22,7 +22,6 @@ async function isLoginUnique(login: string): Promise<boolean> {
 }
 
 
-
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<string | any> {
         const passwordHash = await bcryptService.hashPassword(password)

@@ -24,11 +24,13 @@ export const usersQueryRepository = {
         }
     },
     
-    
+
     async findUserById(id: string) {
         let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
-            return
+            user.id = user._id
+            delete user._id
+            return user
         } else {
             return null
         }

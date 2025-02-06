@@ -3,43 +3,45 @@ import { usersService } from "../domain/users-service";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { loginValidation, passwordValidation, emailValidation } from "../Middlewares/middlewares";
 import { SortDirection } from "mongodb";
+import { UserViewModel } from "../types/userModel";
+import { authMiddleware } from "../Middlewares/authMiddleware";
 
 export const usersRouter = Router({})
 
-usersRouter.get('/', async (req: Request, res: Response) => {
+usersRouter.get('/', authMiddleware, async (req: Request, res: Response) => {
     let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
-      let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
-      let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
-      let sortDirection: SortDirection =
+    let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+    let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
+    let sortDirection: SortDirection =
         req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
-          ? 'asc'
-          : 'desc'
-    
-      let searchLoginTerm = req.query.searchLoginTerm ? req.query.searchLoginTerm.toString() : null
-      let searchEmailTerm = req.query.searchEmailTerm ? req.query.searchEmailTerm.toString() : null
-    
-      const foundUsers = await usersQueryRepository.findUsers(
+            ? 'asc'
+            : 'desc'
+
+    let searchLoginTerm = req.query.searchLoginTerm ? req.query.searchLoginTerm.toString() : null
+    let searchEmailTerm = req.query.searchEmailTerm ? req.query.searchEmailTerm.toString() : null
+
+    const foundUsers = await usersQueryRepository.findUsers(
         pageNumber,
         pageSize,
         sortBy,
         sortDirection,
         searchLoginTerm,
         searchEmailTerm
-      )
-      res.status(200).send(foundUsers)
+    )
+    res.status(200).send(foundUsers)
 })
 
-usersRouter.post('/',loginValidation, passwordValidation, emailValidation,
-    async (req: Request, res: Response): Promise<any> => {
-    const {login, password, email} = req.body;
-    const userId = await usersService.createUser(login, password, email)
-    const newUser = await usersQueryRepository.findUserById(userId);
-    return res.status(201).json(newUser!)
+usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation,
+    async (req: Request, res: Response): Promise<UserViewModel | any> => {
+        const { login, password, email } = req.body;
+        const userId = await usersService.createUser(login, password, email)
+        const newUser = await usersQueryRepository.findUserById(userId);
+        return res.status(201).json(newUser!)
     })
-    
 
-usersRouter.delete('/:id', async (req: Request, res: Response): Promise<any> => {
-const user = await usersService.deleteUserById(req.params.id)
-if (!user) return res.sendStatus(404)
+
+usersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response): Promise<any> => {
+    const user = await usersService.deleteUserById(req.params.id)
+    if (!user) return res.sendStatus(404)
     return res.sendStatus(204)
 })
