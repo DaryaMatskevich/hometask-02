@@ -34,7 +34,7 @@ export const usersService = {
         const uniqueLogin = await isLoginUnique(login)
         if (!uniqueLogin) 
             return {
-            errorsMessages: [{ field: 'email', message: 'email should be unique' }]
+            errorsMessages: [{ field: 'login', message: 'login should be unique' }]
         };
 
         const newUser = {
