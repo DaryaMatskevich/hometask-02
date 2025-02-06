@@ -16,10 +16,21 @@ export const usersQueryRepository = {
             if (searchEmailTerm) {
                 filter.email = { $regex: searchEmailTerm, $options: 'i' }
             }
-            return usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+            const result = usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
+            const users = (await result).map(user => {
+                return {
+                    id: user._id.toString(),
+                    login: user.login,
+                    password: user.password,
+                    email: user.email,
+                    createdAt: user.createdAt
+                }
+
+            })
+            return users
         }
     },
 
