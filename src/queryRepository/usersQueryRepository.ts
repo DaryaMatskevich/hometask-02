@@ -16,7 +16,7 @@ export const usersQueryRepository = {
             if (searchEmailTerm) {
                 filter.email = { $regex: searchEmailTerm, $options: 'i' }
             }
-            const result = usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+            const result = await usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
