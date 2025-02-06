@@ -47,3 +47,14 @@ export const titleValidation = body('title').trim().isLength({ min: 3, max: 30 }
 export const shortDescriptionValidation = body('shortDescription').trim().isLength({ min: 3, max: 100 }).withMessage("Title length should be from 3 to 100 symbols");
 export const contentValidation = body('content').trim().isLength({ min: 3, max: 1000 }).withMessage("Content length should be from 3 to 1000 symbols");
 export const blogIdValidation = body('blogId').custom(blogExists).withMessage("Blog is not exist")
+
+export const loginValidation = body('login').trim().isLength({min: 3, max: 10})
+.withMessage('Login must contain from 3 to 10 symbols').matches(/^[a-zA-Z0-9_-]*$/)
+.withMessage('A login can only contain letters, numbers, underscores, and hyphens.')
+
+export const passwordValidation = body('password').trim().isLength({min: 6, max: 20})
+.withMessage('Login must contain from 3 to 10 symbols')
+
+export const emailValidation = body('login').trim().isLength({min: 3, max: 10})
+.withMessage('Login must contain from 3 to 10 symbols').matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+.withMessage('Email is not right')

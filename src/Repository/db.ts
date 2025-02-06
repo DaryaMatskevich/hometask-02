@@ -8,6 +8,7 @@ dotenv.config()
 
 export let blogsCollection: Collection<BlogViewModel>
 export let postsCollection: Collection<PostViewModel>
+export let usersCollection: Collection<any>
 
 export async function runDb(url: string): Promise<boolean> {
 
@@ -16,7 +17,7 @@ export async function runDb(url: string): Promise<boolean> {
 
     blogsCollection = db.collection<BlogViewModel>(SETTINGS.PATH.BLOGS)
     postsCollection = db.collection<PostViewModel>(SETTINGS.PATH.POSTS)
-
+    usersCollection = db.collection<any>(SETTINGS.PATH.USERS)
 
     try {
         await client.connect();

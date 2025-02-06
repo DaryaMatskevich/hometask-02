@@ -3,12 +3,14 @@ import { blogsRouter } from './Controllers/blogsController'
 import { postsRouter } from './Controllers/postsController'
 import { clearBlogsData } from './Repository/blogsRepository'
 import { clearPostsData } from './Repository/postsRepository'
+import { usersRouter } from './Controllers/usersController'
 
 
 export const app = express()
 app.use(express.json())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
+app.use('/users', usersRouter)
 
 
 
