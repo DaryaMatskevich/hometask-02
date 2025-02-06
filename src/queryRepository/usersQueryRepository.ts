@@ -9,7 +9,6 @@ export const usersQueryRepository = {
         sortDirection: 'asc' | 'desc',
         searchLoginTerm: string | null,
         searchEmailTerm: string | null
-
     ): Promise<any> {
         const filter: any = {}
         if (searchLoginTerm) {
@@ -23,7 +22,7 @@ export const usersQueryRepository = {
                 .toArray();
         }
     },
-    
+
 
     async findUserById(id: string) {
         let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
