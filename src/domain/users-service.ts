@@ -23,19 +23,19 @@ async function isLoginUnique(login: string): Promise<boolean> {
 
 
 export const usersService = {
-    async createUser(login: string, password: string, email: string): Promise<string | any> {
+    async createUser(login: string, password: string, email: string): Promise<any> {
         const passwordHash = await bcryptService.hashPassword(password)
-        
-const uniqueEmail = await isEmailUnique(email)
-if (!uniqueEmail) 
-    return {
-    errorsMessages: [{ field: 'email', message: 'email should be unique' }]
-};
+        const uniqueEmail = await isEmailUnique(email)
+        if (!uniqueEmail)
+            return {
+                errorsMessages: [{ field: 'email', message: 'email should be unique' }]
+            };
 
-const uniqueLogin = await isLoginUnique(login)
-if (!uniqueLogin) return {
-    errorsMessages: [{ field: 'email', message: 'email should be unique' }]
-};
+        const uniqueLogin = await isLoginUnique(login)
+        if (!uniqueLogin) 
+            return {
+            errorsMessages: [{ field: 'email', message: 'email should be unique' }]
+        };
 
         const newUser = {
             login: login,

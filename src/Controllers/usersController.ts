@@ -32,7 +32,7 @@ usersRouter.get('/', authMiddleware, async (req: Request, res: Response) => {
 })
 
 usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation,
-    async (req: Request, res: Response): Promise<UserViewModel | any> => {
+    async (req: Request, res: Response): Promise<any> => {
         const { login, password, email } = req.body;
         const userId = await usersService.createUser(login, password, email)
         const newUser = await usersQueryRepository.findUserById(userId);
