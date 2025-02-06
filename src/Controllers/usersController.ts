@@ -29,7 +29,7 @@ usersRouter.get('/', async (req: Request, res: Response) => {
       res.status(200).send(foundUsers)
 })
 
-usersRouter.post('/', loginValidation, passwordValidation, emailValidation,
+usersRouter.post('/',loginValidation, passwordValidation, emailValidation,
     async (req: Request, res: Response): Promise<any> => {
     const {login, password, email} = req.body;
     const userId = await usersService.createUser(login, password, email)
