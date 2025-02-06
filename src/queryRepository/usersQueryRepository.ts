@@ -20,7 +20,7 @@ export const usersQueryRepository = {
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
-            const users = (await result).map(user => {
+            const users = result.map(user => {
                 return {
                     id: user._id.toString(),
                     login: user.login,
