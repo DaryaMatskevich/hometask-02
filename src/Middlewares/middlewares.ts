@@ -55,6 +55,5 @@ export const loginValidation = body('login').trim().isLength({min: 3, max: 10})
 export const passwordValidation = body('password').trim().isLength({min: 6, max: 20})
 .withMessage('Password must contain from 3 to 10 symbols')
 
-export const emailValidation = body('email').trim().isLength({min: 3, max: 10})
-.withMessage('Email must contain from 3 to 10 symbols').matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+export const emailValidation = body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 .withMessage('Email is not right')
