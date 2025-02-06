@@ -8,7 +8,7 @@ import { authMiddleware } from "../Middlewares/authMiddleware";
 
 export const usersRouter = Router({})
 
-usersRouter.get('/', authMiddleware, async (req: Request, res: Response) => {
+usersRouter.get('/', authMiddleware, async (req: Request, res: Response): Promise<any> => {
     let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
     let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
     let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
@@ -28,7 +28,7 @@ usersRouter.get('/', authMiddleware, async (req: Request, res: Response) => {
         searchLoginTerm,
         searchEmailTerm
     )
-    res.status(200).json(foundUsers)
+    return res.status(200).json(foundUsers)
 })
 
 usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation, inputValidationMiddleware,
