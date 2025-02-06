@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { usersService } from "../domain/users-service";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
-import { loginValidation, passwordValidation, emailValidation } from "../Middlewares/middlewares";
+import { loginValidation, passwordValidation, emailValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
 import { SortDirection } from "mongodb";
 import { UserViewModel } from "../types/userModel";
 import { authMiddleware } from "../Middlewares/authMiddleware";
@@ -31,7 +31,7 @@ usersRouter.get('/', authMiddleware, async (req: Request, res: Response) => {
     res.status(200).json(foundUsers)
 })
 
-usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation,
+usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation, inputValidationMiddleware,
     async (req: Request, res: Response): Promise<any> => {
         const { login, password, email } = req.body;
         const userId = await usersService.createUser(login, password, email)
