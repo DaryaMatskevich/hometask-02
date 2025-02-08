@@ -15,8 +15,11 @@ export const usersQueryRepository = {
             filter.$or = [];
             if (searchLoginTerm) {
             filter.$or.push({login : { $regex: searchLoginTerm, $options: 'i' }})
+            }
             if (searchEmailTerm) {
                 filter.$or.push({email : { $regex: searchEmailTerm, $options: 'i' }})
+            }}
+            
             const result = await usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
@@ -28,7 +31,7 @@ export const usersQueryRepository = {
                     email: user.email,
                     createdAt: user.createdAt
                 }))
-            }}}      
+            
     },
 
 
