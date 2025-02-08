@@ -5,6 +5,7 @@ import { clearBlogsData } from './Repository/blogsRepository'
 import { clearPostsData } from './Repository/postsRepository'
 import { usersRouter } from './Controllers/usersController'
 import { authRouter } from './Controllers/authController'
+import { clearUsersData } from './Repository/usersRepository'
 
 
 export const app = express()
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.delete('/testing/all-data', (req, res) => {
     clearBlogsData();
     clearPostsData();
+    clearUsersData()
     res.sendStatus(204);
 })
 

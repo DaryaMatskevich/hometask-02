@@ -1,6 +1,10 @@
 import { ObjectId } from "mongodb"
 import { usersCollection } from "./db"
 
+export async function clearUsersData() {
+  await usersCollection.deleteMany({})
+}
+
 export const usersRepository = {
     async createUser(user: any): Promise<string> {
         const newUser = await usersCollection.insertOne({ ...user })
