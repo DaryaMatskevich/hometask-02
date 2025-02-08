@@ -25,18 +25,28 @@ async function isLoginUnique(login: string): Promise<boolean> {
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<any> {
         const passwordHash = await bcryptService.hashPassword(password)
-        const uniqueEmail = await isEmailUnique(email)
-        if (!uniqueEmail)
-            return {
-                errorsMessages: [{ field: 'email', message: 'email should be unique' }]
-            };
+        // const uniqueEmail = await isEmailUnique(email)
+        // if (!uniqueEmail)
+        //     return {
+        //         errorsMessages: [{ field: 'email', message: 'email should be unique' }]
+        //     };
 
-        const uniqueLogin = await isLoginUnique(login)
-        if (!uniqueLogin) 
-            return {
-            errorsMessages: [{ field: 'login', message: 'login should be unique' }]
-        };
-
+        // const uniqueLogin = await isLoginUnique(login)
+        // if (!uniqueLogin) 
+        //     return {
+        //     errorsMessages: [{ field: 'login', message: 'login should be unique' }]
+        // };
+        const existingUser = await usersRepository.findUserByLoginOrEmail(login, email)
+        if (existingUser) {
+            const errors = []
+            if (existingUser.email === email) {
+                errors.push({ field: 'email', message: 'email should be unique' })
+            }
+            if (existingUser.login === login) {
+                errors.push({ field: 'login', message: 'login should be unique' })
+            }
+            return {errorsMessages: errors}
+        }
         const newUser = {
             login: login,
             email: email,
