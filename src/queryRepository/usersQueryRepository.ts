@@ -57,5 +57,11 @@ export const usersQueryRepository = {
         } else {
             return null
         }
-    }
+    },
+    async findUserByLoginOrEmailforAuth(loginOrEmail: string) {
+        return await usersCollection.findOne({
+            $or: [{ login: loginOrEmail }, { email: loginOrEmail }]
+        })
+
+    },
 }

@@ -17,6 +17,7 @@ export const usersRepository = {
     async findUserById(id: string): Promise<any | null> {
         if(!this._checkObjectId(id)) return null;
         return usersCollection.findOne({ _id: new ObjectId(id) })
+
     },
 
     async deleteUserById(id: string): Promise<boolean> {
