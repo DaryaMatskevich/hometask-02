@@ -44,10 +44,10 @@ usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, email
     })
 
 
-usersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response): Promise<any> => {
-    const isDeleted = await usersService.deleteUserById(req.params.id)
-    if (isDeleted) {
-    res.sendStatus(204)
-}
-    res.sendStatus(404)
+usersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response): Promise <any> => {
+    const user = await usersService.deleteUserById(req.params.id)
+    if (!user) 
+    return res.sendStatus(404)
+
+    return res.sendStatus(204)
 })
