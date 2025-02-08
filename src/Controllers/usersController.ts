@@ -31,23 +31,24 @@ usersRouter.get('/', authMiddleware, async (req: Request, res: Response): Promis
     return res.status(200).json(foundUsers)
 })
 
-usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, emailValidation, inputValidationMiddleware,
+usersRouter.post('/', authMiddleware, loginValidation,
+    passwordValidation, emailValidation, inputValidationMiddleware,
     async (req: Request, res: Response): Promise<any> => {
         const { login, password, email } = req.body;
         const userId = await usersService.createUser(login, password, email)
-        if (userId.errorsMessages) {
-            return res.status(400).json(userId)
-        }
+        // if (userId.errorsMessages) {
+        //     return res.status(400).json(userId)
+        // }
 
         const newUser = await usersQueryRepository.findUserById(userId);
-        return res.status(201).json(newUser!)
+        return res.status(201).json(newUser)
     })
 
 
-usersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response): Promise <any> => {
+usersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response): Promise<any> => {
     const user = await usersService.deleteUserById(req.params.id)
-    if (!user) 
-    return res.sendStatus(404)
+    if (!user)
+        return res.sendStatus(404)
 
     return res.sendStatus(204)
 })
