@@ -2,9 +2,10 @@ import { MongoNetworkTimeoutError } from "mongodb";
 import { usersRepository } from "../Repository/usersRepository";
 import { usersCollection } from "../Repository/db";
 
-const bcrypt = require('bcrypt')
+export const bcrypt = require('bcrypt')
+
 const saltRounds = 10;
-export const bcryptService = {
+const bcryptService = {
     hashPassword: async (password: string) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds)
         return hashedPassword
