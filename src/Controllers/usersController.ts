@@ -36,9 +36,9 @@ usersRouter.post('/', authMiddleware, loginValidation,
     async (req: Request, res: Response): Promise<any> => {
         const { login, password, email } = req.body;
         const userId = await usersService.createUser(login, password, email)
-        // if (userId.errorsMessages) {
-        //     return res.status(400).json(userId)
-        // }
+        if (userId.errorsMessages) {
+            return res.status(400).json(userId)
+        }
 
         const newUser = await usersQueryRepository.findUserById(userId);
         return res.status(201).json(newUser)
