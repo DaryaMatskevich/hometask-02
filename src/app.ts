@@ -4,7 +4,7 @@ import { postsRouter } from './Controllers/postsController'
 import { clearBlogsData } from './Repository/blogsRepository'
 import { clearPostsData } from './Repository/postsRepository'
 import { usersRouter } from './Controllers/usersController'
-import { authRouter } from './Controllers/auth'
+import { authRouter } from './Controllers/authController'
 
 
 export const app = express()
