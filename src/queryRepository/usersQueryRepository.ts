@@ -11,27 +11,24 @@ export const usersQueryRepository = {
         searchEmailTerm: string | null
     ): Promise<any> {
         const filter: any = {}
-        if (searchLoginTerm) {
-            filter.login = { $regex: searchLoginTerm, $options: 'i' }
+        if (searchLoginTerm || searchEmailTerm) {
+            filter.$or = [];
+            if (searchLoginTerm) {
+            filter.$or.push({login : { $regex: searchLoginTerm, $options: 'i' }})
             if (searchEmailTerm) {
-                filter.email = { $regex: searchEmailTerm, $options: 'i' }
-            }
+                filter.$or.push({email : { $regex: searchEmailTerm, $options: 'i' }})
             const result = await usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
                 .toArray();
-            const users = result.map(user => {
-                return {
+            return result.map(user => ({
                     id: user._id.toString(),
                     login: user.login,
                     password: user.password,
                     email: user.email,
                     createdAt: user.createdAt
-                }
-
-            })
-            return users
-        }
+                }))
+            }}}      
     },
 
 
