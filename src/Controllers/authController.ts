@@ -11,9 +11,9 @@ authRouter.post('/', loginValidation, emailValidation, passwordValidation, async
  
  
      if (user.password === hashedPassword) {
-     return res.sendStatus(204)}
-     else {
-        return res.sendStatus(401)
+      res.sendStatus(204)}
+     if (user.password ==! hashedPassword || user.login ==! loginOrEmail || user.email !== loginOrEmail) {
+        res.sendStatus(401)
      }
     })
     
