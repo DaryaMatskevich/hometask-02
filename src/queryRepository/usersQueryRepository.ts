@@ -27,11 +27,10 @@ export const usersQueryRepository = {
         const mappedUsers = users.map(user => ({
             id: user._id.toString(),
             login: user.login,
-            password: user.password,
             email: user.email,
             createdAt: user.createdAt
         }))
-        const usersCount: any = usersCollection.countDocuments(filter)
+        const usersCount: any = await usersCollection.countDocuments(filter)
 
         return {
             pagesCount: Math.ceil(usersCount / pageSize),
