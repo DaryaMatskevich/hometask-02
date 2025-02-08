@@ -19,10 +19,10 @@ export const usersService = {
         if (existingUser) {
             const errors = []
             if (existingUser.email === email) {
-                errors.push({ field: 'email', message: 'email should be unique' })
+                errors.push({ message: 'email should be unique', field: 'email' })
             }
             if (existingUser.login === login) {
-                errors.push({ field: 'login', message: 'login should be unique' })
+                errors.push({ message: 'login should be unique', field: 'login' })
             }
             return {errorsMessages: errors}
         }
