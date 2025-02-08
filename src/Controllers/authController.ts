@@ -20,6 +20,6 @@ authRouter.post('/', loginValidation, emailValidation, passwordValidation, async
       return res.sendStatus(401)
    }
 
-   res.sendStatus(401)
+   res.sendStatus(204)
 }
 )
