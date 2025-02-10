@@ -3,7 +3,6 @@ import { usersService } from "../domain/users-service";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { loginValidation, passwordValidation, emailValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
 import { SortDirection } from "mongodb";
-import { UserViewModel } from "../types/userModel";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 
 export const usersRouter = Router({})

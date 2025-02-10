@@ -2,7 +2,8 @@ import { MongoNetworkTimeoutError } from "mongodb";
 import { usersRepository } from "../Repository/usersRepository";
 import { usersCollection } from "../Repository/db";
 
-export const bcrypt = require('bcrypt')
+import bcrypt from 'bcrypt'
+import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 
 const saltRounds = 10;
 const bcryptService = {
@@ -12,10 +13,11 @@ const bcryptService = {
     }
 }
 
+
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<any> {
         const passwordHash = await bcryptService.hashPassword(password)
-       
+
         const existingUser = await usersRepository.findUserByLoginOrEmail(login, email)
         if (existingUser) {
             const errors = []
@@ -25,7 +27,7 @@ export const usersService = {
             if (existingUser.login === login) {
                 errors.push({ message: 'login should be unique', field: 'login' })
             }
-            return {errorsMessages: errors}
+            return { errorsMessages: errors }
         }
         const newUser = {
             login: login,
@@ -39,7 +41,20 @@ export const usersService = {
 
     async deleteUserById(id: string): Promise<boolean> {
         const user = await usersRepository.findUserById(id)
-        if(!user) return false
+        if (!user) return false
         return await usersRepository.deleteUserById(id)
+    },
+
+    async checkCredentials(loginOrEmail: string, password: string) {
+        const user = await usersQueryRepository.findUserByLoginOrEmailforAuth(loginOrEmail)
+        if (!user) {
+            return null
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+        if (isPasswordValid) {
+            return user
+        } else {
+            return null
+        }
     }
 }

@@ -1,6 +1,6 @@
 
 import { ObjectId } from "mongodb";
-import { BlogViewModel } from "../types/BlogsViewModel";
+import { BlogViewModel } from "../types/BlogTypes/BlogViewType";
 import { blogsCollection } from "./db";
 
 export let blogs: BlogViewModel[] = []

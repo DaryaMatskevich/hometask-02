@@ -11,7 +11,8 @@ export const SETTINGS = {
         USERS: '/users'
     },
     DB_NAME: process.env.DB_NAME || 'blog-platform',
-    MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
+    MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
+    JWT_SECRET: process.env.JWT_SECRET || '123'
 }
 
 export const ADMIN_AUTH = 'admin:qwerty';

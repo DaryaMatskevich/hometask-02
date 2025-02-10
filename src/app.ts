@@ -13,7 +13,7 @@ app.use(express.json())
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
-app.use('/auth/login', authRouter)
+app.use('/auth', authRouter)
 
 
 

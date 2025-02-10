@@ -1,5 +1,5 @@
-import { BlogViewModel } from "../types/BlogsViewModel";
-import { PostViewModel } from "../types/PostsViewModel";
+import { BlogViewModel } from "../types/BlogTypes/BlogViewType";
+import { PostViewModel } from "../types/PostTypes/PostsViewType";
 import { blogs } from "./blogsRepository";
 import { blogsCollection, postsCollection } from "./db";
 

@@ -1,4 +1,4 @@
-import { PostViewModel } from "../types/PostsViewModel";
+import { PostViewModel } from "../types/PostTypes/PostsViewType";
 import { postsRepository } from "../Repository/postsRepository";
 
 

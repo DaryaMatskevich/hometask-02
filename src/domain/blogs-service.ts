@@ -1,7 +1,7 @@
 import { blogsRepository } from "../Repository/blogsRepository";
 import { postsRepository } from "../Repository/postsRepository";
-import { BlogViewModel } from "../types/BlogsViewModel";
-import { PostViewModel } from "../types/PostsViewModel";
+import { BlogViewModel } from "../types/BlogTypes/BlogViewType";
+import { PostViewModel } from "../types/PostTypes/PostsViewType";
 
 
 export const blogsService = {
