@@ -8,7 +8,8 @@ export const SETTINGS = {
     PATH: {
         BLOGS: '/blogs',
         POSTS: '/posts',
-        USERS: '/users'
+        USERS: '/users',
+        COMMENTS: '/comments'
     },
     DB_NAME: process.env.DB_NAME || 'blog-platform',
     MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',

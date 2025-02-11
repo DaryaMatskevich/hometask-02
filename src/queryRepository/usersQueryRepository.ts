@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 import { usersCollection } from "../Repository/db";
+import { UserDBType } from "../types/UserTypes/UserDBType";
+import { UserAuthType } from "../types/UserTypes/UserAuthType";
 
 export const usersQueryRepository = {
     async findUsers(
@@ -46,10 +48,10 @@ export const usersQueryRepository = {
 
 
     async findUserById(id: string) {
-        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
-                id: user._id.toString(),
+                _id: user._id.toString(),
                 login: user.login,
                 email: user.email,
                 createdAt: user.createdAt
@@ -64,4 +66,18 @@ export const usersQueryRepository = {
         })
 
     },
+
+    async findUserByIdforAuth(id: string) {
+        let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        if (user) {
+            return {
+                email: user.email,
+                login: user.login,
+                userId: user._id.toString(),
+            }
+        } else {
+            return null
+        }
+    },
+
 }

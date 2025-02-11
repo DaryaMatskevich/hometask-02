@@ -6,6 +6,7 @@ import { clearPostsData } from './Repository/postsRepository'
 import { usersRouter } from './Controllers/usersController'
 import { authRouter } from './Controllers/authController'
 import { clearUsersData } from './Repository/usersRepository'
+import { commentsRouter as commentsRouter } from './Controllers/commentsController'
 
 
 export const app = express()
@@ -14,6 +15,7 @@ app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
+app.use('/comments', commentsRouter)
 
 
 
