@@ -1,6 +1,5 @@
-import { BlogViewModel } from "../types/BlogTypes/BlogViewType";
-import { PostViewModel } from "../types/PostTypes/PostsViewType";
-import { blogs } from "./blogsRepository";
+import { BlogViewType } from "../types/BlogTypes/BlogViewType";
+import { PostViewType } from "../types/PostTypes/PostsViewType";
 import { blogsCollection, postsCollection } from "./db";
 
 export async function clearPostsData() {
@@ -27,8 +26,8 @@ export const postsRepository = {
         return postsCollection.countDocuments(filter)
     },
    
-    async findPostById(id: string): Promise<PostViewModel | null> {
-        let post: PostViewModel | null = await postsCollection.findOne({ id: id }, { projection: { _id: 0 } })
+    async findPostById(id: string): Promise<PostViewType | null> {
+        let post: PostViewType | null = await postsCollection.findOne({ id: id }, { projection: { _id: 0 } })
         if (post) {
             return post
         } else {
@@ -36,7 +35,7 @@ export const postsRepository = {
         }
     },
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewModel | null> {
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
 
         const blog = await blogsCollection.findOne({ id: blogId })
         if (blog) {

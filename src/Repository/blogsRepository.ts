@@ -1,9 +1,8 @@
 
 import { ObjectId } from "mongodb";
-import { BlogViewModel } from "../types/BlogTypes/BlogViewType";
+import { BlogViewType } from "../types/BlogTypes/BlogViewType";
 import { blogsCollection } from "./db";
 
-export let blogs: BlogViewModel[] = []
    
 export async function clearBlogsData() {
   await blogsCollection.deleteMany({})
@@ -38,7 +37,7 @@ return blogsCollection.countDocuments(filter)
   },
 
   async findBlogById(id: string): Promise<any | null> {
-    let blog: BlogViewModel | null = await blogsCollection.findOne({ id: id },{projection:{_id:0}});
+    let blog: BlogViewType | null = await blogsCollection.findOne({ id: id },{projection:{_id:0}});
     if (blog) {
       return blog
     } else {
