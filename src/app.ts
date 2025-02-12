@@ -6,7 +6,7 @@ import { clearPostsData } from './Repository/postsRepository'
 import { usersRouter } from './Controllers/usersController'
 import { authRouter } from './Controllers/authController'
 import { clearUsersData } from './Repository/usersRepository'
-import { commentsRouter as commentsRouter } from './Controllers/commentsController'
+import { commentsRouter } from './Controllers/commentsController'
 
 
 export const app = express()
@@ -23,10 +23,10 @@ app.get('/', (req, res) => {
     res.status(200).json({ version: '1.0' })
 })
 
-app.delete('/testing/all-data', (req, res) => {
-    clearBlogsData();
-    clearPostsData();
-    clearUsersData()
+app.delete('/testing/all-data', async (req, res) => {
+    await clearBlogsData();
+    await clearPostsData();
+    await clearUsersData()
     res.sendStatus(204);
 })
 
