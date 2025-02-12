@@ -1,4 +1,3 @@
-import { BlogViewType } from "../types/BlogTypes/BlogViewType";
 import { PostViewType } from "../types/PostTypes/PostsViewType";
 import { blogsCollection, postsCollection } from "./db";
 

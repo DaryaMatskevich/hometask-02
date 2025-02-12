@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
-import { blogs, blogsRepository } from "../Repository/blogsRepository"
 import { blogsCollection } from "../Repository/db"
 import { blogsService } from "../domain/blogs-service"
 

@@ -1,6 +1,5 @@
-import { MongoNetworkTimeoutError } from "mongodb";
 import { usersRepository } from "../Repository/usersRepository";
-import { usersCollection } from "../Repository/db";
+
 
 import bcrypt from 'bcrypt'
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
