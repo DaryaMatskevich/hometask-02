@@ -48,10 +48,10 @@ export const usersQueryRepository = {
 
 
     async findUserById(id: string) {
-        let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
-                _id: user._id.toString(),
+                id: user._id.toString(),
                 login: user.login,
                 email: user.email,
                 createdAt: user.createdAt
