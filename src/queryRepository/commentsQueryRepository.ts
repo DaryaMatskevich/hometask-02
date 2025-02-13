@@ -3,9 +3,18 @@ import { commentsCollection } from "../Repository/db"
 
 
 export const commentsQueryRepository = {
-    async getCommentsByPostId(postId: string) {
-        const comments = await commentsCollection.find({ postId: new Object(postId) }).toArray()
-        return comments.map(comment => ({
+    async getCommentsByPostId(postId: string,
+        pageNumber: number,
+        pageSize: number,
+        sortBy: string,
+        sortDirection: 'asc' | 'desc',
+    ) {
+        const comments = await commentsCollection.find({ postId: new Object(postId) }).sort(
+            {[sortBy]: sortDirection === 'asc' ? 1 : -1})
+            .skip((pageNumber-1)* pageSize)
+            .limit(pageSize)
+            .toArray();
+        const mappedComments = comments.map(comment => ({
             id: comment._id.toString(), // Преобразуем ObjectId в строку
             content: comment.content,
             commentatorInfo: {
@@ -14,9 +23,19 @@ export const commentsQueryRepository = {
             },
             createdAt: comment.createdAt,
         }));
+        const commentsCount: any = await commentsCollection.countDocuments({postId: new Object(postId)})
+    return {
+        pagesCount: Math.ceil(commentsCount/ pageSize),
+        page: pageNumber,
+        pageSize: pageSize,
+        totalCount: commentsCount,
+        items: mappedComments
+    }
+    
     },
-    async getCommentById(id: ObjectId) {
-        let comment: any = await commentsCollection.findOne({ _id: id })
+
+    async getCommentById(id: string) {
+        let comment: any = await commentsCollection.findOne({ _id: new Object(id) })
         if (comment) {
             return {
                 id: comment._id.toString(),

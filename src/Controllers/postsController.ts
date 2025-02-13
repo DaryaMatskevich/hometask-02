@@ -63,7 +63,15 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
 
 postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
     const postId = req.params.id
-    const comments = await commentsService.getCommentsById(postId)
+    let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
+    let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+    let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
+    let sortDirection: SortDirection =
+        req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
+            ? 'asc'
+            : 'desc'
+    const comments = await commentsQueryRepository.getCommentsByPostId(postId, pageNumber,
+        pageSize, sortBy, sortDirection)
     if (comments) {
         res.status(200).json(comments)
     }
@@ -77,8 +85,8 @@ postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputVa
     const userId = req.user!.userId
 
     if (postId) {
-    const objectIdComment = await commentsService.createComment(postId, content, login, userId);
-    const newComment = commentsQueryRepository.getCommentById(objectIdComment)
+    const commentId = await commentsService.createComment(postId, content, login, userId);
+    const newComment = commentsQueryRepository.getCommentById(commentId)
     res.status(201).send(newComment)
 } else {
     res.sendStatus(404)

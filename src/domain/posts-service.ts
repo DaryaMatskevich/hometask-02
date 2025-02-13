@@ -1,4 +1,4 @@
-import { PostViewModel } from "../types/PostTypes/PostsViewType";
+import { PostViewType } from "../types/PostTypes/PostsViewType";
 import { postsRepository } from "../Repository/postsRepository";
 
 
@@ -30,11 +30,11 @@ export const postsService = {
         }
     },
 
-    async findPostById(id: string): Promise<PostViewModel | null> {
+    async findPostById(id: string): Promise<PostViewType | null> {
         return await postsRepository.findPostById(id)
     },
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewModel | null> {
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
         return await postsRepository.createPost(title, shortDescription, content, blogId)
 
     },

@@ -9,9 +9,6 @@ export const commentsService = {
     async sendComment(comment: string, userId: string) {
 
     },
-    async getCommentsById(postId: string) {
-        return await commentsQueryRepository.getCommentsByPostId(postId)
-    },
 
     async createComment(postId: string, content: string, login: string, userId: string) {
 
@@ -24,5 +21,16 @@ export const commentsService = {
             createdAt: new Date().toString()
         }
         return commentsRepository.createComment(newComment)
-    }
+    },
+
+    async deleteCommentById(id: string) : Promise <boolean> {
+const comment = await commentsQueryRepository.getCommentById(id)
+    if (!comment) return false
+    return await commentsRepository.deleteCommentById(id)
+},
+
+async updateComment(id: string, content: string) : Promise <boolean> {
+return await commentsRepository.updateComment(id, content)
+}
+
 }
