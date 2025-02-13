@@ -56,3 +56,5 @@ export const passwordValidation = body('password').trim().isLength({min: 6, max:
 
 export const emailValidation = body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 .withMessage('Email is not right')
+
+export const commentValidation = body('content').trim().isLength({ min: 20, max: 300 }).withMessage("Comment length should be from 20 to 300 symbols");

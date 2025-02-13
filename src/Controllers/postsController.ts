@@ -3,6 +3,10 @@ import { postsService } from "../domain/posts-service"
 import { authMiddleware } from "../Middlewares/authMiddleware"
 import { blogIdValidation, contentValidation, inputValidationMiddleware, shortDescriptionValidation, titleValidation } from "../Middlewares/middlewares"
 import { SortDirection } from "mongodb"
+import { commentsService } from "../domain/comments-service"
+import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware"
+import { commentValidation } from "../Middlewares/middlewares"
+import { commentsQueryRepository } from "../queryRepository/commentsQueryRepository"
 
 export const postsRouter = Router({})
 
@@ -57,3 +61,27 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
     res.sendStatus(404)
 })
 
+postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
+    const postId = req.params.id
+    const comments = await commentsService.getCommentsById(postId)
+    if (comments) {
+        res.status(200).json(comments)
+    }
+    else { res.sendStatus(404) }
+})
+
+postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
+    const postId = req.params.id;
+    const {content} = req.body;
+    const login = req.user!.login;
+    const userId = req.user!.userId
+
+    if (postId) {
+    const objectIdComment = await commentsService.createComment(postId, content, login, userId);
+    const newComment = commentsQueryRepository.getCommentById(objectIdComment)
+    res.status(201).send(newComment)
+} else {
+    res.sendStatus(404)
+
+}
+})

@@ -10,6 +10,8 @@ dotenv.config()
 export let blogsCollection: Collection<BlogViewType>
 export let postsCollection: Collection<PostViewType>
 export let usersCollection: Collection<any>
+export let commentsCollection: Collection<any>
+
 
 export async function runDb(url: string): Promise<boolean> {
 
