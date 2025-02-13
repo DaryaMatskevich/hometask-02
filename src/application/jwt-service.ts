@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { UserDBType } from '../types/UserTypes/UserDBType'
 import { SETTINGS } from '../settings'
-import { ObjectId } from 'mongodb'
+
 
 
 export const jwtService = {
