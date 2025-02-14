@@ -25,7 +25,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
         sortBy,
         sortDirection
     )
-    res.send(foundPosts)
+    res.status(200).send(foundPosts)
 })
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {

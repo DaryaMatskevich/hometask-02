@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import { blogsService } from "../domain/blogs-service";
 import { contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation } from "../Middlewares/middlewares";
-import { body } from "express-validator";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { SortDirection } from "mongodb";
 import { postsService } from "../domain/posts-service";
