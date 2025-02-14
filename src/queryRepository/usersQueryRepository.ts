@@ -71,7 +71,6 @@ export const usersQueryRepository = {
         let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return{
-                email: user.email,
                 login: user.login,
                 userId: user._id.toString(),
             }

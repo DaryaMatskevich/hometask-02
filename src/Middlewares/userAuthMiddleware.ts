@@ -9,9 +9,9 @@ export const userAuthMiddleware = async (req: Request, res: Response, next: Next
     }
     const token = req.headers.authorization.split(' ')[1]
 
-    const result = await jwtService.getUserIdByToken(token)
-    if (result) {
-        req.user = result
+    const userId = await jwtService.getUserIdByToken(token)
+    if (userId) {
+        req.user = await usersQueryRepository.findUserByIdforAuth(userId)
     }
     res.sendStatus(401)
 }
