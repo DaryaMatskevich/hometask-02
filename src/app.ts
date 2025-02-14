@@ -24,12 +24,11 @@ app.get('/', (req, res) => {
     res.status(200).json({ version: '1.0' })
 })
 
-app.delete('/testing/all-data', async (req, res) => {
-    await clearBlogsData();
-    await clearPostsData();
-    await clearUsersData();
-    await clearCommentsData()
-
+app.delete('/testing/all-data', (req, res) => {
+    clearBlogsData();
+    clearPostsData();
+    clearUsersData();
+    clearCommentsData()
     res.sendStatus(204);
 })
 
