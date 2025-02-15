@@ -17,7 +17,7 @@ return result.deletedCount === 1
     },
 
     async updateComment (id: string, content: string): Promise<boolean> {
-const result = await commentsCollection.updateOne({_id: new Object(id)}, {
+const result = await commentsCollection.updateOne({_id: new ObjectId(id)}, {
     $set: {
         content: content
     }
