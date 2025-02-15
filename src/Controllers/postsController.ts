@@ -71,9 +71,10 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
         req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
             ? 'asc'
             : 'desc'
-    const post = postsRepository.findPostById(postId)
+    const post = await postsRepository.findPostById(postId)
     if (!post) {
         res.sendStatus(404)
+        return
     }
     const comments = await commentsQueryRepository.getCommentsByPostId(postId, pageNumber,
         pageSize, sortBy, sortDirection)
