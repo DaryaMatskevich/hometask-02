@@ -10,9 +10,10 @@ export const commentsService = {
 
     },
 
-    async createComment(content: string, userLogin: string, userId: string) {
+    async createComment(postId: string, content: string, userLogin: string, userId: string) {
 
         const newComment = {
+            postId: postId,
             content: content,
             commentatorInfo: {
                 userId: userId,
