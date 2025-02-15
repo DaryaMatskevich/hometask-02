@@ -7,7 +7,7 @@ export async function clearCommentsData() {
 
 export const commentsRepository = {
     async createComment (comment: any){
-        const newComment = await commentsCollection.insertOne({...comment})
+        const newComment = await commentsCollection.insertOne(comment)
 return newComment.insertedId.toString()
     },
 

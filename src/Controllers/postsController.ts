@@ -7,6 +7,7 @@ import { commentsService } from "../domain/comments-service"
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware"
 import { commentValidation } from "../Middlewares/middlewares"
 import { commentsQueryRepository } from "../queryRepository/commentsQueryRepository"
+import { postsRepository } from "../Repository/postsRepository"
 
 export const postsRouter = Router({})
 
@@ -80,16 +81,24 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
 
 postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const postId = req.params.id;
-    const {content} = req.body;
+    const { content } = req.body;
     const login = req.user!.login;
     const userId = req.user!.userId
-
-    if (postId) {
+    const post = await postsRepository.findPostById(postId)
+    if (!post) {
+        res.sendStatus(404)
+        return
+    }
     const commentId = await commentsService.createComment(content, login, userId);
+    if (!commentId) {
+        res.sendStatus(500)
+        return
+    }
     const newComment = commentsQueryRepository.getCommentById(commentId)
+    if (!newComment) {
+        res.sendStatus(500)
+        return
+    }
     res.status(201).send(newComment)
-} else {
-    res.sendStatus(404)
 
-}
 })
