@@ -20,7 +20,6 @@ return result.deletedCount === 1
 const result = await commentsCollection.updateOne({_id: new Object(id)}, {
     $set: {
         content: content
-
     }
 })
 return result.matchedCount === 1
