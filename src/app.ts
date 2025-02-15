@@ -28,7 +28,7 @@ app.delete('/testing/all-data', async (req, res) => {
     await clearBlogsData();
     await clearPostsData();
     await clearUsersData();
-    await clearCommentsData()
+    // await clearCommentsData()
     res.sendStatus(204);
 })
 
