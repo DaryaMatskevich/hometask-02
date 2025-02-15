@@ -41,8 +41,8 @@ export const commentsQueryRepository = {
                 id: comment._id.toString(),
                 content: comment.content,
                 commentatorInfo: {
-                    userId: comment.userId,
-                    userLogin: comment.login
+                    userId: comment.commentatorInfo.userId,
+                    userLogin: comment.commentatorInfo.login
                 },
                 createdAt: comment.createdAt
             }
