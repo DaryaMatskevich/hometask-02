@@ -91,7 +91,7 @@ postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputVa
     }
     const commentId = await commentsService.createComment(content, login, userId);
     if (!commentId) {
-        res.sendStatus(500)
+        res.sendStatus(200)
         return
     }
     const newComment = await commentsQueryRepository.getCommentById(commentId)
