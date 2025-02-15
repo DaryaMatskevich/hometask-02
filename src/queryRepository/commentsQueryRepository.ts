@@ -9,7 +9,7 @@ export const commentsQueryRepository = {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
     ) {
-        const comments = await commentsCollection.find({ postId: new ObjectId(postId) }).sort(
+        const comments = await commentsCollection.find({ postId: postId }).sort(
             {[sortBy]: sortDirection === 'asc' ? 1 : -1})
             .skip((pageNumber-1)* pageSize)
             .limit(pageSize)
@@ -23,7 +23,7 @@ export const commentsQueryRepository = {
             },
             createdAt: comment.createdAt,
         }));
-        const commentsCount: any = await commentsCollection.countDocuments({postId: new ObjectId(postId)})
+        const commentsCount: any = await commentsCollection.countDocuments({postId: postId})
     return {
         pagesCount: Math.ceil(commentsCount/ pageSize),
         page: pageNumber,
