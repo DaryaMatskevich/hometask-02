@@ -3,6 +3,7 @@ import { loginValidation, passwordValidation, emailValidation } from "../Middlew
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../application/jwt-service";
 import { usersService } from "../domain/users-service";
+import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 
 export const authRouter = Router({})
 
@@ -18,18 +19,9 @@ const token = await jwtService.createJWT(user)
    }}
 )
 
-authRouter.get('/me', async (req: Request, res: Response) => {
-   if (!req.headers.authorization) {
-      res.sendStatus(401)
-      return
-  }
-  const token = req.headers.authorization.split(' ')[1]
-
-  const userId = await jwtService.getUserIdByToken(token)
-  if (userId) {
-      const result = await usersQueryRepository.findUserByIdforAuth(userId)
-      res.status(200).send(result)
-  }
-  res.sendStatus(401)
-})
+authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) => {
+      const result = req.user
+   res.status(200).send(result)
+}
+)
 

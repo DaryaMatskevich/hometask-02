@@ -68,7 +68,7 @@ export const usersQueryRepository = {
     },
 
     async findUserByIdforAuth(id: ObjectId): Promise<UserAuthType | null> {
-        let user: UserDBType | null = await usersCollection.findOne({ _id: id });
+        let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return{
                 email: user.email,
