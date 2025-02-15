@@ -10,13 +10,13 @@ export const commentsService = {
 
     },
 
-    async createComment(content: string, login: string, userId: string) {
+    async createComment(content: string, userLogin: string, userId: string) {
 
         const newComment = {
             content: content,
             commentatorInfo: {
                 userId: userId,
-                userLogin: login
+                userLogin: userLogin
             },
             createdAt: new Date().toISOString()
         }

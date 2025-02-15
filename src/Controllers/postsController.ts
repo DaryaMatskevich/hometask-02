@@ -82,14 +82,14 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
 postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
     const postId = req.params.id;
     const { content } = req.body;
-    const login = req.user!.login;
+    const userLogin = req.user!.login;
     const userId = req.user!.userId
     const post = await postsRepository.findPostById(postId)
     if (!post) {
         res.sendStatus(404)
         return
     }
-    const commentId = await commentsService.createComment(content, login, userId);
+    const commentId = await commentsService.createComment(content, userLogin, userId);
     if (!commentId) {
         res.sendStatus(500)
         return
