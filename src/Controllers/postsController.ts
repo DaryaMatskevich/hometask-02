@@ -85,7 +85,7 @@ postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputVa
     const userId = req.user!.userId
 
     if (postId) {
-    const commentId = await commentsService.createComment(postId, content, login, userId);
+    const commentId = await commentsService.createComment(content, login, userId);
     const newComment = commentsQueryRepository.getCommentById(commentId)
     res.status(201).send(newComment)
 } else {
