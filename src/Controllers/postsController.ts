@@ -98,7 +98,7 @@ postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputVa
     if (!newComment) {
         res.sendStatus(500)
         return
-    }
+    } else {
     res.status(201).send(newComment)
-
+    }
 })
