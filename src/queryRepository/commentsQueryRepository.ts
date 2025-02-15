@@ -23,7 +23,7 @@ export const commentsQueryRepository = {
             },
             createdAt: comment.createdAt,
         }));
-        const commentsCount: any = await commentsCollection.countDocuments({postId: new Object(postId)})
+        const commentsCount: any = await commentsCollection.countDocuments({postId: new ObjectId(postId)})
     return {
         pagesCount: Math.ceil(commentsCount/ pageSize),
         page: pageNumber,
