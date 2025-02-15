@@ -21,6 +21,7 @@ export async function runDb(url: string): Promise<boolean> {
     blogsCollection = db.collection<BlogViewType>(SETTINGS.PATH.BLOGS)
     postsCollection = db.collection<PostViewType>(SETTINGS.PATH.POSTS)
     usersCollection = db.collection<any>(SETTINGS.PATH.USERS)
+    commentsCollection = db.collection<any>(SETTINGS.PATH.COMMENTS)
     
 
     try {
