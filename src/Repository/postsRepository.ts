@@ -12,7 +12,7 @@ export const postsRepository = {
         pageSize: number,
         sortBy: string,
         sortDirection: 'asc' | 'desc',
-        filter: {} = {},
+        filter: {},
     ): Promise<any> {
         
         return postsCollection.find(filter, { projection: { _id: 0 } })
@@ -21,7 +21,7 @@ export const postsRepository = {
             .limit(pageSize)
             .toArray();
     },
-    async getPostsCount(filter: {} = {}): Promise<number> {
+    async getPostsCount(filter: {} ): Promise<number> {
         return postsCollection.countDocuments(filter)
     },
    
