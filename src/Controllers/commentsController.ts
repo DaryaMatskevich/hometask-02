@@ -32,7 +32,7 @@ commentsRouter.put('/:id', userAuthMiddleware, commentValidation, inputValidatio
         if (!comment) {
             res.sendStatus(404)
         }
-        if (comment?.commentatorInfo.userId !== req.user!.userId) {
+        if (req.user!.userId !== comment!.commentatorInfo.userId) {
             res.sendStatus(403)
         }
         let isUpdated = await commentsService.updateComment(commentId, content)
