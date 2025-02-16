@@ -14,9 +14,9 @@ const user = await usersService.checkCredentials(loginOrEmail, password)
       if(user) {
 const token = await jwtService.createJWT(user)
    res.status(200).json({accessToken: token})
-} else {
+} 
    res.sendStatus(401)
-   }}
+   }
 )
 
 authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) => {
