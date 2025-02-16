@@ -12,45 +12,47 @@ export const commentsRouter = Router({})
 //         res.status(201).send(newFeedback)
 //     })
 
-    commentsRouter.get('/:id', async(req: Request, res: Response) => {
+commentsRouter.get('/:id', async (req: Request, res: Response) => {
+    const commentId = req.params.id
+    const comment = await commentsQueryRepository.getCommentById(commentId)
+    if (comment) {
+        res.status(200).send(comment)
+    }
+    else {
+        res.sendStatus(404)
+    }
+})
+
+commentsRouter.put('/:id', userAuthMiddleware, commentValidation, inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+        const { content } = req.body;
         const commentId = req.params.id
+
         const comment = await commentsQueryRepository.getCommentById(commentId)
-        if(comment) {
-        res.status(200).send(comment)}
-        else {
+        if (!comment) {
+            res.sendStatus(404)
+        }
+        if (comment?.commentatorInfo.userId.toString() !== req.user!.userId) {
+            res.sendStatus(403)
+        }
+        let isUpdated = await commentsService.updateComment(commentId, content)
+        if (isUpdated) {
+            res.sendStatus(204)
+        } else {
             res.sendStatus(404)
         }
     })
 
-    commentsRouter.put('/:id',  userAuthMiddleware, commentValidation, inputValidationMiddleware, 
-        async (req: Request, res: Response) => {
-       const { content} = req.body;
-       const commentId = req.params.id
-    
-       const comment = await commentsQueryRepository.getCommentById(commentId)
-       if(!comment) {
-    res.sendStatus(404)
-       }
-       if(comment?.commentatorInfo.userId.toString() !== req.user!.userId) {
-res.sendStatus(403)
-       }
-           let isUpdated = await commentsService.updateComment(commentId,content)
-           if (isUpdated) {
-               res.sendStatus(204)
-           } else {
-               res.sendStatus(404)
-           }
-       })
-
-    commentsRouter.delete('comments/:id', userAuthMiddleware, commentValidation, 
-        inputValidationMiddleware, async (req: Request, res: Response): Promise<any> => {
-    const comment = await commentsQueryRepository.getCommentById(req.params.id)
-if (req.user!.userId !== comment!.commentatorInfo.userId.toString()){
-    res.sendStatus(403)
-}
-const deleteComment = await commentsService.deleteCommentById(req.params.id)
- if (!deleteComment) {
-        return res.sendStatus(404)
-    } else {
-    return res.sendStatus(204)
-    }})
+commentsRouter.delete('comments/:id', userAuthMiddleware,
+    async (req: Request, res: Response): Promise<any> => {
+        const comment = await commentsQueryRepository.getCommentById(req.params.id)
+        if (req.user!.userId !== comment!.commentatorInfo.userId.toString()) {
+            res.sendStatus(403)
+        }
+        const deleteComment = await commentsService.deleteCommentById(req.params.id)
+        if (!deleteComment) {
+            return res.sendStatus(404)
+        } else {
+            return res.sendStatus(204)
+        }
+    })
