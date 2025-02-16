@@ -32,7 +32,7 @@ commentsRouter.put('/:id', userAuthMiddleware, commentValidation, inputValidatio
         if (!comment) {
             res.sendStatus(404)
         }
-        if (comment?.commentatorInfo.userId.toString() !== req.user!.userId) {
+        if (comment?.commentatorInfo.userId !== req.user!.userId) {
             res.sendStatus(403)
         }
         let isUpdated = await commentsService.updateComment(commentId, content)
@@ -49,7 +49,7 @@ commentsRouter.delete('/:id', userAuthMiddleware,
         if (!comment) {
             return res.sendStatus(404)}
 
-        if (req.user!.userId !== comment?.commentatorInfo.userId.toString()) {
+        if (req.user!.userId !== comment?.commentatorInfo.userId) {
             return res.sendStatus(403)
         }
         const isDeleted = await commentsService.deleteCommentById(req.params.id)
