@@ -34,8 +34,8 @@ export const commentsQueryRepository = {
     
     },
 
-    async getCommentById(id: string) {
-        const comment: any = await commentsCollection.findOne({ _id: new ObjectId(id) })
+    async getCommentById(id: string): Promise<any | null> {
+        const comment: any | null = await commentsCollection.findOne({ _id: new ObjectId(id) })
         if (comment) {
             return {
                 id: comment._id.toString(),
