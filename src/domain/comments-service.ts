@@ -25,8 +25,8 @@ export const commentsService = {
     },
 
     async deleteCommentById(id: string) : Promise <boolean> {
-// const comment = await commentsQueryRepository.getCommentById(id)
-//     if (!comment) return false
+const comment = await commentsQueryRepository.getCommentById(id)
+    if (!comment) return false
     return await commentsRepository.deleteCommentById(id)
 },
 
