@@ -85,8 +85,12 @@ const user = await usersCollection.findOne({confirmationCode: emailConfirmationC
 return user
     },
 
-    async findUserByEmail(email: string){
+    async findUserByEmail(email: string): Promise <any | null>{
+        try {
         const user = await usersCollection.findOne({email: email})
-        return user
+        return user}
+        catch (error){
+console.error("Ошибка при поиске пользователя:", error)
+        }
             }
 }

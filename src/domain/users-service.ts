@@ -86,7 +86,6 @@ export const usersService = {
 
         if (!user || user.isConfirmed) return false;
          const newConfirmationCode = uuidv4();
-
          const newExpirationDate = add(new Date(), {
             hours: 1
         })
