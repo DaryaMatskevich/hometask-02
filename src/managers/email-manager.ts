@@ -2,7 +2,7 @@ import { emailAdapter } from "../adapters/email-adapter"
 
 export const emailManager = {
     async sendEmailRecoveryMessage(user: any) {
-        const recoveryLink = `https://somesite.com/password-recovery?code=${user.confirmationCode}`;
+        const recoveryLink = `https://some-front.com/password-recovery?code=${user.confirmationCode}`;
 
         const message = `
             <h1>Password Recovery</h1>
@@ -16,7 +16,7 @@ export const emailManager = {
     },
 
     async sendEmailConfirmationMessage(user: any) {
-        const confirmationLink = `https://somesite.com/confirm-registration?code=${user.confirmationCode}`;
+        const confirmationLink = `https://some-front.com/confirm-registration?code=${user.confirmationCode}`;
 
         const message = `
 <h1>Thank you for your registration</h1>
