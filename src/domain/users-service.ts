@@ -3,6 +3,9 @@ import { usersRepository } from "../Repository/usersRepository";
 
 import bcrypt from 'bcrypt'
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
+import { v4 as uuidv4 } from "uuid";
+import { add } from "date-fns";
+import { emailManager } from "../managers/email-manager";
 
 const saltRounds = 10;
 const bcryptService = {
@@ -32,9 +35,21 @@ export const usersService = {
             login: login,
             email: email,
             password: passwordHash,
-            createdAt: new Date()
+            createdAt: new Date(),
+            confirmationCode: uuidv4(),
+            expirationDate: add(new Date(), {
+                hours: 1
+            }),
+            isConfirmed: false
         }
-        return await usersRepository.createUser(newUser)
+        const createResult = await usersRepository.createUser(newUser)
+        try {
+        await emailManager.sendEmailConfirmationMessage(newUser)
+    } catch(error) {
+        console.error(error)
+        return null
+    }
+        return createResult
     },
 
 
@@ -55,5 +70,31 @@ export const usersService = {
         } else {
             return null
         }
-    }
+    },
+    async confirmEmail (code: string): Promise<boolean> {
+        let user = await usersQueryRepository.findUserByConfirmationCode(code)
+        if(!user) return false;
+        if(user.isConfirmed) return false;
+        if(user.expirationDate < new Date()) return false;
+
+        let result = await usersRepository.updateConfirmation(user._id)
+        return result
+    },
+
+    async resendConfirmationEmail(email: string) {
+        let user = await usersQueryRepository.findUserByEmail(email)
+
+        if (!user || user.isConfirmed) return false;
+         const newConfirmationCode = uuidv4();
+
+         const newExpirationDate = add(new Date(), {
+            hours: 1
+        })
+
+const updateResult = await usersRepository.updateUserConfirmationCode(user._id, newConfirmationCode, newExpirationDate)
+    if(!updateResult) return false
+    const emailSent = await emailManager.sendEmailRecoveryMessage(user)
+
+    return emailSent
+}
 }

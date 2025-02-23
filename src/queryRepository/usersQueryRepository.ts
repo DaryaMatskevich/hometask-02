@@ -80,4 +80,13 @@ export const usersQueryRepository = {
         }
     },
 
+    async findUserByConfirmationCode(emailConfirmationCode: string){
+const user = await usersCollection.findOne({confirmationCode: emailConfirmationCode})
+return user
+    },
+
+    async findUserByEmail(email: string){
+        const user = await usersCollection.findOne({email: email})
+        return user
+            }
 }
