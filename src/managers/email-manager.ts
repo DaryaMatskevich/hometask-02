@@ -16,7 +16,7 @@ export const emailManager = {
     },
 
     async sendEmailConfirmationMessage(user: any) {
-        const confirmationLink = `https://somesite.com/confirm-email?code=${user.confirmationCode}`;
+        const confirmationLink = `https://somesite.com/confirm-registration?code=${user.confirmationCode}`;
 
         const message = `
 <h1>Thank you for your registration</h1>
