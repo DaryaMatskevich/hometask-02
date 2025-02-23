@@ -93,7 +93,7 @@ export const usersService = {
 
 const updateResult = await usersRepository.updateUserConfirmationCode(user._id, newConfirmationCode, newExpirationDate)
     if(!updateResult) return false
-    const emailSent = await emailManager.sendEmailRecoveryMessage(user)
+    const emailSent = await emailManager.sendEmailConfirmationMessage(user)
 
     return emailSent
 }
