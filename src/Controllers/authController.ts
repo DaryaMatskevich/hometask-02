@@ -30,7 +30,7 @@ const user = await usersService.createUser(req.body.login, req.body.password, re
 if (user) {
    res.sendStatus(204)
 } else {
-   res.sendStatus(400)
+   res.status(400).json({ errorsMessages: user.errorsMessages })
 }
 })
 
