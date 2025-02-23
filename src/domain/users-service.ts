@@ -64,6 +64,9 @@ export const usersService = {
         if (!user) {
             return null
         }
+        if (!user.isConfirmed) {
+            return null
+        }
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (isPasswordValid) {
             return user
@@ -83,8 +86,8 @@ export const usersService = {
 
     async resendConfirmationEmail(email: string) {
         let user = await usersQueryRepository.findUserByEmail(email)
-
-        if (!user || user.isConfirmed) return false;
+        if (!user) return false;
+        if(user.isConfirmed) return false;
          const newConfirmationCode = uuidv4();
          const newExpirationDate = add(new Date(), {
             hours: 1
