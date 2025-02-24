@@ -95,8 +95,12 @@ export const usersService = {
 
 const updateResult = await usersRepository.updateUserConfirmationCode(user._id, newConfirmationCode, newExpirationDate)
     if(!updateResult) return false;
+
+    const updateUser = await usersQueryRepository.findUserByEmail(email)
+    if(!updateUser) return false;
+
     try {
-    await emailManager.sendEmailConfirmationMessage(user)}
+    await emailManager.sendEmailConfirmationMessage(updateUser)}
     catch (error){
         console.error(error)
         return null
