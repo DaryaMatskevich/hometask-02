@@ -26,7 +26,7 @@ authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) =>
 )
 
 authRouter.post('/registration', loginValidation, emailValidation, passwordValidation,
- async (req: Request, res: Response) => {
+inputValidationMiddleware, async (req: Request, res: Response) => {
 const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
 if (user.errorsMessages) {
    res.status(400).json({ errorsMessages: user.errorsMessages })
