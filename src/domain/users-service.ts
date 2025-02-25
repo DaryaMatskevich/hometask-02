@@ -64,19 +64,23 @@ export const usersService = {
         if (!user) {
             return null
         }
-       
-        if (user.isConfirmed === false) {
+        
+
+        if (!user.isConfirmed) {
             const errors = []
             errors.push({ message: 'access denied'})
 
             return { errorsMessages: errors }
         }
+
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (isPasswordValid) {
             return user
         } else {
             return null
         }
+        
+        
     },
     async confirmEmail(code: string): Promise<boolean | any> {
         let user = await usersQueryRepository.findUserByConfirmationCode(code)
