@@ -95,13 +95,4 @@ export const usersQueryRepository = {
         }
     }, 
     
-    async findUserByIdforCheckConfirmation(id: string): Promise<any | null> {
-        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
-        if (user) {
-            return user
-        } else {
-            return null
-        }
-    }
-
-   }
+       }

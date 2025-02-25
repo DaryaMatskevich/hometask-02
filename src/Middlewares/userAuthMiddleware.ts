@@ -12,17 +12,12 @@ export const userAuthMiddleware = async (req: Request, res: Response, next: Next
 
     const userId = await jwtService.getUserIdByToken(token)
     if (!userId) {
-        res.sendStatus(403)
+        res.sendStatus(401)
         return
     }
 
     req.user = await usersQueryRepository.findUserByIdforAuth(userId)
-const user = await usersQueryRepository.findUserByIdforCheckConfirmation(userId)
-    
-if(user.isConfirmed === false) {
-    res.sendStatus(403)
-    return
-}
+
     next()
 
 }
