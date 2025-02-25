@@ -11,7 +11,7 @@ export const userAuthMiddleware = async (req: Request, res: Response, next: Next
 
     const userId = await jwtService.getUserIdByToken(token)
     if (!userId) {
-        res.sendStatus(403)
+        res.sendStatus(401)
         return
     }
 
