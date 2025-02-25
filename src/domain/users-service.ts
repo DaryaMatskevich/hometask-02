@@ -64,10 +64,7 @@ export const usersService = {
         if (!user) {
             return null
         }
-        // if (!user.isConfirmed) {
-        //     return null
-        // }
-
+       
         if (user.isConfirmed === false) {
             const errors = []
             errors.push({ message: 'access denied'})
