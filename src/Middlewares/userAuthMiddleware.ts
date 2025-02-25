@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../application/jwt-service";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
+import { usersService } from "../domain/users-service";
 
 export const userAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
@@ -16,7 +17,11 @@ export const userAuthMiddleware = async (req: Request, res: Response, next: Next
     }
 
     req.user = await usersQueryRepository.findUserByIdforAuth(userId)
-
+const user = await usersQueryRepository.findUserByIdforCheckConfirmation(userId)
+    
+if(!user.isConfirmed) {
+    res.sendStatus(403)
+}
     next()
 
 }
