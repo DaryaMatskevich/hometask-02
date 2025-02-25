@@ -14,6 +14,9 @@ const user = await usersService.checkCredentials(loginOrEmail, password)
 const token = await jwtService.createJWT(user)
    res.status(200).json({accessToken: token})
 } 
+if (user.errorsMessages) {
+   res.status(403).json({ errorsMessages: user.errorsMessages })
+}
    res.sendStatus(401)
    }
 )

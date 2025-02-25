@@ -64,8 +64,15 @@ export const usersService = {
         if (!user) {
             return null
         }
-        if (!user.isConfirmed) {
-            return null
+        // if (!user.isConfirmed) {
+        //     return null
+        // }
+
+        if (user.isConfirmed === false) {
+            const errors = []
+            errors.push({ message: 'access denied'})
+
+            return { errorsMessages: errors }
         }
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (isPasswordValid) {
@@ -106,7 +113,7 @@ export const usersService = {
         if (!user) {
             const errors = []
             errors.push({ message: 'email is not exist', field: 'email' })
-            
+
             return { errorsMessages: errors }
         }
 
