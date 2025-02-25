@@ -66,12 +66,12 @@ export const usersService = {
         }
         
 
-        if (!user.isConfirmed) {
-            const errors = []
-            errors.push({ message: 'access denied'})
+        // if (!user.isConfirmed) {
+        //     const errors = []
+        //     errors.push({ message: 'access denied'})
 
-            return { errorsMessages: errors }
-        }
+        //     return { errorsMessages: errors }
+        // }
 
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (isPasswordValid) {
