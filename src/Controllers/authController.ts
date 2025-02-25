@@ -7,8 +7,7 @@ import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 
 export const authRouter = Router({})
 
-authRouter.post('/login', loginValidation, emailValidation, passwordValidation, 
-   inputValidationMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
 const user = await usersService.checkCredentials(loginOrEmail, password)
       if(user) {
