@@ -14,6 +14,11 @@ export const userAuthMiddleware = async (req: Request, res: Response, next: Next
         res.sendStatus(401)
         return
     }
+    const foundUser = await usersQueryRepository.findUserByIdForAuth(userId)
+    
+    if (foundUser.isConfirmed === false) {
+        res.sendStatus(403)
+    }
     req.user = await usersQueryRepository.findUserByIdforAuth(userId)
 
     next()

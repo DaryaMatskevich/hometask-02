@@ -70,7 +70,7 @@ export const usersQueryRepository = {
     async findUserByIdforAuth(id: string): Promise<UserAuthType | null> {
         let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
-            return{
+            return {
                 email: user.email,
                 login: user.login,
                 userId: user._id.toString(),
@@ -80,17 +80,28 @@ export const usersQueryRepository = {
         }
     },
 
-    async findUserByConfirmationCode(emailConfirmationCode: string){
-const user = await usersCollection.findOne({confirmationCode: emailConfirmationCode})
-return user
+    async findUserByConfirmationCode(emailConfirmationCode: string) {
+        const user = await usersCollection.findOne({ confirmationCode: emailConfirmationCode })
+        return user
     },
 
-    async findUserByEmail(email: string): Promise <any | null> {
+    async findUserByEmail(email: string): Promise<any | null> {
         try {
-        const user = await usersCollection.findOne({email: email})
-        return user}
-        catch (error){
-console.error("Ошибка при поиске пользователя:", error)
+            const user = await usersCollection.findOne({ email: email })
+            return user
         }
-            }
+        catch (error) {
+            console.error("Ошибка при поиске пользователя:", error)
+        }
+    },
+
+    async findUserByIdForAuth(id: string) {
+        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        if (user) {
+            return user
+
+        } else {
+            return null
+        }
+    }
 }
