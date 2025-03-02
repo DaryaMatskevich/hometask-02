@@ -89,7 +89,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
-
+   blacklistedTokens.add(refreshToken)
    const user = await usersQueryRepository.findUserByObjectId(userId);
 
    // Генерируем новый accessToken
