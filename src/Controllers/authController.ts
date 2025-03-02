@@ -113,6 +113,11 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 authRouter.post('/logout', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
+   if (!refreshToken) {
+      res.sendStatus(401); // Токен отсутствует
+      return
+  }
+
    const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
 
    if(!userId) {
@@ -120,15 +125,10 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
    }
 
-
-   if (!refreshToken) {
-      res.sendStatus(401); // Токен отсутствует
-      return
-  }
-   
       blacklistedTokens.add(refreshToken); // Добавляем в blacklist
 
 
    res.clearCookie('refreshToken')
    res.sendStatus(204)
+   return
 });
