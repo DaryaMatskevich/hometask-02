@@ -8,10 +8,14 @@ import { authRouter } from './Controllers/authController'
 import { clearUsersData } from './Repository/usersRepository'
 import { commentsRouter } from './Controllers/commentsController'
 import { clearCommentsData } from './Repository/commentsRepository'
+import cookieParser from 'cookie-parser'
 
 
 export const app = express()
 app.use(express.json())
+
+app.use(cookieParser())
+
 app.use('/blogs', blogsRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)

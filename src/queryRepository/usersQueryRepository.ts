@@ -47,7 +47,7 @@ export const usersQueryRepository = {
 
 
 
-    async findUserById(id: string) {
+    async findUserById(id: string ) {
         let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
@@ -93,6 +93,18 @@ export const usersQueryRepository = {
         catch (error) {
             console.error("Ошибка при поиске пользователя:", error)
         }
-    }, 
-    
-       }
+    },  
+    async findUserByObjectId(id: any ) {
+        let user: any | null = await usersCollection.findOne({ _id: id });
+        if (user) {
+            return {
+                _id: user._id,
+                login: user.login,
+                email: user.email,
+                createdAt: user.createdAt
+            }
+        } else {
+            return null
+        }
+    }
+}

@@ -6,52 +6,59 @@ import { usersService } from "../domain/users-service";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 
 export const authRouter = Router({})
+let blacklistedTokens = new Set()
 
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
-const user = await usersService.checkCredentials(loginOrEmail, password)
+   const user = await usersService.checkCredentials(loginOrEmail, password)
 
-if (user.errorsMessages) {
-   res.status(403).json({ errorsMessages: user.errorsMessages })
-   return
-}
-      if(user) {
-const token = await jwtService.createJWT(user)
-   res.status(200).json({accessToken: token})
-   return
-} 
+   if (user.errorsMessages) {
+      res.status(403).json({ errorsMessages: user.errorsMessages })
+      return
+   }
+   if (user) {
+      const token = await jwtService.createJWT(user)
+      const refreshToken = await jwtService.createRefreshToken(user)
+
+      res.cookie('refreshToken', refreshToken, {
+         httpOnly: true,
+         secure: true
+      })
+      res.status(200).json({ accessToken: token })
+      return
+   }
 
    res.sendStatus(401)
-   }
+}
 )
 
 authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) => {
-      const result = req.user
+   const result = req.user
    res.status(200).send(result)
 }
 )
 
 authRouter.post('/registration', loginValidation, emailValidation, passwordValidation,
    inputValidationMiddleware, async (req: Request, res: Response) => {
-const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
-if (user.errorsMessages) {
-   res.status(400).json({ errorsMessages: user.errorsMessages })
-}
-else {
-   res.sendStatus(204)
-}
-})
+      const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
+      if (user.errorsMessages) {
+         res.status(400).json({ errorsMessages: user.errorsMessages })
+      }
+      else {
+         res.sendStatus(204)
+      }
+   })
 
 authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
-const result = await usersService.confirmEmail(req.body.code)
-if (result.errorsMessages) {
-   res.status(400).json({ errorsMessages: result.errorsMessages })
-}
-if (result) {
-   res.sendStatus(204)
-} else {
-   res.sendStatus(400)
-}
+   const result = await usersService.confirmEmail(req.body.code)
+   if (result.errorsMessages) {
+      res.status(400).json({ errorsMessages: result.errorsMessages })
+   }
+   if (result) {
+      res.sendStatus(204)
+   } else {
+      res.sendStatus(400)
+   }
 })
 
 authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
@@ -60,8 +67,57 @@ authRouter.post('/registration-email-resending', async (req: Request, res: Respo
       res.status(400).json({ errorsMessages: result.errorsMessages })
    }
    if (result) {
-      res.sendStatus(204) 
+      res.sendStatus(204)
    } else {
       res.sendStatus(400)
    }
 })
+
+authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+   const refreshToken = req.cookies.refreshToken;
+
+   if (!refreshToken || blacklistedTokens.has(refreshToken)) {
+      return 
+   }
+
+   const userId = jwtService.getUserIdByRefreshToken(refreshToken);
+
+   if (!userId) {
+      res.sendStatus(403)
+      return
+   }
+
+   const user = await usersQueryRepository.findUserByObjectId(userId);
+
+   // Генерируем новый accessToken
+
+   if (!user) {
+      res.sendStatus(403)
+      return
+   }
+   const newAccessToken = await jwtService.createJWT(user);
+   const newRefreshToken = await jwtService.createRefreshToken(user);
+
+
+   res.cookie('refreshToken', newRefreshToken, {
+   httpOnly: true,
+   secure: true,
+})
+   res.status(200).json({ accessToken: newAccessToken });
+   return
+});
+
+
+authRouter.post('/logout', async (req: Request, res: Response) => {
+   const refreshToken = req.cookies.refreshToken;
+
+   if (refreshToken) {
+      blacklistedTokens.add(refreshToken); // Добавляем в blacklist
+   }
+
+   res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true
+   });
+   res.status(200).json({ message: "Logged out successfully" });
+});
