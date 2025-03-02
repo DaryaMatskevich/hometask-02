@@ -118,12 +118,12 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
   }
 
-   // const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
+   const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
 
-   // if(!userId) {
-   //    res.sendStatus(401)
-   //    return
-   // }
+   if(!userId) {
+      res.sendStatus(401)
+      return
+   }
 
       blacklistedTokens.add(refreshToken); // Добавляем в blacklist
 
