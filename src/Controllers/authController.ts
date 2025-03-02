@@ -82,7 +82,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       return 
    }
 
-   const userId = jwtService.getUserIdByRefreshToken(refreshToken);
+   const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
 
    if (!userId) {
       res.sendStatus(401)
