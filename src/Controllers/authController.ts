@@ -113,13 +113,14 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 authRouter.post('/logout', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
-   if (refreshToken) {
+   if (!refreshToken) {
+      res.sendStatus(401); // Токен отсутствует
+      return
+  }
+   
       blacklistedTokens.add(refreshToken); // Добавляем в blacklist
-   }
 
-   res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: true
-   });
-   res.status(200).json({ message: "Logged out successfully" });
+
+   res.clearCookie('refreshToken')
+   res.sendStatus(200)
 });
