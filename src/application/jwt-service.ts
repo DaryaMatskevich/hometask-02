@@ -9,12 +9,12 @@ import { ObjectId } from 'mongodb'
 
 export const jwtService = {
     async createJWT(user: UserDBType) {
-        const token = jwt.sign({userId: user._id}, SETTINGS.JWT_SECRET, {expiresIn: '1h'})
+        const token = jwt.sign({userId: user._id}, SETTINGS.JWT_SECRET, {expiresIn: '10s'})
         return token
     },
 
     async createRefreshToken(user: UserDBType) {
-const refreshToken = jwt.sign({userId: user._id}, SETTINGS.JWT_REFRESH_SECRET, {expiresIn: '1h'})
+const refreshToken = jwt.sign({userId: user._id}, SETTINGS.JWT_REFRESH_SECRET, {expiresIn: '20s'})
     },
 
     async getUserIdByToken(token: string) {
