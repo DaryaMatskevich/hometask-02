@@ -94,7 +94,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    // Генерируем новый accessToken
 
    if (!user) {
-      res.sendStatus(403)
+      res.sendStatus(401)
       return
    }
    const newAccessToken = await jwtService.createJWT(user);
