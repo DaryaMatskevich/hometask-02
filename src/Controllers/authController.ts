@@ -4,6 +4,7 @@ import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../application/jwt-service";
 import { usersService } from "../domain/users-service";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
+import { ReturnDocument } from "mongodb";
 
 export const authRouter = Router({})
 let blacklistedTokens = new Set()
@@ -11,7 +12,9 @@ let blacklistedTokens = new Set()
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
    const user = await usersService.checkCredentials(loginOrEmail, password)
-
+if (!user) { res.sendStatus(401)
+   return
+}
    if (user.errorsMessages) {
       res.status(403).json({ errorsMessages: user.errorsMessages })
       return
@@ -27,8 +30,6 @@ authRouter.post('/login', loginValidation, emailValidation, passwordValidation, 
       res.status(200).json({ accessToken: token })
       return
    }
-
-   res.sendStatus(401)
 }
 )
 
