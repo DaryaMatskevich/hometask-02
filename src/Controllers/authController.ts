@@ -130,5 +130,5 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
 
 
    res.clearCookie('refreshToken')
-   res.sendStatus(200)
+   res.sendStatus(204)
 });
