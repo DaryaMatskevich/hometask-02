@@ -113,6 +113,14 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 authRouter.post('/logout', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
+   const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
+
+   if(!userId) {
+      res.sendStatus(401)
+      return
+   }
+
+
    if (!refreshToken) {
       res.sendStatus(401); // Токен отсутствует
       return
