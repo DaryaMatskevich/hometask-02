@@ -78,6 +78,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
    if (!refreshToken || blacklistedTokens.has(refreshToken)) {
+      res.sendStatus(401)
       return 
    }
 
