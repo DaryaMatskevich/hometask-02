@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../application/jwt-service";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
-import { usersService } from "../domain/users-service";
+
 
 export const userAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
