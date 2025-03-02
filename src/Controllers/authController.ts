@@ -7,7 +7,7 @@ import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 
 
 export const authRouter = Router({})
-let blacklistedTokens = new Set()
+const blacklistedTokens = new Set<string>()
 
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
