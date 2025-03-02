@@ -1,22 +1,20 @@
 import jwt from 'jsonwebtoken'
 import { UserDBType } from '../types/UserTypes/UserDBType'
 import { SETTINGS } from '../settings'
-import { usersQueryRepository } from '../queryRepository/usersQueryRepository'
-import { ObjectId } from 'mongodb'
-import { blacklistedTokens } from '../Controllers/authController'
+
 
 
 
 
 export const jwtService = {
     async createJWT(user: UserDBType) {
-        const token = jwt.sign({userId: user._id}, SETTINGS.JWT_SECRET, {expiresIn: '10s'})
+        const token = jwt.sign({ userId: user._id }, SETTINGS.JWT_SECRET, { expiresIn: '10s' })
         return token
     },
 
     async createRefreshToken(user: UserDBType) {
-const refreshToken = jwt.sign({userId: user._id}, SETTINGS.JWT_REFRESH_SECRET, {expiresIn: '20s'})
-return refreshToken
+        const refreshToken = jwt.sign({ userId: user._id }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20s' })
+        return refreshToken
     },
 
     async getUserIdByToken(token: string) {
@@ -35,7 +33,6 @@ return refreshToken
             return result.userId
         }
         catch (error) {
-            blacklistedTokens.add(token)
             return null
         }
     }
