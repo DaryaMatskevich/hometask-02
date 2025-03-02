@@ -12,9 +12,10 @@ const blacklistedTokens = new Set<string>()
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
    const user = await usersService.checkCredentials(loginOrEmail, password)
-if (!user) { res.sendStatus(401)
-   return
-}
+   if (!user) {
+      res.sendStatus(401)
+      return
+   }
    if (user.errorsMessages) {
       res.status(403).json({ errorsMessages: user.errorsMessages })
       return
@@ -79,7 +80,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 
    if (!refreshToken || blacklistedTokens.has(refreshToken)) {
       res.sendStatus(401)
-      return 
+      return
    }
 
    const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
@@ -102,9 +103,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 
 
    res.cookie('refreshToken', newRefreshToken, {
-   httpOnly: true,
-   secure: true,
-})
+      httpOnly: true,
+      secure: true,
+   })
    res.status(200).json({ accessToken: newAccessToken });
    return
 });
@@ -116,16 +117,16 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
    if (!refreshToken || blacklistedTokens.has(refreshToken)) {
       res.sendStatus(401); // Токен отсутствует
       return
-  }
+   }
 
    const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
 
-   if(!userId) {
+   if (!userId) {
       res.sendStatus(401)
       return
    }
 
-      blacklistedTokens.add(refreshToken); // Добавляем в blacklist
+   blacklistedTokens.add(refreshToken); // Добавляем в blacklist
 
 
    res.clearCookie('refreshToken')
