@@ -4,7 +4,7 @@ import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../application/jwt-service";
 import { usersService } from "../domain/users-service";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
-import { ReturnDocument } from "mongodb";
+
 
 export const authRouter = Router({})
 let blacklistedTokens = new Set()
