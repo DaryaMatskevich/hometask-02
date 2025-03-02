@@ -3,6 +3,7 @@ import { UserDBType } from '../types/UserTypes/UserDBType'
 import { SETTINGS } from '../settings'
 import { usersQueryRepository } from '../queryRepository/usersQueryRepository'
 import { ObjectId } from 'mongodb'
+import { blacklistedTokens } from '../Controllers/authController'
 
 
 
@@ -34,6 +35,7 @@ return refreshToken
             return result.userId
         }
         catch (error) {
+            blacklistedTokens.add(token)
             return null
         }
     }

@@ -7,7 +7,7 @@ import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 
 
 export const authRouter = Router({})
-const blacklistedTokens = new Set<string>()
+export const blacklistedTokens = new Set<string>()
 
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
@@ -113,17 +113,17 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 authRouter.post('/logout', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
-   if (!refreshToken) {
+   if (!refreshToken || blacklistedTokens.has(refreshToken)) {
       res.sendStatus(401); // Токен отсутствует
       return
   }
 
-   const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
+   // const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
 
-   if(!userId) {
-      res.sendStatus(401)
-      return
-   }
+   // if(!userId) {
+   //    res.sendStatus(401)
+   //    return
+   // }
 
       blacklistedTokens.add(refreshToken); // Добавляем в blacklist
 
