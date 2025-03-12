@@ -22,7 +22,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
-app.use('/securiry', securityDevicesRouter)
+app.use('/security', securityDevicesRouter)
 
 
 
