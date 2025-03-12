@@ -4,6 +4,8 @@ import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../application/jwt-service";
 import { usersService } from "../domain/users-service";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
+import { ObjectId } from "mongodb";
+import { securityDevicesServise } from "../domain/securityDevices-service";
 
 
 export const authRouter = Router({})
@@ -11,6 +13,12 @@ const blacklistedTokens = new Set<string>()
 
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
+   const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
+   const deviceName = userAgent.includes('Mobile') ? 'Mobile Device' :
+      userAgent.includes('Tablet') ? 'Tablet Device' :
+         userAgent.includes('Desktop') ? 'Desktop Device' :
+            'Unknown device';
+   const ip = req.ip ?? 'Unknown IP';
    const user = await usersService.checkCredentials(loginOrEmail, password)
    if (!user) {
       res.sendStatus(401)
@@ -21,13 +29,20 @@ authRouter.post('/login', loginValidation, emailValidation, passwordValidation, 
       return
    }
    if (user) {
-      const token = await jwtService.createJWT(user)
-      const refreshToken = await jwtService.createRefreshToken(user)
-
+      const deviceId = new ObjectId()
+      const token = await jwtService.createJWT(user, deviceId)
+      const refreshToken = await jwtService.createRefreshToken(user, deviceId)
+const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
+   user._id, 
+   deviceId, 
+   ip, 
+   deviceName, 
+   refreshToken)
       res.cookie('refreshToken', refreshToken, {
          httpOnly: true,
          secure: true
       })
+
       res.status(200).json({ accessToken: token })
       return
    }
@@ -83,8 +98,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       return
    }
 
-   const userId = await jwtService.getUserIdByRefreshToken(refreshToken);
-
+   const result = await jwtService.getUserIdByRefreshToken(refreshToken);
+   const userId = result?.userId
+   const deviceId = result?.deviceId
    if (!userId) {
       res.sendStatus(401)
       return
@@ -98,8 +114,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
-   const newAccessToken = await jwtService.createJWT(user);
-   const newRefreshToken = await jwtService.createRefreshToken(user);
+
+   const newAccessToken = await jwtService.createJWT(user, deviceId);
+   const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
 
 
    res.cookie('refreshToken', newRefreshToken, {

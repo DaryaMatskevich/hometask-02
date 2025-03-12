@@ -11,6 +11,7 @@ export let blogsCollection: Collection<BlogViewType>
 export let postsCollection: Collection<PostViewType>
 export let usersCollection: Collection<any>
 export let commentsCollection: Collection<any>
+export let devicesCollection: Collection<any>
 
 
 export async function runDb(url: string): Promise<boolean> {
@@ -22,6 +23,7 @@ export async function runDb(url: string): Promise<boolean> {
     postsCollection = db.collection<PostViewType>(SETTINGS.PATH.POSTS)
     usersCollection = db.collection<any>(SETTINGS.PATH.USERS)
     commentsCollection = db.collection<any>(SETTINGS.PATH.COMMENTS)
+    devicesCollection = db.collection<any>(SETTINGS.PATH.DEVICES)
     
 
     try {
