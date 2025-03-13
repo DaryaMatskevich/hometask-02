@@ -4,7 +4,7 @@ import { securityDevicesRepository } from "../Repository/securityDevicesReposito
 
 export const securityDevicesServise = {
 async createSecurityDevice(userId: ObjectId, deviceId: ObjectId, 
-    ip: string, deviceName: string, refreshToken: string) {
+    ip: string, title: string, refreshToken: string) {
 
 const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 
@@ -15,18 +15,18 @@ const newSecurityDevice = {
     userId,
     deviceId,
     iat,
-    deviceName,
+    title,
     ip,
     exp
 }
 const createSecurityDevice = await securityDevicesRepository.createsecurityDevice(newSecurityDevice)
 },
  
-async deleteAllSecurityDevicesExcludeCurrent() {
-
+async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string) {
+const result = await securityDevicesRepository.deleteAllSecurityDevicsExcludeCurrent(userId, deviceId)
 }, 
 
-async deleteSecurityDeviceById() {
-
+async deleteSecurityDeviceById(userId: string, deviceId: string ) {
+const result = await securityDevicesRepository.deleteSecurityDeviceById(userId, deviceId)
 }
 }

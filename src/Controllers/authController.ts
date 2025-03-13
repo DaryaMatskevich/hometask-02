@@ -14,7 +14,7 @@ const blacklistedTokens = new Set<string>()
 authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
    const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
-   const deviceName = userAgent.includes('Mobile') ? 'Mobile Device' :
+   const title = userAgent.includes('Mobile') ? 'Mobile Device' :
       userAgent.includes('Tablet') ? 'Tablet Device' :
          userAgent.includes('Desktop') ? 'Desktop Device' :
             'Unknown device';
@@ -36,7 +36,7 @@ const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
    user._id, 
    deviceId, 
    ip, 
-   deviceName, 
+   title, 
    refreshToken)
       res.cookie('refreshToken', refreshToken, {
          httpOnly: true,
