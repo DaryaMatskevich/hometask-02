@@ -22,5 +22,17 @@ return result.deletedCount === 1;
             }
         )
         return result.deletedCount === 1;
+    },
+     
+    async updateRefreshToken(userId: string, iat: number, exp: number, iatRefreshToken: number, expRefreshToken: number) {
+const result = await devicesCollection.updateOne({
+    userId: userId, 
+    iat: iat,
+    exp: exp
+}, {
+    $set: {iat: iatRefreshToken, exp: expRefreshToken}
+}
+)
+return result.modifiedCount>0
     }
 }

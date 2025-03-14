@@ -117,15 +117,18 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 
    const newAccessToken = await jwtService.createJWT(user, deviceId);
    const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
+   const updateRefreshToken = await securityDevicesServise.updateRefreshToken(user._id, refreshToken, newRefreshToken)
 
-
+   if (updateRefreshToken) {
    res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
    })
    res.status(200).json({ accessToken: newAccessToken });
    return
-});
+} else res.sendStatus(401)
+return}
+);
 
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
