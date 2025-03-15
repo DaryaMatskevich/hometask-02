@@ -12,7 +12,7 @@ export let postsCollection: Collection<PostViewType>
 export let usersCollection: Collection<any>
 export let commentsCollection: Collection<any>
 export let devicesCollection: Collection<any>
-
+export let apiRequestCountCollection: Collection<any>
 
 export async function runDb(url: string): Promise<boolean> {
 
@@ -24,6 +24,7 @@ export async function runDb(url: string): Promise<boolean> {
     usersCollection = db.collection<any>(SETTINGS.PATH.USERS)
     commentsCollection = db.collection<any>(SETTINGS.PATH.COMMENTS)
     devicesCollection = db.collection<any>(SETTINGS.PATH.DEVICES)
+    apiRequestCountCollection = db.collection<any>(SETTINGS.PATH.REQUEST_COUNT)
     
 
     try {

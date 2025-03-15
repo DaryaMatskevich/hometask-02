@@ -6,12 +6,13 @@ import { usersService } from "../domain/users-service";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 import { ObjectId } from "mongodb";
 import { securityDevicesServise } from "../domain/securityDevices-service";
+import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 
 
 export const authRouter = Router({})
 const blacklistedTokens = new Set<string>()
 
-authRouter.post('/login', loginValidation, emailValidation, passwordValidation, async (req: Request, res: Response) => {
+authRouter.post('/login', loginValidation, emailValidation, passwordValidation, requestCountMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
    const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
    const title = userAgent.includes('Mobile') ? 'Mobile Device' :
@@ -55,7 +56,7 @@ authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) =>
 }
 )
 
-authRouter.post('/registration', loginValidation, emailValidation, passwordValidation,
+authRouter.post('/registration', loginValidation, emailValidation, passwordValidation, requestCountMiddleware,
    inputValidationMiddleware, async (req: Request, res: Response) => {
       const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
       if (user.errorsMessages) {
@@ -66,7 +67,7 @@ authRouter.post('/registration', loginValidation, emailValidation, passwordValid
       }
    })
 
-authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation', requestCountMiddleware, async (req: Request, res: Response) => {
    const result = await usersService.confirmEmail(req.body.code)
    if (result.errorsMessages) {
       res.status(400).json({ errorsMessages: result.errorsMessages })
@@ -78,7 +79,7 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
    }
 })
 
-authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
+authRouter.post('/registration-email-resending', requestCountMiddleware, async (req: Request, res: Response) => {
    const result = await usersService.resendConfirmationEmail(req.body.email)
    if (result.errorsMessages) {
       res.status(400).json({ errorsMessages: result.errorsMessages })

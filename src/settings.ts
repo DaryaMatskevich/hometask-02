@@ -10,7 +10,8 @@ export const SETTINGS = {
         POSTS: '/posts',
         USERS: '/users',
         COMMENTS: '/comments',
-        DEVICES: 'security'
+        DEVICES: '/security',
+        REQUEST_COUNT: '/apiRequestCount'
     },
     DB_NAME: process.env.DB_NAME || 'blog-platform',
     MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',
