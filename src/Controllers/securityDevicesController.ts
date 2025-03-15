@@ -44,19 +44,19 @@ return
 
 securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+    const deviceId = req.params.id
     if (!refreshToken) {
        res.sendStatus(401)
        return
     }
  
-    const resultJwt = await jwtService.getUserIdByRefreshToken(refreshToken);
-    const userId = resultJwt?.userId
-    const deviceId = resultJwt?.deviceId
-    if (!userId) {
+    const user = await jwtService.getUserIdByRefreshToken(refreshToken);
+    
+    if (!user) {
        res.sendStatus(401)
        return
     }
-const result = await securityDevicesServise.deleteSecurityDeviceById(userId, deviceId)
+const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 res.sendStatus(204)
 return
 })

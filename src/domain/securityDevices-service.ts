@@ -27,8 +27,8 @@ async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string) {
 const result = await securityDevicesRepository.deleteAllSecurityDevicsExcludeCurrent(userId, deviceId)
 }, 
 
-async deleteSecurityDeviceById(userId: string, deviceId: string ) {
-const result = await securityDevicesRepository.deleteSecurityDeviceById(userId, deviceId)
+async deleteSecurityDeviceById(deviceId: string ) {
+const result = await securityDevicesRepository.deleteSecurityDeviceById(deviceId)
 },
  async updateRefreshToken(userId: string, refreshToken: string, newRefreshToken: string) {
     const decoded = jwt.decode(refreshToken) as JwtPayload | null;

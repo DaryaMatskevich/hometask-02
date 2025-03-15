@@ -7,9 +7,9 @@ const newSecurityDevice = await devicesCollection.insertOne({...securityDevice})
     return newSecurityDevice
 },
 
-    async deleteSecurityDeviceById(userId: string, deviceId: string) {
+    async deleteSecurityDeviceById(deviceId: string) {
 const result = await devicesCollection.deleteOne({
-    userId: new ObjectId(userId),
+    
     deviceId: new ObjectId(deviceId)
 })
 return result.deletedCount === 1;
