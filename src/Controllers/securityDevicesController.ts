@@ -47,6 +47,7 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
     const deviceId = req.params.id
     if(!deviceId) {
       res.sendStatus(404)
+      return
     }
     if (!refreshToken) {
        res.sendStatus(401)
