@@ -64,7 +64,7 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
 
     if(deviceIdFromToken !== deviceId)
     {
-      res.sendStatus(403)
+      res.sendStatus(404)
       return
     }
 const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
