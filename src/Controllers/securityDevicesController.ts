@@ -55,21 +55,23 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
        res.sendStatus(401)
        return
     }
- 
+
     const user = await jwtService.getUserIdByRefreshToken(refreshToken);
    
     if (!user) {
        res.sendStatus(401)
        return
     }
-    const deviceIdFromToken = user?.deviceId
+     const userId = user.userId
+    
 
-    if(deviceIdFromToken !== deviceId)
-    {
-      res.sendStatus(403)
-      return
-    }
+    const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
+
+    if(checkDeviceId) {
 const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 res.sendStatus(204)
 return
-})
+} else {
+   res.sendStatus(403)
+   return
+}})
