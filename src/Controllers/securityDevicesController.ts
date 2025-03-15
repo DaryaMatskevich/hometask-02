@@ -55,10 +55,17 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
     }
  
     const user = await jwtService.getUserIdByRefreshToken(refreshToken);
-    
+   
     if (!user) {
        res.sendStatus(401)
        return
+    }
+    const deviceIdFromToken = user?.deviceId
+
+    if(deviceIdFromToken !== deviceId)
+    {
+      res.sendStatus(403)
+      return
     }
 const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 res.sendStatus(204)
