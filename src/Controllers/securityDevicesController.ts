@@ -45,10 +45,12 @@ return
 securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
     const deviceId = req.params.id
+
     if(!deviceId) {
       res.sendStatus(404)
       return
     }
+    
     if (!refreshToken) {
        res.sendStatus(401)
        return
@@ -64,7 +66,7 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
 
     if(deviceIdFromToken !== deviceId)
     {
-      res.sendStatus(404)
+      res.sendStatus(403)
       return
     }
 const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
