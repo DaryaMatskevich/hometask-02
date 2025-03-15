@@ -100,12 +100,13 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    }
 
    const result = await jwtService.getUserIdByRefreshToken(refreshToken);
-   const userId = result?.userId
-   const deviceId = result?.deviceId
-   if (!userId) {
+   if (!result) {
       res.sendStatus(401)
       return
    }
+   const userId = result?.userId
+   const deviceId = result?.deviceId
+  
    blacklistedTokens.add(refreshToken)
    const user = await usersQueryRepository.findUserByObjectId(userId);
 
