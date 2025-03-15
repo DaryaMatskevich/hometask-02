@@ -12,7 +12,7 @@ import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 export const authRouter = Router({})
 const blacklistedTokens = new Set<string>()
 
-authRouter.post('/login', loginValidation, emailValidation, passwordValidation, requestCountMiddleware, inputValidationMiddleware, async (req: Request, res: Response) => {
+authRouter.post('/login',requestCountMiddleware, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
    const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
    const title = userAgent.includes('Mobile') ? 'Mobile Device' :
