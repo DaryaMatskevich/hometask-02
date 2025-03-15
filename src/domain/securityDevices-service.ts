@@ -12,13 +12,17 @@ const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 const exp = decoded?.exp;
 const iat = decoded?.iat
 
+const expISO = exp ? new Date(exp * 1000).toISOString() : null;
+const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
+
+
 const newSecurityDevice = {
     userId,
     deviceId,
-    iat,
+    iatISO,
     title,
     ip,
-    exp
+    expISO
 }
 const createSecurityDevice = await securityDevicesRepository.createsecurityDevice(newSecurityDevice)
 },

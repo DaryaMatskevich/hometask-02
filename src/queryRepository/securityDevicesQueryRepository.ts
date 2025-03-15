@@ -7,7 +7,7 @@ export const securityDevicesQueryRepository = {
         return result.map(device=> ({
             deviceId: device.deviceId,
             ip: device.ip,
-            lastActiveDate: device.iat.toISOString(),
+            lastActiveDate: device.iat,
             title: device.title
            
             
