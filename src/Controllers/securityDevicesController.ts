@@ -38,8 +38,10 @@ securityDevicesRouter.delete('/devices', async (req: Request, res: Response) => 
        return
     }
 const result = await securityDevicesServise.deleteAllSecurityDevicesExcludeCurrent(userId, deviceId)
+if (result) {
 res.sendStatus(204)
 return
+}
 })
 
 securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response) => {
