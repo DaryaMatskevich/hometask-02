@@ -28,11 +28,13 @@ const createSecurityDevice = await securityDevicesRepository.createsecurityDevic
 },
  
 async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string) {
-return await securityDevicesRepository.deleteAllSecurityDevicsExcludeCurrent(userId, deviceId)
+const result = await securityDevicesRepository.deleteAllSecurityDevicsExcludeCurrent(userId, deviceId)
+return result
 }, 
 
 async deleteSecurityDeviceById(deviceId: string ) {
-return await securityDevicesRepository.deleteSecurityDeviceById(deviceId)
+const result = await securityDevicesRepository.deleteSecurityDeviceById(deviceId)
+return result
 },
  async updateRefreshToken(userId: string, refreshToken: string, newRefreshToken: string) {
     const decoded = jwt.decode(refreshToken) as JwtPayload | null;

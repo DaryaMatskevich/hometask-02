@@ -41,6 +41,9 @@ const result = await securityDevicesServise.deleteAllSecurityDevicesExcludeCurre
 if (result) {
 res.sendStatus(204)
 return
+} else {
+   res.sendStatus(401)
+   return
 }
 })
 
@@ -71,8 +74,10 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
 
     if(checkDeviceId) {
 const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
+if(result) {
+
 res.sendStatus(204)
-return
+return}
 } else {
    res.sendStatus(403)
    return
