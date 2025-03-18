@@ -34,5 +34,9 @@ export const securityDevicesQueryRepository = {
             lastActiveDate: device.iatISO,
             title: device.title
         }))
-    }
+    },
+    async findSecurityDevicesByIat(iatISO: string | null) {
+        const result = await devicesCollection.find({iatISO: iatISO})
+        return result
+        }
 }

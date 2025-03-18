@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { securityDevicesRepository } from "../Repository/securityDevicesRepository";
+import { securityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
 
 
 export const securityDevicesServise = {
@@ -38,6 +39,7 @@ const result = await securityDevicesRepository.deleteSecurityDeviceById(deviceId
 return result
 },
  async updateRefreshToken(userId: string, refreshToken: string, newRefreshToken: string) {
+    
     const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 
     if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {
@@ -47,14 +49,25 @@ return result
 const exp = decoded.exp;
 const iat = decoded.iat
 
-const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload | null;
+const expISO = exp ? new Date(exp * 1000).toISOString() : null;
+const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
 
-    if (!decodedRefreshToken || typeof decodedRefreshToken.exp !== 'number' || typeof decodedRefreshToken.iat !== 'number') {
+const checkIat = await securityDevicesQueryRepository.findSecurityDevicesByIat(iatISO)
+if(!checkIat) {
+    return false
+}
+const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
+
+    if (!decodedNewRefreshToken || typeof decodedNewRefreshToken.exp !== 'number' || typeof decodedNewRefreshToken.iat !== 'number') {
         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
     }
-    const expRefreshToken = decoded.exp;
-    const iatRefreshToken = decoded.iat
-const result = await securityDevicesRepository.updateRefreshToken(userId, iat, exp, iatRefreshToken, expRefreshToken)
+    const expNewRefreshToken = decoded.exp;
+    const iatNewRefreshToken = decoded.iat
+
+    const expISOnew = exp ? new Date(exp * 1000).toISOString() : null;
+    const iatISOnew = iat ? new Date(iat * 1000).toISOString() : null;
+
+const result = await securityDevicesRepository.updateRefreshToken(userId, iatISO, expISO, iatISOnew, expISOnew)
 return result;
 }
 }
