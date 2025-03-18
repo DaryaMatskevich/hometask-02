@@ -60,6 +60,7 @@ const result = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId
 
     if(!result) {
       res.sendStatus(404)
+      return
     }
 
     const user = await jwtService.getUserIdByRefreshToken(refreshToken);
