@@ -24,5 +24,15 @@ export const securityDevicesQueryRepository = {
            
             
         }))
+    },
+    async findSecurityDeviceByDeviceId(deviceId: string) {
+        const result = await devicesCollection.find({
+    deviceId: new ObjectId(deviceId)})
+        return result.map(device=> ({
+            deviceId: device.deviceId,
+            ip: device.ip,
+            lastActiveDate: device.iatISO,
+            title: device.title
+        }))
     }
 }
