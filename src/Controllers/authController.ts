@@ -10,7 +10,6 @@ import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 
 
 export const authRouter = Router({})
-const blacklistedTokens = new Set<string>()
 
 authRouter.post('/login',requestCountMiddleware, async (req: Request, res: Response) => {
    const { loginOrEmail, password } = req.body;
@@ -29,6 +28,7 @@ authRouter.post('/login',requestCountMiddleware, async (req: Request, res: Respo
       res.status(403).json({ errorsMessages: user.errorsMessages })
       return
    }
+
    if (user) {
       const deviceId = new ObjectId()
       const token = await jwtService.createJWT(user, deviceId)
@@ -39,6 +39,8 @@ const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
    ip, 
    title, 
    refreshToken)
+
+   if(createSecurityDevice) {
       res.cookie('refreshToken', refreshToken, {
          httpOnly: true,
          secure: true
@@ -46,6 +48,8 @@ const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
 
       res.status(200).json({ accessToken: token })
       return
+   }} else {
+      res.sendStatus(401)
    }
 }
 )
@@ -94,7 +98,7 @@ authRouter.post('/registration-email-resending', requestCountMiddleware, async (
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
-   if (!refreshToken || blacklistedTokens.has(refreshToken)) {
+   if (!refreshToken) {
       res.sendStatus(401)
       return
    }
@@ -107,7 +111,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    const userId = result?.userId
    const deviceId = result?.deviceId
   
-   blacklistedTokens.add(refreshToken)
+   
    const user = await usersQueryRepository.findUserByObjectId(userId);
 
    // Генерируем новый accessToken
@@ -136,7 +140,7 @@ return}
 authRouter.post('/logout', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
-   if (!refreshToken || blacklistedTokens.has(refreshToken)) {
+   if (!refreshToken) {
       res.sendStatus(401); // Токен отсутствует
       return
    }
@@ -148,7 +152,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
    }
 
-   blacklistedTokens.add(refreshToken); // Добавляем в blacklist
+
 
 
    res.clearCookie('refreshToken')

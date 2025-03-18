@@ -25,6 +25,7 @@ const newSecurityDevice = {
     expISO
 }
 const createSecurityDevice = await securityDevicesRepository.createsecurityDevice(newSecurityDevice)
+return createSecurityDevice;
 },
  
 async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string) {
