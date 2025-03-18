@@ -73,13 +73,19 @@ const result = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId
 
     const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
 
-    if(checkDeviceId) {
-const result = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
-if(result) {
+    if(!checkDeviceId) {
+      res.sendStatus(403)
+      return
+   }
 
-res.sendStatus(204)
-return}
-} else {
-   res.sendStatus(404)
+const deleteDevice = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
+if(deleteDevice) {
+   res.sendStatus(204)
    return
-}})
+}
+else {
+   res.sendStatus(403)
+   return
+}
+
+})
