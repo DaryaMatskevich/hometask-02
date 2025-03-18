@@ -99,7 +99,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
    if (!refreshToken) {
-      res.sendStatus(402)
+      res.sendStatus(401)
       return
    }
 
