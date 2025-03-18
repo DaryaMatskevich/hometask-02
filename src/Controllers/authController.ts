@@ -144,17 +144,19 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
    }
 
-   const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
+   const jwtPayload = await jwtService.getUserIdByRefreshToken(refreshToken)
 
-   if (!userId) {
+   if (!jwtPayload) {
       res.sendStatus(401)
       return
    }
+   const deviceId = jwtPayload?.deviceId
+   const deleteDevice = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 
-
-
+if(deleteDevice) {
 
    res.clearCookie('refreshToken')
    res.sendStatus(204)
    return
+}
 });
