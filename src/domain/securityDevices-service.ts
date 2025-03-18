@@ -64,8 +64,8 @@ const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
     const expNewRefreshToken = decoded.exp;
     const iatNewRefreshToken = decoded.iat
 
-    const expISOnew = exp ? new Date(exp * 1000).toISOString() : null;
-    const iatISOnew = iat ? new Date(iat * 1000).toISOString() : null;
+    const expISOnew = expNewRefreshToken ? new Date(exp * 1000).toISOString() : null;
+    const iatISOnew = iatNewRefreshToken ? new Date(iat * 1000).toISOString() : null;
 
 const result = await securityDevicesRepository.updateRefreshToken(userId, iatISO, expISO, iatISOnew, expISOnew)
 return result;

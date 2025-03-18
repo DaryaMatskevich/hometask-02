@@ -103,29 +103,28 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       return
    }
 
-   const result = await jwtService.getUserIdByRefreshToken(refreshToken);
-   if (!result) {
+   const tokenPayload = await jwtService.getUserIdByRefreshToken(refreshToken);
+   if (!tokenPayload) {
       res.sendStatus(401)
       return
    }
-   const userId = result?.userId
-   const deviceId = result?.deviceId
+
+   const {userId, deviceId} = tokenPayload
   
    
    const user = await usersQueryRepository.findUserByObjectId(userId);
-
-   // Генерируем новый accessToken
-
    if (!user) {
       res.sendStatus(401)
       return
    }
+   
 
    const newAccessToken = await jwtService.createJWT(user, deviceId);
    const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
-   const updateRefreshToken = await securityDevicesServise.updateRefreshToken(user._id, refreshToken, newRefreshToken)
+   
+   const isUpdated = await securityDevicesServise.updateRefreshToken(user._id, refreshToken, newRefreshToken)
 
-   if (updateRefreshToken) {
+   if (!isUpdated) {
    res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
