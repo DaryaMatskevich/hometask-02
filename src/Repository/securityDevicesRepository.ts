@@ -21,7 +21,7 @@ return result.deletedCount === 1;
                 deviceId: {$ne: new ObjectId(deviceId)}
             }
         )
-        return result.deletedCount === 1;
+        return result.deletedCount > 0;
     },
      
     async updateRefreshToken(userId: string, iat: number, exp: number, iatRefreshToken: number, expRefreshToken: number) {
