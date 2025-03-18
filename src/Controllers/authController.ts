@@ -99,7 +99,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    const refreshToken = req.cookies.refreshToken;
 
    if (!refreshToken) {
-      res.sendStatus(401)
+      res.sendStatus(402)
       return
    }
 
@@ -117,7 +117,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
-   
+
 
    const newAccessToken = await jwtService.createJWT(user, deviceId);
    const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
