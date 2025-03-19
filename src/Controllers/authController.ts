@@ -31,8 +31,8 @@ authRouter.post('/login',requestCountMiddleware, async (req: Request, res: Respo
 
    if (user) {
       const deviceId = new ObjectId()
-      const token = await jwtService.createJWT(user, deviceId.toString())
-      const refreshToken = await jwtService.createRefreshToken(user, deviceId.toString())
+      const token = await jwtService.createJWT(user, deviceId)
+      const refreshToken = await jwtService.createRefreshToken(user, deviceId)
 const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
    user._id, 
    deviceId, 
