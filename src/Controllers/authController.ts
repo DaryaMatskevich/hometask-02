@@ -31,8 +31,8 @@ authRouter.post('/login',requestCountMiddleware, async (req: Request, res: Respo
 
    if (user) {
       const deviceId = new ObjectId()
-      const token = await jwtService.createJWT(user, deviceId)
-      const refreshToken = await jwtService.createRefreshToken(user, deviceId)
+      const token = await jwtService.createJWT(user, deviceId.toString())
+      const refreshToken = await jwtService.createRefreshToken(user, deviceId.toString())
 const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
    user._id, 
    deviceId, 
@@ -159,7 +159,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
-   const deviceId = jwtPayload?.deviceId
+   const deviceId = jwtPayload.deviceId
    const deleteDevice = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 
 if(deleteDevice) {

@@ -30,7 +30,9 @@ const result = await devicesCollection.updateOne({
     iatISO: iat,
     expISO: exp
 }, {
-    $set: {iatISO: iatNewRefreshToken, expISO: expNewRefreshToken}
+    $set: {iatISO: iatNewRefreshToken, 
+        expISO: expNewRefreshToken,
+    }
 }
 )
 return result.modifiedCount === 1
