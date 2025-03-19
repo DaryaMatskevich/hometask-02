@@ -4,19 +4,22 @@ import { apiRequestCountCollection } from "../Repository/db";
 export const requestCountMiddleware = async (req: Request, res: Response, next: NextFunction) => {
    const IP = req.ip;
    const URL = req.originalUrl;
-   const date = new Date();
+   const currentTime = new Date();
+const timeLimit = new Date(currentTime.getTime() - 10000)
 
-   await apiRequestCountCollection.insertOne({IP, URL, date})
 
-   const filter = {
+
+   await apiRequestCountCollection.insertOne({IP, URL, date: currentTime})
+
+   const requestCount = await apiRequestCountCollection.countDocuments({
     IP,
     URL, 
-    date: {$gte: new Date(date.getTime()-10000)} 
-   }
+    date: {$gte: timeLimit} 
+   })
 
-const requestCount = await apiRequestCountCollection.countDocuments(filter)
 
-if(requestCount>5)  {
+
+if(requestCount > 5)  {
     res.sendStatus(429)
     return
 }
