@@ -15,13 +15,20 @@ securityDevicesRouter.get('/devices', async (req: Request, res: Response) => {
   
      const resultJwt = await jwtService.getUserIdByRefreshToken(refreshToken);
      const userId = resultJwt?.userId
+     const deviceId = resultJwt?.deviceId
      if (!userId) {
         res.sendStatus(401)
         return
      }
-const result = await securityDevicesQueryRepository.findSecurityDevices(userId)
+     const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
+if(checkDeviceId) {
+     const result = await securityDevicesQueryRepository.findSecurityDevices(userId)
 res.status(200).json(result)
 return
+} else {
+   res.sendStatus(404)
+   return
+}
 })
 
 securityDevicesRouter.delete('/devices', async (req: Request, res: Response) => {
