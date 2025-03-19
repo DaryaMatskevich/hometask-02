@@ -50,6 +50,7 @@ const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
       return
    }} else {
       res.sendStatus(401)
+      return
    }
 }
 )
@@ -65,9 +66,11 @@ authRouter.post('/registration', loginValidation, emailValidation, passwordValid
       const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
       if (user.errorsMessages) {
          res.status(400).json({ errorsMessages: user.errorsMessages })
+      return
       }
       else {
          res.sendStatus(204)
+         return
       }
    })
 
@@ -75,11 +78,14 @@ authRouter.post('/registration-confirmation', requestCountMiddleware, async (req
    const result = await usersService.confirmEmail(req.body.code)
    if (result.errorsMessages) {
       res.status(400).json({ errorsMessages: result.errorsMessages })
+   return
    }
    if (result) {
       res.sendStatus(204)
+      return
    } else {
       res.sendStatus(400)
+      return
    }
 })
 
@@ -87,11 +93,14 @@ authRouter.post('/registration-email-resending', requestCountMiddleware, async (
    const result = await usersService.resendConfirmationEmail(req.body.email)
    if (result.errorsMessages) {
       res.status(400).json({ errorsMessages: result.errorsMessages })
+   return
    }
    if (result) {
       res.sendStatus(204)
+      return
    } else {
       res.sendStatus(400)
+      return
    }
 })
 
