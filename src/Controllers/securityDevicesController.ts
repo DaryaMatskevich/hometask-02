@@ -82,7 +82,7 @@ const result = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId
      const userId = user.userId
     if(userId !== result.userId)
 {
-   res.sendStatus(404)
+   res.sendStatus(403)
    return
 }
     const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
