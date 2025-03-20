@@ -26,7 +26,7 @@ export const securityDevicesQueryRepository = {
         }))
     },
     async findSecurityDeviceByDeviceId(deviceId: string) {
-        if (!ObjectId.isValid(new ObjectId(deviceId))) {
+        if (!ObjectId.isValid(deviceId)) {
             return null}
         const device = await devicesCollection.findOne({
     deviceId: new ObjectId(deviceId)})
