@@ -31,6 +31,7 @@ export const securityDevicesQueryRepository = {
      if(!device) return null;
 
         return {
+            userId: device.userId,
             deviceId: device.deviceId,
             ip: device.ip,
             lastActiveDate: device.iatISO,
