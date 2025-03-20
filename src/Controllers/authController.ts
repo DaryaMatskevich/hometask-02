@@ -120,18 +120,21 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
    }
 
    const {userId, deviceId} = tokenPayload
+
+  
    
    const user = await usersQueryRepository.findUserByObjectId(userId);
    if (!user) {
       res.sendStatus(401)
       return
    }
-   
+
  const findDevice = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
 if(!findDevice) {
    res.sendStatus(401)
    return
 }
+
    const newAccessToken = await jwtService.createJWT(user, deviceId);
    const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
    

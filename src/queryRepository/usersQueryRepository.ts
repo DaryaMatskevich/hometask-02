@@ -94,8 +94,8 @@ export const usersQueryRepository = {
             console.error("Ошибка при поиске пользователя:", error)
         }
     },  
-    async findUserByObjectId(id: ObjectId ) {
-        let user: any | null = await usersCollection.findOne({ _id: id });
+    async findUserByObjectId(id: string ) {
+        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
                 _id: user._id,
