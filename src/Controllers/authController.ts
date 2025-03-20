@@ -7,6 +7,7 @@ import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 import { ObjectId } from "mongodb";
 import { securityDevicesServise } from "../domain/securityDevices-service";
 import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
+import { securityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
 
 
 export const authRouter = Router({})
@@ -125,8 +126,11 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
- 
-
+ const findDevice = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
+if(!findDevice) {
+   res.sendStatus(401)
+   return
+}
    const newAccessToken = await jwtService.createJWT(user, deviceId);
    const newRefreshToken = await jwtService.createRefreshToken(user, deviceId);
    
