@@ -126,6 +126,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
+   
  const findDevice = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
 if(!findDevice) {
    res.sendStatus(401)
