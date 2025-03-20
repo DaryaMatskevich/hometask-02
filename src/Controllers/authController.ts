@@ -118,8 +118,9 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
       res.sendStatus(401)
       return
    }
-
-   const {userId, deviceId} = tokenPayload
+const userId = tokenPayload.userId
+const deviceId = tokenPayload?.deviceId
+   
 
   
    
