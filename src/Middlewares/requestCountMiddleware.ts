@@ -23,7 +23,7 @@ if(requestCount > 5)  {
     res.sendStatus(429)
     return
 }
-
+else {
     next()
-
+}
 }
