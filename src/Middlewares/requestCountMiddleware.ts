@@ -6,7 +6,7 @@ import { apiRequestCountCollection } from "../Repository/db";
 export const requestCountMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const IP = req.ip;
     const URL = req.originalUrl;
-    const key = `${IP}-${URL}`;
+  
     const currentTime = new Date();
     const timeLimit = new Date(currentTime.getTime() - 10000)
 
