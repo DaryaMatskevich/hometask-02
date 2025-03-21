@@ -10,11 +10,11 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
     const currentTime = new Date();
     const timeLimit = new Date(currentTime.getTime() - 10000)
 
-    // await apiRequestCountCollection.deleteMany({
-    //     IP,
-    //     URL,
-    //     date: { $lt: timeLimit },
-    // });
+    await apiRequestCountCollection.deleteMany({
+        IP,
+        URL,
+        date: { $lt: timeLimit },
+    });
 
     await apiRequestCountCollection.insertOne({ IP, URL, date: currentTime })
 
@@ -25,10 +25,8 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
     })
 
 
-// if(requestCount = 1) {
-//     res.sendStatus
-// }
-    if (requestCount > 5) {
+
+    if (requestCount >= 5) {
         res.sendStatus(429);
         return;
     } else {
