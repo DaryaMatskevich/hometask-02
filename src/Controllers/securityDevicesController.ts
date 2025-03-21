@@ -14,15 +14,17 @@ securityDevicesRouter.get('/devices', async (req: Request, res: Response) => {
      }
   
      const resultJwt = await jwtService.getUserIdByRefreshToken(refreshToken);
-     const userId = resultJwt?.userId
-     const deviceId = resultJwt?.deviceId
-     if (!userId) {
-        res.sendStatus(401)
-        return
-     }
-     const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
-if(checkDeviceId) {
+
+     if (!resultJwt) {
+      res.sendStatus(401)
+      return
+   }
+
+     const userId = resultJwt.userId
+    
      const result = await securityDevicesQueryRepository.findSecurityDevices(userId)
+
+     if(result) {
 res.status(200).json(result)
 return
 } else {
@@ -62,7 +64,7 @@ securityDevicesRouter.delete('/devices/:id', async (req: Request, res: Response)
       res.sendStatus(401)
       return
    }
-  
+
 const result = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
 
     if(!result) {
@@ -72,25 +74,17 @@ const result = await securityDevicesQueryRepository.findSecurityDeviceByDeviceId
 
     const user = await jwtService.getUserIdByRefreshToken(refreshToken);
 
-
-   
     if (!user) {
        res.sendStatus(401)
        return
     }
 
-     const userId = user.userId
-    if(userId !== result.userId)
+    if(user.userId !== result.userId.toString())
 {
    res.sendStatus(403)
    return
 }
-    const checkDeviceId = await securityDevicesQueryRepository.findSecurityDeviceByDeviceIdandUserId(userId, deviceId)
-
-    if(!checkDeviceId) {
-      res.sendStatus(403)
-      return
-   }
+   
 
 const deleteDevice = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 if(deleteDevice) {
