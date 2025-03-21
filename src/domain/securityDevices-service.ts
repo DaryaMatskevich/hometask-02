@@ -2,6 +2,8 @@ import { ObjectId } from "mongodb"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { securityDevicesRepository } from "../Repository/securityDevicesRepository";
 import { securityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
+import { jwtService } from "../application/jwt-service";
+import { UserDBType } from "../types/UserTypes/UserDBType";
 
 
 export const securityDevicesServise = {
@@ -38,36 +40,50 @@ async deleteSecurityDeviceById(deviceId: string ) {
 const result = await securityDevicesRepository.deleteSecurityDeviceById(deviceId)
 return result
 },
- async updateRefreshToken(userId: string, refreshToken: string, newRefreshToken: string) {
+ async updateRefreshToken(userId: string, deviceId: string, refreshToken: string) {
     
-    const decoded = jwt.decode(refreshToken) as JwtPayload | null;
+//     const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 
-    if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {
-        throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
-    }
+//     if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {
+//         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
+//     }
 
-const exp = decoded.exp;
-const iat = decoded.iat
+// const exp = decoded.exp;
+// const iat = decoded.iat
 
-const expISO = exp ? new Date(exp * 1000).toISOString() : null;
-const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
+// const expISO = exp ? new Date(exp * 1000).toISOString() : null;
+// const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
 
-const checkIat = await securityDevicesQueryRepository.findSecurityDevicesByIat(iatISO)
-if(!checkIat) {
-    return false
-}
-const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
+// const checkIat = await securityDevicesQueryRepository.findSecurityDevicesByIat(iatISO)
+// if(!checkIat) {
+//     return false
+// }
+// const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
+
+//     if (!decodedNewRefreshToken || typeof decodedNewRefreshToken.exp !== 'number' || typeof decodedNewRefreshToken.iat !== 'number') {
+//         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
+//     }
+//     const expNewRefreshToken = decoded.exp;
+//     const iatNewRefreshToken = decoded.iat
+
+//     const expISOnew = expNewRefreshToken ? new Date(exp * 1000).toISOString() : null;
+//     const iatISOnew = iatNewRefreshToken ? new Date(iat * 1000).toISOString() : null;
+
+
+
+const decodedNewRefreshToken = jwt.decode(refreshToken) as JwtPayload | null;
 
     if (!decodedNewRefreshToken || typeof decodedNewRefreshToken.exp !== 'number' || typeof decodedNewRefreshToken.iat !== 'number') {
         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
     }
-    const expNewRefreshToken = decoded.exp;
-    const iatNewRefreshToken = decoded.iat
+    const expNewRefreshToken = decodedNewRefreshToken.exp;
+    const iatNewRefreshToken = decodedNewRefreshToken.iat
 
-    const expISOnew = expNewRefreshToken ? new Date(exp * 1000).toISOString() : null;
-    const iatISOnew = iatNewRefreshToken ? new Date(iat * 1000).toISOString() : null;
+    const expISOnew = expNewRefreshToken ? new Date(expNewRefreshToken * 1000).toISOString() : null;
+    const iatISOnew = iatNewRefreshToken ? new Date(iatNewRefreshToken* 1000).toISOString() : null;
 
-const result = await securityDevicesRepository.updateRefreshToken(userId, iatISO, expISO, iatISOnew, expISOnew)
+
+const result = await securityDevicesRepository.updateRefreshToken(userId, deviceId, iatISOnew, expISOnew)
 return result;
 }
 }

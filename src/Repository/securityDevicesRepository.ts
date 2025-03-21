@@ -24,14 +24,14 @@ return result.deletedCount === 1;
         return result.deletedCount > 0;
     },
      
-    async updateRefreshToken(userId: string, iat: string | null, exp: string | null, iatNewRefreshToken: string | null, expNewRefreshToken: string | null) {
+    async updateRefreshToken(userId: string, deviceId: string, iatISOnew: string | null, expISOnew: string | null) {
 const result = await devicesCollection.updateOne({
-    userId: userId, 
-    iatISO: iat,
-    expISO: exp
+    userId: new ObjectId(userId), 
+    deviceId: new ObjectId(deviceId)
+   
 }, {
-    $set: {iatISO: iatNewRefreshToken, 
-        expISO: expNewRefreshToken,
+    $set: {iatISO: iatISOnew, 
+        expISO: expISOnew,
     }
 }
 )
