@@ -121,8 +121,11 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 const userId = tokenPayload.userId
 const deviceId = tokenPayload.deviceId
    
-
-  
+const checkRefreshToken = await securityDevicesServise.checkRefreshToken(userId, deviceId, refreshToken)
+  if(!checkRefreshToken) {
+   res.sendStatus(401)
+   return
+  }
    
    const user = await usersQueryRepository.findUserByObjectId(userId);
    if (!user) {
@@ -170,6 +173,13 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
    }
    const deviceId = jwtPayload.deviceId
+   const userId = jwtPayload.userId
+
+   const checkRefreshToken = await securityDevicesServise.checkRefreshToken(userId, deviceId, refreshToken)
+  if(!checkRefreshToken) {
+   res.sendStatus(401)
+   return
+  }
    const deleteDevice = await securityDevicesServise.deleteSecurityDeviceById(deviceId)
 
 if(deleteDevice) {

@@ -40,8 +40,10 @@ export const securityDevicesQueryRepository = {
             title: device.title
         }
     },
-    async findSecurityDevicesByIat(iatISO: string | null) {
-        const result = await devicesCollection.findOne({iatISO: iatISO})
+    async findSecurityDevicesByIat(userId: string, deviceId: string, iatISO: string | null) {
+        const result = await devicesCollection.findOne({userId: new ObjectId(userId),
+            deviceId: new ObjectId(deviceId), 
+            iatISO: iatISO})
         return result
         }
 }

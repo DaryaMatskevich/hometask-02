@@ -42,22 +42,7 @@ return result
 },
  async updateRefreshToken(userId: string, deviceId: string, refreshToken: string) {
     
-//     const decoded = jwt.decode(refreshToken) as JwtPayload | null;
-
-//     if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {
-//         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
-//     }
-
-// const exp = decoded.exp;
-// const iat = decoded.iat
-
-// const expISO = exp ? new Date(exp * 1000).toISOString() : null;
-// const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
-
-// const checkIat = await securityDevicesQueryRepository.findSecurityDevicesByIat(iatISO)
-// if(!checkIat) {
-//     return false
-// }
+//     
 // const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
 
 //     if (!decodedNewRefreshToken || typeof decodedNewRefreshToken.exp !== 'number' || typeof decodedNewRefreshToken.iat !== 'number') {
@@ -85,5 +70,26 @@ const decodedNewRefreshToken = jwt.decode(refreshToken) as JwtPayload | null;
 
 const result = await securityDevicesRepository.updateRefreshToken(userId, deviceId, iatISOnew, expISOnew)
 return result;
+},
+
+async checkRefreshToken(userId: string, deviceId: string, refreshToken: string) {
+    const decoded = jwt.decode(refreshToken) as JwtPayload | null;
+
+       if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {
+           throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
+        }
+    
+    
+    const iat = decoded.iat
+    
+    
+    const iatISO = iat ? new Date(iat * 1000).toISOString() : null;
+    
+    const checkIat = await securityDevicesQueryRepository.findSecurityDevicesByIat(userId, deviceId ,iatISO)
+     if(!checkIat) {
+         return false
+    } else {
+        return true
+    }
 }
 }
