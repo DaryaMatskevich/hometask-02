@@ -15,7 +15,7 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
         date: { $lt: timeLimit },
     });
 
-    await apiRequestCountCollection.insertOne({ IP, URL, date: currentTime.toISOString() })
+    await apiRequestCountCollection.insertOne({ IP, URL, date: currentTime })
 
     let requestCount = await apiRequestCountCollection.countDocuments({
         IP,
