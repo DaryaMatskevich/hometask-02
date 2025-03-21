@@ -105,18 +105,6 @@ authRouter.post('/registration-email-resending', requestCountMiddleware, async (
       res.sendStatus(400)
       return
    }
-
-   // if (result.errorsMessages) {
-   //    res.status(400).json({ errorsMessages: result.errorsMessages })
-   // return
-   // }
-   // if (result) {
-   //    res.sendStatus(204)
-   //    return
-   // } else {
-   //    res.sendStatus(400)
-   //    return
-   // }
 }
 )
 
