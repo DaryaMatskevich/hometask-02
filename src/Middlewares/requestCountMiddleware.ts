@@ -9,14 +9,13 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
   
     const currentTime = new Date();
     const timeLimit = new Date(currentTime.getTime() - 10000)
-
     await apiRequestCountCollection.deleteMany({
         IP,
         URL,
         date: { $lt: timeLimit },
     });
 
-    await apiRequestCountCollection.insertOne({ IP, URL, date: currentTime })
+    await apiRequestCountCollection.insertOne({ IP, URL, date: currentTime.toISOString() })
 
     let requestCount = await apiRequestCountCollection.countDocuments({
         IP,
