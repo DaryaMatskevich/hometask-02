@@ -6,7 +6,7 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
     const URL = req.originalUrl;
 
     const currentTime = new Date();
-    const timeLimit = new Date(currentTime.getTime() - 10000)
+    const timeLimit = new Date(currentTime.getTime() - 25000)
     await apiRequestCountCollection.deleteMany({
         IP,
         URL,
