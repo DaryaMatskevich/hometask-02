@@ -21,7 +21,7 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
         date: { $gte: timeLimit },
     })
 
-    if (requestCount >= 5) {
+    if (requestCount > 5) {
         res.sendStatus(429);
         return;
     } else {
