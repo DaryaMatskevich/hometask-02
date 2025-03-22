@@ -6,7 +6,7 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
     const URL = req.originalUrl;
 
     const currentTime = new Date();
-    const timeLimit = new Date(currentTime.getTime() - 25000)
+    const timeLimit = new Date(currentTime.getTime() - 20000)
     await apiRequestCountCollection.deleteMany({
         IP,
         URL,
@@ -20,6 +20,8 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
         URL,
         date: { $gte: timeLimit },
     })
+
+    console.log(`IP: ${IP}, URL: ${URL}, Request count: ${requestCount}`);
 
     if (requestCount > 5) {
         res.sendStatus(429);
