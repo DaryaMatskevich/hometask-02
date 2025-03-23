@@ -4,9 +4,9 @@ import { apiRequestCountCollection } from "../Repository/db";
 export const requestCountMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const IP = req.ip;
     const URL = req.originalUrl;
+    const currentTime = new Date()
 
-    const currentTime = new Date();
-    const timeLimit = new Date(currentTime.getTime() - 10000)
+        const timeLimit = new Date(Date.now() - 10000)
  
 
     await apiRequestCountCollection.bulkWrite([
