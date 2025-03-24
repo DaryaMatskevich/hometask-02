@@ -137,7 +137,7 @@ export const usersService = {
         if (!updateUser) return false;
 
         try {
-            await emailManager.sendEmailConfirmationMessage(updateUser)
+            emailManager.sendEmailConfirmationMessage(updateUser)
         }
         catch (error) {
             console.error(error)
