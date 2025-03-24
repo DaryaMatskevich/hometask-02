@@ -6,7 +6,7 @@ export const requestCountMiddleware = async (req: Request, res: Response, next: 
     const URL = req.originalUrl;
     const currentTime = new Date()
 
-        const timeLimit = new Date(Date.now() - 20000)
+        const timeLimit = new Date(Date.now() - 10000)
         
  
 
