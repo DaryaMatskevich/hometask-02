@@ -213,7 +213,7 @@ export const usersService = {
 
 if (saveRecoveryCode) {
         try {
-           emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
+           await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
             return true
         } catch (emailError) {
             console.error('Error sending recovery email:', emailError)
