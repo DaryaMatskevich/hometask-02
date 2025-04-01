@@ -226,6 +226,10 @@ if (!user) {
 
     return { errorsMessages: errors }
 }
+const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
+if (isSamePassword) {
+    return null}
+    
 if (user.recoveryCodeExpirationDate < new Date()) return false;
  else {
     const updatePassword = await usersRepository.updatePassword(user._id, newPassword)
