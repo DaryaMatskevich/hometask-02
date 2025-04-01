@@ -66,9 +66,9 @@ let result = await usersCollection.updateOne(
   return result.modifiedCount>0
      },
 
-     async updatePassword(_id: ObjectId, newPassword: string): Promise<boolean> {
+     async updatePassword(userId: ObjectId, newPassword: string): Promise<boolean> {
         let result = await usersCollection.updateOne(
-            {_id}, 
+            {_id: userId}, 
             {$set: 
         {password: newPassword,
         }}
