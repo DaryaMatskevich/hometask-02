@@ -222,5 +222,8 @@ if(result) {
 if (result.errorsMessages) {
    res.status(400).json({ errorsMessages: result.errorsMessages })
    return
+} else {
+   res.sendStatus(401)
+   return
 }
 })
