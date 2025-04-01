@@ -119,5 +119,5 @@ export const usersQueryRepository = {
     async findUserByRecoveryCode(recoveryCode: string) {
         const user = await usersCollection.findOne({ recoveryCode: recoveryCode })
         return user
-    }
+    },
 }

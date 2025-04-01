@@ -33,13 +33,14 @@ usersRouter.get('/', authMiddleware, async (req: Request, res: Response): Promis
 usersRouter.post('/', authMiddleware, loginValidation,
     passwordValidation, emailValidation, inputValidationMiddleware,
     async (req: Request, res: Response): Promise<any> => {
-        const { login, password, email } = req.body;
-        const userId = await usersService.createUser(login, password, email)
-        if (userId.errorsMessages) {
-            return res.status(400).json(userId)
+        const { login, email, password} = req.body;
+        const createUserDto = {login, email, password}
+        const result = await usersService.createUser(createUserDto)
+        if (result.extensions) {
+            return res.status(400).json(result.extensions)
         }
 
-        const newUser = await usersQueryRepository.findUserById(userId);
+        const newUser = await usersQueryRepository.findUserById(result.data!);
         return res.status(201).json(newUser)
     })
 
