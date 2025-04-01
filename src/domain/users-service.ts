@@ -222,7 +222,7 @@ async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean
 const user = await usersQueryRepository.findUserByRecoveryCode(recoveryCode)
 if (!user) {
     const errors = []
-    errors.push({ message: 'code is invalid', field: 'code' })
+    errors.push({ message: 'recoveryCode is invalid', field: 'recoveryCode' })
 
     return { errorsMessages: errors }
 }
