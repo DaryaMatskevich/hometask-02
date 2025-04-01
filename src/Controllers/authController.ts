@@ -213,7 +213,7 @@ if(result){
 
 authRouter.post('/new-password', requestCountMiddleware, newPasswordValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
 const newPassword = req.body.newPassword
-const recoveryCode = req.params.recoveryCode
+const recoveryCode = req.body.recoveryCode
 const result = await usersService.setNewPassword(newPassword, recoveryCode)
 if(!result) {
    res.sendStatus(401)
