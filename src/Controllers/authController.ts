@@ -215,15 +215,15 @@ authRouter.post('/new-password', requestCountMiddleware, newPasswordValidation, 
 const newPassword = req.body.newPassword
 const recoveryCode = req.body.recoveryCode
 const result = await usersService.setNewPassword(newPassword, recoveryCode)
-if(result) {
-   res.sendStatus(204)
+if(!result) {
+   res.sendStatus(401)
    return
 }
 if (result.errorsMessages) {
    res.status(400).json({ errorsMessages: result.errorsMessages })
    return
 } else {
-   res.sendStatus(401)
+   res.sendStatus(204)
    return
 }
 })
