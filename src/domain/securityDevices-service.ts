@@ -8,7 +8,7 @@ import { UserDBType } from "../types/UserTypes/UserDBType";
 
 export const securityDevicesServise = {
 async createSecurityDevice(userId: ObjectId, deviceId: ObjectId, 
-    ip: string, title: string, refreshToken: string) {
+    ip: string, title: string, refreshToken: string) : Promise<string | null>{
 
 const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 
@@ -28,33 +28,20 @@ const newSecurityDevice = {
     expISO
 }
 const createSecurityDevice = await securityDevicesRepository.createsecurityDevice(newSecurityDevice)
+
 return createSecurityDevice;
 },
  
-async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string) {
+async deleteAllSecurityDevicesExcludeCurrent(userId: string, deviceId: string): Promise<boolean> {
 const result = await securityDevicesRepository.deleteAllSecurityDevicsExcludeCurrent(userId, deviceId)
 return result
 }, 
 
-async deleteSecurityDeviceById(deviceId: string ) {
+async deleteSecurityDeviceById(deviceId: string ): Promise<boolean> {
 const result = await securityDevicesRepository.deleteSecurityDeviceById(deviceId)
 return result
 },
- async updateRefreshToken(userId: string, deviceId: string, refreshToken: string) {
-    
-//     
-// const decodedNewRefreshToken = jwt.decode(newRefreshToken) as JwtPayload | null;
-
-//     if (!decodedNewRefreshToken || typeof decodedNewRefreshToken.exp !== 'number' || typeof decodedNewRefreshToken.iat !== 'number') {
-//         throw new Error('Invalid refresh token'); // Обработка случая, когда токен не может быть декодирован
-//     }
-//     const expNewRefreshToken = decoded.exp;
-//     const iatNewRefreshToken = decoded.iat
-
-//     const expISOnew = expNewRefreshToken ? new Date(exp * 1000).toISOString() : null;
-//     const iatISOnew = iatNewRefreshToken ? new Date(iat * 1000).toISOString() : null;
-
-
+ async updateRefreshToken(userId: string, deviceId: string, refreshToken: string): Promise<boolean> {
 
 const decodedNewRefreshToken = jwt.decode(refreshToken) as JwtPayload | null;
 
@@ -72,7 +59,7 @@ const result = await securityDevicesRepository.updateRefreshToken(userId, device
 return result;
 },
 
-async checkRefreshToken(userId: string, deviceId: string, refreshToken: string) {
+async checkRefreshToken(userId: string, deviceId: string, refreshToken: string): Promise<boolean> {
     const decoded = jwt.decode(refreshToken) as JwtPayload | null;
 
        if (!decoded || typeof decoded.exp !== 'number' || typeof decoded.iat !== 'number') {

@@ -1,4 +1,4 @@
-import { PostViewType } from "../types/PostTypes/PostsViewType";
+import { PostViewType } from "../types/PostTypes/PostViewType";
 import { blogsCollection, postsCollection } from "./db";
 
 export async function clearPostsData() {
@@ -13,7 +13,7 @@ export const postsRepository = {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         filter: {},
-    ): Promise<any> {
+    ): Promise<PostViewType[]> {
         
         return postsCollection.find(filter, { projection: { _id: 0 } })
             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })

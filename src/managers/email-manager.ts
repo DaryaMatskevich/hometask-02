@@ -24,5 +24,17 @@ export const emailManager = {
 <a href='${confirmationLink}'>Complete registration</a>
 `;
         await emailAdapter.sendEmail(user.email, "Confirm your email", message)
-    }
+    },
+
+    async sendPasswordRecoveryMessage(user: any, recoveryCode: string) {
+        const confirmationLink = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode}`;
+
+        const message = `
+<h1>Password recovery</h1>
+<p>To finish password recovery please follow the link below:
+<a href='${confirmationLink}'>Password recovery</a></p>
+`;
+        await emailAdapter.sendEmail(user.email, "Password recovery", message)
+    },
+
 }

@@ -6,12 +6,6 @@ import { commentValidation, inputValidationMiddleware } from "../Middlewares/mid
 
 export const commentsRouter = Router({})
 
-// commentsRouter.post('/', userAuthMiddleware,
-//     async (req: Request, res: Response) => {
-//         const newFeedback = commentsService.sendComment(req.body.comment, req.user!._id)
-//         res.status(201).send(newFeedback)
-//     })
-
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
     const commentId = req.params.id
     const comment = await commentsQueryRepository.getCommentById(commentId)
@@ -24,7 +18,7 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 })
 
 commentsRouter.put('/:id', userAuthMiddleware, commentValidation, inputValidationMiddleware,
-    async (req: Request, res: Response):Promise<any> => {
+    async (req: Request, res: Response) => {
         const { content } = req.body;
         const commentId = req.params.id
 

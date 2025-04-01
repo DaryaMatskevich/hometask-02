@@ -1,8 +1,9 @@
 import { ObjectId } from "mongodb"
 import { devicesCollection } from "../Repository/db"
+import { SecurityDeviceDBType, SecurityDeviceType, SecurityDeviceViewType } from "../types/SecurityDeviceTypes.ts/SecurityDeviceTypes"
 
 export const securityDevicesQueryRepository = {
-    async findSecurityDevices(userId: string) {
+    async findSecurityDevices(userId: string): Promise<SecurityDeviceViewType[]> {
         const result = await devicesCollection.find({userId: new ObjectId(userId)}).toArray()
         return result.map(device=> ({
             deviceId: device.deviceId,
@@ -14,7 +15,7 @@ export const securityDevicesQueryRepository = {
         }))
     },
    
-    async findSecurityDeviceByDeviceId(deviceId: string) {
+    async findSecurityDeviceByDeviceId(deviceId: string): Promise<SecurityDeviceType | null> {
         if (!ObjectId.isValid(deviceId)) {
             return null}
         const device = await devicesCollection.findOne({
@@ -29,7 +30,7 @@ export const securityDevicesQueryRepository = {
             title: device.title
         }
     },
-    async findSecurityDevicesByIat(userId: string, deviceId: string, iatISO: string | null) {
+    async findSecurityDevicesByIat(userId: string, deviceId: string, iatISO: string | null): Promise<SecurityDeviceDBType | null> {
         const result = await devicesCollection.findOne({userId: new ObjectId(userId),
             deviceId: new ObjectId(deviceId), 
             iatISO: iatISO})

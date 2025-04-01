@@ -1,4 +1,4 @@
-import { PostViewType } from "../types/PostTypes/PostsViewType";
+import { PaginatedPosts, PostsFilter, PostViewType } from "../types/PostTypes/PostViewType";
 import { postsRepository } from "../Repository/postsRepository";
 
 
@@ -10,8 +10,8 @@ export const postsService = {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         blogId?: string)
-        : Promise<any> {
-        const filter = blogId ? {blogId}:{}
+        : Promise<PaginatedPosts<PostViewType>> {
+        const filter: PostsFilter = blogId ? {blogId}:{}
         const posts = await postsRepository.findPosts(
             pageNumber,
             pageSize,

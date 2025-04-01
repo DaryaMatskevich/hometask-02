@@ -28,8 +28,8 @@ export const usersRepository = {
         if (!this._checkObjectId(id)) return false;
         const result = await usersCollection.deleteOne({ _id: new ObjectId(id) })
         return result.deletedCount === 1
-
     },
+
     _checkObjectId(id: string) : boolean {
         return ObjectId.isValid(id)
     },
@@ -51,5 +51,28 @@ export const usersRepository = {
         expirationDate: newExpirationDate}}
             )
         return result.modifiedCount === 1
+    },
+
+     async saveRecoveryCode(userId: ObjectId, recoveryCode: string, recoveryCodeExpirationDate: Date): Promise<boolean> {
+let result = await usersCollection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        recoveryCode: recoveryCode,
+        recoveryCodeExpirationDate: recoveryCodeExpirationDate,
+      },
     }
+  )
+  return result.modifiedCount>0
+     },
+
+     async updatePassword(_id: ObjectId, newPassword: string): Promise<boolean> {
+        let result = await usersCollection.updateOne(
+            {_id}, 
+            {$set: 
+        {password: newPassword,
+        }}
+            )
+        return result.modifiedCount === 1
+    },
     }

@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb"
 import { commentsCollection } from "./db"
+import { CommentInputType } from "../types/CommentTypes/commentType"
 
 export async function clearCommentsData() {
     await commentsCollection.deleteMany({})
 }
 
 export const commentsRepository = {
-    async createComment (comment: any){
+    async createComment (comment: CommentInputType): Promise<string>{
         const newComment = await commentsCollection.insertOne(comment)
 return newComment.insertedId.toString()
     },

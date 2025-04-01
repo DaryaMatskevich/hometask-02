@@ -11,7 +11,8 @@ export const SETTINGS = {
         USERS: '/users',
         COMMENTS: '/comments',
         DEVICES: '/security',
-        REQUEST_COUNT: '/apiRequestCount'
+        REQUEST_COUNT: '/apiRequestCount',
+        TESTING: '/testing'
     },
     DB_NAME: process.env.DB_NAME || 'blog-platform',
     MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017',

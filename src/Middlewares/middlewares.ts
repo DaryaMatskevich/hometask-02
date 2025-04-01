@@ -24,17 +24,17 @@ export const blogIdExistenseMiddleware = async (req: Request, res: Response, nex
   const blogId = req.params.id;
   const blog = await blogsService.findBlogById(blogId)
   if (!blog) {
-  res.sendStatus(404)
-  return
-  } 
+    res.sendStatus(404)
+    return
+  }
   next()
 }
 
 const blogExists = async (value: string) => {
-  const blog = await blogsCollection.findOne({id: value})
+  const blog = await blogsCollection.findOne({ id: value })
   if (!blog) {
     throw new Error('Блог не существует');
-  } 
+  }
   return true;
 };
 
@@ -47,14 +47,17 @@ export const shortDescriptionValidation = body('shortDescription').trim().isLeng
 export const contentValidation = body('content').trim().isLength({ min: 3, max: 1000 }).withMessage("Content length should be from 3 to 1000 symbols");
 export const blogIdValidation = body('blogId').custom(blogExists).withMessage("Blog is not exist")
 
-export const loginValidation = body('login').trim().isLength({min: 3, max: 10})
-.withMessage('Login must contain from 3 to 10 symbols').matches(/^[a-zA-Z0-9_-]*$/)
-.withMessage('A login can only contain letters, numbers, underscores, and hyphens.')
+export const loginValidation = body('login').trim().isLength({ min: 3, max: 10 })
+  .withMessage('Login must contain from 3 to 10 symbols').matches(/^[a-zA-Z0-9_-]*$/)
+  .withMessage('A login can only contain letters, numbers, underscores, and hyphens.')
 
-export const passwordValidation = body('password').trim().isLength({min: 6, max: 20})
-.withMessage('Password must contain from 3 to 10 symbols')
+export const passwordValidation = body('password').trim().isLength({ min: 6, max: 20 })
+  .withMessage('Password must contain from 3 to 10 symbols')
 
 export const emailValidation = body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-.withMessage('Email is not right')
+  .withMessage('Email is not right')
 
 export const commentValidation = body('content').trim().isLength({ min: 20, max: 300 }).withMessage("Comment length should be from 20 to 300 symbols");
+
+export const newPasswordValidation = body('newPassword').trim().isLength({ min: 6, max: 20 })
+  .withMessage('Password must contain from 6 to 20 symbols')

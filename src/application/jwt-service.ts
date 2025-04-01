@@ -9,7 +9,7 @@ export const jwtService = {
     },
 
     async createRefreshToken(userId: string, deviceId: string) {
-        const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20m' })
+        const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20s' })
         return refreshToken
     },
 

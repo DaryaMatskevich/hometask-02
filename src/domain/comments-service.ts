@@ -6,11 +6,8 @@ import { commentsRepository } from "../Repository/commentsRepository";
 
 
 export const commentsService = {
-    async sendComment(comment: string, userId: string) {
 
-    },
-
-    async createComment(postId: string, content: string, userLogin: string, userId: string) {
+    async createComment(postId: string, content: string, userLogin: string, userId: string): Promise<string> {
 
         const newComment = {
             postId: postId,
@@ -24,13 +21,12 @@ export const commentsService = {
         return commentsRepository.createComment(newComment)
     },
 
-    async deleteCommentById(id: string) : Promise <boolean> {
+    async deleteCommentById(id: string): Promise<boolean> {
+        return await commentsRepository.deleteCommentById(id)
+    },
 
-    return await commentsRepository.deleteCommentById(id)
-},
-
-async updateComment(id: string, content: string) : Promise <boolean> {
-return await commentsRepository.updateComment(id, content)
-}
+    async updateComment(id: string, content: string): Promise<boolean> {
+        return await commentsRepository.updateComment(id, content)
+    }
 
 }

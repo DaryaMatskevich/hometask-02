@@ -1,5 +1,5 @@
 
-import { BlogViewType } from "../types/BlogTypes/BlogViewType";
+import { BlogViewType, FilterOptions } from "../types/BlogTypes/BlogTypes";
 import { blogsCollection } from "./db";
 
    
@@ -16,8 +16,8 @@ export const blogsRepository = {
     sortDirection: 'asc'|'desc',
     searchNameTerm: string | null
 
-  ): Promise<any> {
-    const filter: any = {}
+  ): Promise<BlogViewType[]> {
+    const filter: FilterOptions = {}
     if(searchNameTerm) {
       filter.name = { $regex: searchNameTerm, $options: 'i' }
     }
@@ -28,14 +28,14 @@ export const blogsRepository = {
   },
 
   async getBlogsCount(searchNameTerm: string | null): Promise<number> {
-const filter: any = {}
+const filter: FilterOptions = {}
 if (searchNameTerm) {
   filter.name = {$regex: searchNameTerm, $options: 'i'}
 }
 return blogsCollection.countDocuments(filter)
   },
 
-  async findBlogById(id: string): Promise<any | null> {
+  async findBlogById(id: string): Promise<BlogViewType | null> {
     let blog: BlogViewType | null = await blogsCollection.findOne({ id: id },{projection:{_id:0}});
     if (blog) {
       return blog
@@ -44,7 +44,7 @@ return blogsCollection.countDocuments(filter)
     }
 },
 
-  async createBlog(newBlog: any): Promise<any>  {
+  async createBlog(newBlog: BlogViewType): Promise<BlogViewType | null>  {
     
     const result = await blogsCollection.insertOne(newBlog);
     const foundNewBlog = await blogsCollection.findOne({ _id: result.insertedId },{projection:{_id:0}})

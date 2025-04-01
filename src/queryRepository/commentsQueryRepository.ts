@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { commentsCollection } from "../Repository/db"
+import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
 export const commentsQueryRepository = {
@@ -8,13 +9,14 @@ export const commentsQueryRepository = {
         pageSize: number,
         sortBy: string,
         sortDirection: 'asc' | 'desc',
-    ) {
+    ): Promise<PaginatedComments> {
         const comments = await commentsCollection.find({ postId: postId }).sort(
-            {[sortBy]: sortDirection === 'asc' ? 1 : -1})
-            .skip((pageNumber-1)* pageSize)
+            { [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+            .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray();
-        const mappedComments = comments.map(comment => ({
+
+        const mappedComments: CommentViewType[] = comments.map(comment => ({
             id: comment._id.toString(), // Преобразуем ObjectId в строку
             content: comment.content,
             commentatorInfo: {
@@ -23,22 +25,23 @@ export const commentsQueryRepository = {
             },
             createdAt: comment.createdAt,
         }));
-        const commentsCount: any = await commentsCollection.countDocuments({postId: postId})
-    return {
-        pagesCount: Math.ceil(commentsCount/ pageSize),
-        page: pageNumber,
-        pageSize: pageSize,
-        totalCount: commentsCount,
-        items: mappedComments
-    }
-    
+        const commentsCount = await commentsCollection.countDocuments({ postId: postId })
+
+        return {
+            pagesCount: Math.ceil(commentsCount / pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: commentsCount,
+            items: mappedComments
+        }
+
     },
 
-    async getCommentById(id: string): Promise<any | null> {
+    async getCommentById(id: string): Promise<CommentViewType | null> {
         if (!ObjectId.isValid(id)) {
             return null;
         }
-        
+
         const comment: any | null = await commentsCollection.findOne({ _id: new ObjectId(id) })
         if (comment) {
             return {

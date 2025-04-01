@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { loginValidation, passwordValidation, emailValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
+import { loginValidation, passwordValidation, newPasswordValidation, emailValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
 import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../application/jwt-service";
 import { usersService } from "../domain/users-service";
@@ -8,6 +8,8 @@ import { ObjectId } from "mongodb";
 import { securityDevicesServise } from "../domain/securityDevices-service";
 import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 import { securityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
+import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
+import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
 
 
 export const authRouter = Router({})
@@ -20,22 +22,23 @@ authRouter.post('/login', requestCountMiddleware, async (req: Request, res: Resp
          userAgent.includes('Desktop') ? 'Desktop Device' :
             'Unknown device';
    const ip = req.ip ?? 'Unknown IP';
-   const user = await usersService.checkCredentials(loginOrEmail, password)
-   if (!user) {
+   const result = await usersService.checkCredentials(loginOrEmail, password)
+   if (!result.errorMessage) {
       res.sendStatus(401)
       return
    }
-   if (user.errorsMessages) {
-      res.status(403).json({ errorsMessages: user.errorsMessages })
+   if (result.errorMessage) {
+      res.status(403).json({ errorsMessages: result.errorMessage })
       return
    }
 
-   if (user) {
+   if (result) {
+      const userId = result.data.user.id
       const deviceId = new ObjectId().toString()
-      const token = await jwtService.createJWT(user._id.toString(), deviceId)
-      const refreshToken = await jwtService.createRefreshToken(user._id.toString(), deviceId)
+      const token = await jwtService.createJWT(userId.toString(), deviceId)
+      const refreshToken = await jwtService.createRefreshToken(userId.toString(), deviceId)
       const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
-         user._id,
+         userId,
          new ObjectId(deviceId),
          ip,
          title,
@@ -65,9 +68,14 @@ authRouter.get('/me', userAuthMiddleware, async (req: Request, res: Response) =>
 
 authRouter.post('/registration', requestCountMiddleware, loginValidation, emailValidation, passwordValidation,
    inputValidationMiddleware, async (req: Request, res: Response) => {
-      const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
-      if (user.errorsMessages) {
-         res.status(400).json({ errorsMessages: user.errorsMessages })
+      const createUserDto: CreateUserDto = {
+         login: req.body.login,
+         password: req.body.password,
+         email: req.body.email
+       };
+            const result = await usersService.createUser(createUserDto)
+      if (result.errorMessage) {
+         res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.errorMessage })
          return
       }
       else {
@@ -193,3 +201,26 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
       return
    }
 });
+
+authRouter.post('/password-recovery', requestCountMiddleware, emailValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
+const email = req.body
+const result = await usersService.sendPasswordRecoveryEmail(email)
+if(result){
+   res.sendStatus(204)
+   return
+}
+})
+
+authRouter.post('/new-password', requestCountMiddleware, newPasswordValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
+const newPassword = req.body.newPassword
+const recoveryCode = req.body.recoveryCode
+const result = await usersService.setNewPassword(newPassword, recoveryCode)
+if(result) {
+   res.sendStatus(204)
+   return
+}
+if (result.errorsMessages) {
+   res.status(400).json({ errorsMessages: result.errorsMessages })
+   return
+}
+})
