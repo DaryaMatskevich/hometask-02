@@ -232,6 +232,5 @@ if (user.recoveryCodeExpirationDate < new Date()) return false;
 return updatePassword
     } 
  }
-
 }
 
