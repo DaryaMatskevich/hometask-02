@@ -187,13 +187,18 @@ export const usersService = {
     },
 
     async sendPasswordRecoveryEmail(email: string):Promise<boolean | any> {
+        
         let user = await usersQueryRepository.findUserByEmail(email)
       
         if (!user) {
             const errors = []
             errors.push({ message: 'email is not exist', field: 'email' })
 
-            return { errorsMessages: errors }
+            return { 
+                status: ResultStatus.NotFound,
+                data: null,
+                errorMessage: 'User not found',
+                extensions: errors }
         }
        
         const recoveryCode = uuidv4();
@@ -208,7 +213,7 @@ export const usersService = {
 
 if (saveRecoveryCode) {
         try {
-           await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
+           emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
             return true
         } catch (emailError) {
             console.error('Error sending recovery email:', emailError)
