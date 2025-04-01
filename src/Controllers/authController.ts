@@ -203,7 +203,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
 });
 
 authRouter.post('/password-recovery', requestCountMiddleware, emailValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
-const email = req.body
+const email = req.body.email
 const result = await usersService.sendPasswordRecoveryEmail(email)
 if(result){
    res.sendStatus(204)

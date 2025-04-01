@@ -32,9 +32,9 @@ export const emailManager = {
         const message = `
 <h1>Password recovery</h1>
 <p>To finish password recovery please follow the link below:
-<a href='${confirmationLink}'>Password recovery</a></p>
+<a href='${confirmationLink}'>Reset password</a></p>
 `;
         await emailAdapter.sendEmail(user.email, "Password recovery", message)
-    },
+    }
 
 }
