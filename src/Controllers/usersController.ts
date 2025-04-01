@@ -4,6 +4,7 @@ import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { loginValidation, passwordValidation, emailValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
 import { SortDirection } from "mongodb";
 import { authMiddleware } from "../Middlewares/authMiddleware";
+import { ResultStatus } from "../types/result/resultCode";
 
 export const usersRouter = Router({})
 
@@ -36,7 +37,7 @@ usersRouter.post('/', authMiddleware, loginValidation,
         const { login, email, password} = req.body;
         const createUserDto = {login, email, password}
         const result = await usersService.createUser(createUserDto)
-        if (result.extensions) {
+        if (result.status === ResultStatus.Forbidden) {
             return res.status(400).json(result.extensions)
         }
 
