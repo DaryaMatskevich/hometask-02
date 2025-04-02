@@ -238,17 +238,17 @@ export const usersService = {
         const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
         if (isSamePassword) {
             return {
-                status: ResultStatus.BadRequest,
+                status: ResultStatus.Unauthorized,
                 data: null,
-                errorMessage: 'Bad Request',
+                errorMessage: 'Unauthorized',
                 extensions: [{ message: 'password is incorrect', field: 'password' }]
             }
         }
         const passwordHash = await bcryptService.hashPassword(newPassword)
         if (user.recoveryCodeExpirationDate < new Date()) return {
-            status: ResultStatus.BadRequest,
+            status: ResultStatus.Unauthorized,
             data: null,
-            errorMessage: 'Bad Request',
+            errorMessage: 'Unauthorized',
             extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
         }
         else {

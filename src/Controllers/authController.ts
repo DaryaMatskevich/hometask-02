@@ -217,7 +217,7 @@ const newPassword = req.body.newPassword
 const recoveryCode = req.body.recoveryCode
 const result = await usersService.setNewPassword(newPassword, recoveryCode)
 
-if (result.status === ResultStatus.BadRequest) {
+if (result.status === ResultStatus.Unauthorized) {
    res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
    return}
 
