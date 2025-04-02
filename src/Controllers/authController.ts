@@ -24,14 +24,14 @@ authRouter.post('/login', requestCountMiddleware, async (req: Request, res: Resp
             'Unknown device';
    const ip = req.ip ?? 'Unknown IP';
    const result = await usersService.checkCredentials(loginOrEmail, password)
-   if (!result.errorMessage) {
+   if (result.status === ResultStatus.Unauthorized) {
       res.sendStatus(401)
       return
    }
-   if (result.errorMessage) {
-      res.status(403).json({ errorsMessages: result.errorMessage })
-      return
-   }
+   // if (result.errorMessage) {
+   //    res.status(403).json({ errorsMessages: result.errorMessage })
+   //    return
+   // }
 
    if (result) {
       const userId = result.data.user.id

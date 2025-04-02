@@ -93,7 +93,7 @@ export const usersService = {
         const user = await usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
         if (!user) {
             return {
-                status: ResultStatus.NotFound,
+                status: ResultStatus.Unauthorized,
                 data: null,
                 errorMessage: 'Not found',
                 extensions: [{ field: 'loginOrEmail', message: 'Not found' }]
@@ -110,9 +110,9 @@ export const usersService = {
         const isPasswordCorrect = await bcryptService.checkPassword(password, user.password)
         if (!isPasswordCorrect)
             return {
-                status: ResultStatus.BadRequest,
+                status: ResultStatus.Unauthorized,
                 data: null,
-                errorMessage: 'Bad Request',
+                errorMessage: 'Unauthorized',
                 extensions: [{ field: 'password', message: 'Wrong password' }]
             };
         return {
