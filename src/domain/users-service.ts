@@ -234,10 +234,10 @@ if (!user) {
 const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
 if (isSamePassword) {
     return null}
-    
+    const passwordHash = await bcryptService.hashPassword(newPassword)
 if (user.recoveryCodeExpirationDate < new Date()) return false;
  else {
-    const updatePassword = await usersRepository.updatePassword(user._id, newPassword)
+    const updatePassword = await usersRepository.updatePassword(user._id, passwordHash)
 return updatePassword
     } 
  }
