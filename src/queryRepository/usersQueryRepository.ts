@@ -60,15 +60,18 @@ export const usersQueryRepository = {
 
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<any| null> {
         const user = await usersCollection.findOne({
-            $or: [{ login: loginOrEmail }, { email: loginOrEmail }]
+            $or: [
+                { login: loginOrEmail },
+                 { email: loginOrEmail }
+                ]
         })
-        if(user)
-        return  {
-            id: user._id,
-            login: user.login,
-            email: user.email,
-            createdAt: user.createdAt,
-            isConfirmed: user.isConfirmed
+        if(user) {
+        return user
+            // id: user._id,
+            // login: user.login,
+            // email: user.email,
+            // createdAt: user.createdAt,
+            // isConfirmed: user.isConfirmed
         }
         else {
             return null}
