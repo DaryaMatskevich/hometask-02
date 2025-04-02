@@ -221,25 +221,23 @@ if (saveRecoveryCode) {
     }
 } else {
     return null
-}},
+}
+},
 
 async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean | any> {
 const user = await usersQueryRepository.findUserByRecoveryCode(recoveryCode)
 if (!user) {
-    const errors = []
-    errors.push({ message: 'recoveryCode is invalid', field: 'recoveryCode' })
-
-    return { errorsMessages: errors }
+    return null
 }
 const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
 if (isSamePassword) {
-    return null}
+    return null
+}
     const passwordHash = await bcryptService.hashPassword(newPassword)
-if (user.recoveryCodeExpirationDate < new Date()) return false;
+if (user.recoveryCodeExpirationDate < new Date()) return null;
  else {
     const updatePassword = await usersRepository.updatePassword(user._id, passwordHash)
 return updatePassword
     } 
- }
-}
+ }}
 
