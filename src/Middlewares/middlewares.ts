@@ -14,7 +14,6 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
           return { message: err.msg, field: (err as any).path }
         }),
     })
-    return
   } else {
     next()
   }
