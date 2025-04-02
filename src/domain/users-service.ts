@@ -186,58 +186,75 @@ export const usersService = {
         return updateResult
     },
 
-    async sendPasswordRecoveryEmail(email: string):Promise<boolean | any> {
-        
+    async sendPasswordRecoveryEmail(email: string): Promise<boolean | any> {
+
         let user = await usersQueryRepository.findUserByEmail(email)
-      
+
         if (!user) {
             const errors = []
             errors.push({ message: 'email is not exist', field: 'email' })
 
-            return { 
+            return {
                 status: ResultStatus.NotFound,
                 data: null,
                 errorMessage: 'User not found',
-                extensions: errors }
+                extensions: errors
+            }
         }
-       
+
         const recoveryCode = uuidv4();
         const recoveryCodeExpirationDate = add(new Date(), {
             hours: 1
         })
 
-     const saveRecoveryCode = await usersRepository.saveRecoveryCode(
-        user._id, 
-        recoveryCode, 
-        recoveryCodeExpirationDate)
+        const saveRecoveryCode = await usersRepository.saveRecoveryCode(
+            user._id,
+            recoveryCode,
+            recoveryCodeExpirationDate)
 
-if (saveRecoveryCode) {
-        try {
-           await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
-            return true
-        } catch (emailError) {
-            console.error('Error sending recovery email:', emailError)
+        if (saveRecoveryCode) {
+            try {
+                await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
+                return true
+            } catch (emailError) {
+                console.error('Error sending recovery email:', emailError)
+                return null
+            }
+        } else {
             return null
-    }
-} else {
-    return null
-}
-},
+        }
+    },
 
-async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean | any> {
-const user = await usersQueryRepository.findUserByRecoveryCode(recoveryCode)
-if (!user) {
-    return null
+    async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean | any> {
+        const user = await usersQueryRepository.findUserByRecoveryCode(recoveryCode)
+        if (!user) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: null,
+                errorMessage: 'Bad Request',
+                extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
+            }
+        }
+        const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
+        if (isSamePassword) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: null,
+                errorMessage: 'Bad Request',
+                extensions: [{ message: 'password is incorrect', field: 'password' }]
+            }
+        }
+        const passwordHash = await bcryptService.hashPassword(newPassword)
+        if (user.recoveryCodeExpirationDate < new Date()) return {
+            status: ResultStatus.BadRequest,
+            data: null,
+            errorMessage: 'Bad Request',
+            extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
+        }
+        else {
+            const updatePassword = await usersRepository.updatePassword(user._id, passwordHash)
+            return updatePassword
+        }
+    }
 }
-const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
-if (isSamePassword) {
-    return null
-}
-    const passwordHash = await bcryptService.hashPassword(newPassword)
-if (user.recoveryCodeExpirationDate < new Date()) return null;
- else {
-    const updatePassword = await usersRepository.updatePassword(user._id, passwordHash)
-return updatePassword
-    } 
- }}
 

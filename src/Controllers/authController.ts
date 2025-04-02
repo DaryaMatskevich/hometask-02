@@ -10,6 +10,7 @@ import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 import { securityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
 import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
 import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
+import { ResultStatus } from "../types/result/resultCode";
 
 
 export const authRouter = Router({})
@@ -215,11 +216,15 @@ authRouter.post('/new-password', requestCountMiddleware, newPasswordValidation, 
 const newPassword = req.body.newPassword
 const recoveryCode = req.body.recoveryCode
 const result = await usersService.setNewPassword(newPassword, recoveryCode)
-if(!result) {
-   res.sendStatus(400)
-   return
 
-} else {
+if (result.status === ResultStatus.BadRequest) {
+   res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+   return}
+
+
+
+
+ else {
    res.sendStatus(204)
    return
 }
