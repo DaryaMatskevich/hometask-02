@@ -71,6 +71,8 @@ let result = await usersCollection.updateOne(
             {_id: userId}, 
             {$set: 
         {password: newPassword,
+            recoveryCode: null,
+            recoveryCodeExpirationDate: null 
         }}
             )
         return result.modifiedCount === 1
