@@ -108,19 +108,21 @@ export const usersService = {
         // }
 
         const isPasswordCorrect = await bcryptService.checkPassword(password, user.password)
-        if (!isPasswordCorrect)
+        if (!isPasswordCorrect) {
             return {
                 status: ResultStatus.Unauthorized,
                 data: null,
                 errorMessage: 'Unauthorized',
                 extensions: [{ field: 'password', message: 'Wrong password' }]
-            };
+            } }
+            else {
         return {
             status: ResultStatus.Success,
             data: user,
             extensions: []
         }
-    },
+    }
+},
 
     async confirmEmail(code: string): Promise<boolean | any> {
         let user = await usersQueryRepository.findUserByConfirmationCode(code)
