@@ -33,7 +33,7 @@ authRouter.post('/login', requestCountMiddleware, async (req: Request, res: Resp
    //    return
    // }
 
-   if (result) {
+   if (result.status === ResultStatus.Success) {
       const userId = result.data.user.id
       const deviceId = new ObjectId().toString()
       const token = await jwtService.createJWT(userId.toString(), deviceId)
