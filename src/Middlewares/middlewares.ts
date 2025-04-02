@@ -52,7 +52,7 @@ export const loginValidation = body('login').trim().isLength({ min: 3, max: 10 }
   .withMessage('A login can only contain letters, numbers, underscores, and hyphens.')
 
 export const passwordValidation = body('password').trim().isLength({ min: 6, max: 20 })
-  .withMessage('Password must contain from 3 to 10 symbols')
+  .withMessage('Password must contain from 6 to 20 symbols')
 
 export const emailValidation = body('email').trim().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   .withMessage('Email is not right')
