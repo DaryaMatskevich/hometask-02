@@ -221,7 +221,9 @@ if (result.status === ResultStatus.Unauthorized) {
    res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
    return}
 
-
+   if (result.status === ResultStatus.BadRequest) {
+      res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+      return}
 
 
  else {
