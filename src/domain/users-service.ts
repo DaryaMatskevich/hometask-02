@@ -118,7 +118,7 @@ export const usersService = {
             else {
         return {
             status: ResultStatus.Success,
-            data: user,
+            data: user.id.toString(),
             extensions: []
         }
     }

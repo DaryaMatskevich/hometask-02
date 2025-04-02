@@ -34,10 +34,10 @@ authRouter.post('/login', requestCountMiddleware, async (req: Request, res: Resp
    // }
 
    if (result.status === ResultStatus.Success) {
-      const userId = result.data.id
+      const userId = result.data
       const deviceId = new ObjectId().toString()
-      const token = await jwtService.createJWT(userId.toString(), deviceId)
-      const refreshToken = await jwtService.createRefreshToken(userId.toString(), deviceId)
+      const token = await jwtService.createJWT(userId, deviceId)
+      const refreshToken = await jwtService.createRefreshToken(userId, deviceId)
       const createSecurityDevice = await securityDevicesServise.createSecurityDevice(
          userId,
          new ObjectId(deviceId),
