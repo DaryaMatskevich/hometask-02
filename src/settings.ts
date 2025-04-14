@@ -34,7 +34,7 @@ export const SETTINGS = {
         AUTH: {
             ROOT: '/auth',
             LOGIN: '/auth/login',
-            REGISTRATION: '/auth/registration',
+            REGISTRATION: '/registration',
             REGISTRATION_CONFIRMATION: '/auth/registration-confirmation',
             REGISTRATION_EMAIL_RESENDING: 'auth/registration-email-resending',
             REFRESH_TOKEN: '/auth/refresh-token',
