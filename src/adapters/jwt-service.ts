@@ -2,16 +2,16 @@ import jwt from 'jsonwebtoken'
 import { SETTINGS } from '../settings'
 
 
-export const jwtService = {
+export class JwtService {
     async createJWT(userId: string, deviceId: string) {
         const token = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_SECRET, { expiresIn: '10s' })
         return token
-    },
+    }
 
     async createRefreshToken(userId: string, deviceId: string) {
         const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20s' })
         return refreshToken
-    },
+    }
 
     async getUserIdByToken(token: string) {
         try {
@@ -21,7 +21,7 @@ export const jwtService = {
         catch (error) {
             return null
         }
-    },
+    }
 
     async getUserIdByRefreshToken(token: string) {
         try {

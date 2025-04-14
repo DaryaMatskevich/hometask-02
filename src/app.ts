@@ -1,15 +1,15 @@
 import express from 'express'
-import { blogsRouter } from './Controllers/blogsController'
-import { postsRouter } from './Controllers/postsController'
+import { blogsRouter } from './Routes/blogs-router'
+import { postsRouter } from './Routes/posts-router'
 import { clearBlogsData } from './Repository/blogsRepository'
 import { clearPostsData } from './Repository/postsRepository'
-import { usersRouter } from './Controllers/usersController'
-import { authRouter } from './Controllers/authController'
+import { usersRouter } from './Routes/users-router'
+import { authRouter } from './Routes/auth-router'
 import { clearUsersData } from './Repository/usersRepository'
-import { commentsRouter } from './Controllers/commentsController'
+import { commentsRouter } from './Routes/comments-router'
 import { clearCommentsData } from './Repository/commentsRepository'
 import cookieParser from 'cookie-parser'
-import { securityDevicesRouter } from './Controllers/securityDevicesController'
+import { securityDevicesRouter } from './Routes/devices-router'
 
 
 export const app = express()

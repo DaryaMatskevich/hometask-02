@@ -1,8 +1,13 @@
 import { PaginatedPosts, PostsFilter, PostViewType } from "../types/PostTypes/PostViewType";
-import { postsRepository } from "../Repository/postsRepository";
+import { PostsRepository } from "../Repository/postsRepository";
 
 
-export const postsService = {
+export class PostsService  {
+    private postsRepository: PostsRepository
+
+    constructor() {
+        this.postsRepository = new PostsRepository()
+    }
 
     async findPosts(
         pageNumber: number,
@@ -12,14 +17,14 @@ export const postsService = {
         blogId?: string)
         : Promise<PaginatedPosts<PostViewType>> {
         const filter: PostsFilter = blogId ? {blogId}:{}
-        const posts = await postsRepository.findPosts(
+        const posts = await this.postsRepository.findPosts(
             pageNumber,
             pageSize,
             sortBy,
             sortDirection,
             filter
         );
-        const postsCount = await postsRepository.getPostsCount(filter)
+        const postsCount = await this.postsRepository.getPostsCount(filter)
         return {
             pagesCount: Math.ceil(postsCount / pageSize),
             page: pageNumber,
@@ -28,23 +33,23 @@ export const postsService = {
             items: posts
 
         }
-    },
+    }
 
     async findPostById(id: string): Promise<PostViewType | null> {
-        return await postsRepository.findPostById(id)
-    },
+        return await this.postsRepository.findPostById(id)
+    }
 
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
-        return await postsRepository.createPost(title, shortDescription, content, blogId)
+        return await this.postsRepository.createPost(title, shortDescription, content, blogId)
 
-    },
+    }
 
     async updatePost(id: string, title: string, shortDescription: string,
         content: string, blogId: string): Promise<boolean> {
-        return await postsRepository.updatePost(id, title, shortDescription, content, blogId)
-    },
+        return await this.postsRepository.updatePost(id, title, shortDescription, content, blogId)
+    }
 
     async deletePostById(id: string): Promise<boolean> {
-        return await postsRepository.deletePostById(id)
-    },
+        return await this.postsRepository.deletePostById(id)
+    }
 }

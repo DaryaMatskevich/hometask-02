@@ -1,109 +1,119 @@
-import { Request, Response, Router } from "express"
-import { postsService } from "../domain/posts-service"
-import { authMiddleware } from "../Middlewares/authMiddleware"
-import { blogIdValidation, contentValidation, inputValidationMiddleware, shortDescriptionValidation, titleValidation } from "../Middlewares/middlewares"
+import { Request, Response } from "express"
+import { PostsService } from "../domain/posts-service"
 import { SortDirection } from "mongodb"
-import { commentsService } from "../domain/comments-service"
-import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware"
-import { commentValidation } from "../Middlewares/middlewares"
-import { commentsQueryRepository } from "../queryRepository/commentsQueryRepository"
-import { postsRepository } from "../Repository/postsRepository"
+import { CommentsService} from "../domain/comments-service"
+import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository"
+import { PostsRepository } from "../Repository/postsRepository"
 
-export const postsRouter = Router({})
+export class PostsController {
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-    let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
-    let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
-    let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
-    let sortDirection: SortDirection =
-        req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
-            ? 'asc'
-            : 'desc'
+    private postsRepository: PostsRepository
+    private commentsQueryRepository: CommentsQueryRepository
+    private commentsService: CommentsService
+    private postsService: PostsService
 
-    const foundPosts = await postsService.findPosts(
-        pageNumber,
-        pageSize,
-        sortBy,
-        sortDirection
-    )
-    res.status(200).send(foundPosts)
-})
-
-postsRouter.get('/:id', async (req: Request, res: Response) => {
-    let post = await postsService.findPostById(req.params.id)
-    if (post) {
-        res.status(200).send(post)
+    constructor() {
+        this.postsRepository = new PostsRepository()
+        this.commentsQueryRepository = new CommentsQueryRepository()
+        this.commentsService = new CommentsService()
+        this.postsService = new PostsService()
     }
-    else { res.sendStatus(404) }
-})
 
-postsRouter.post('/', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const { title, shortDescription, content, blogId } = req.body;
-    const newPost = await postsService.createPost(title, shortDescription, content, blogId);
-    res.status(201).send(newPost)
-})
+    async getPosts(req: Request, res: Response) {
+        let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
+        let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+        let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
+        let sortDirection: SortDirection =
+            req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
+                ? 'asc'
+                : 'desc'
 
-postsRouter.put('/:id', authMiddleware, blogIdValidation, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const { title, shortDescription, content, blogId } = req.body;
-    let isUpdated = await postsService.updatePost(req.params.id, title, shortDescription, content, blogId)
-    if (isUpdated) {
-        res.sendStatus(204)
-    } else {
+        const foundPosts = await this.postsService.findPosts(
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection
+        )
+        res.status(200).send(foundPosts)
+    }
+
+    async getPostById(req: Request, res: Response) {
+        let post = await this.postsService.findPostById(req.params.id)
+        if (post) {
+            res.status(200).send(post)
+        }
+        else { res.sendStatus(404) }
+    }
+
+    async createPost(req: Request, res: Response) {
+        const { title, shortDescription, content, blogId } = req.body;
+        const newPost = await this.postsService.createPost(title, shortDescription, content, blogId);
+        res.status(201).send(newPost)
+    }
+
+    async updatePostById(req: Request, res: Response) {
+        const { title, shortDescription, content, blogId } = req.body;
+        let isUpdated = await this.postsService.updatePost(req.params.id, title, shortDescription, content, blogId)
+        if (isUpdated) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
+    }
+
+    async deletePostById(req: Request, res: Response) {
+        const isDeleted = await this.postsService.deletePostById(req.params.id)
+        if (isDeleted) {
+            res.sendStatus(204)
+        }
         res.sendStatus(404)
+    }
+
+    async getCommentsByPostId(req: Request, res: Response) {
+        const postId = req.params.id
+        let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
+        let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
+        let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
+        let sortDirection: SortDirection =
+            req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
+                ? 'asc'
+                : 'desc'
+        const post = await this.postsRepository.findPostById(postId)
+        if (!post) {
+            res.sendStatus(404)
+            return
+        }
+        const comments = await this.commentsQueryRepository.getCommentsByPostId(postId, pageNumber,
+            pageSize, sortBy, sortDirection)
+        if (comments) {
+            res.status(200).send(comments)
+        }
+        else { res.sendStatus(404) }
+    }
+
+    async createCommentForPost(req: Request, res: Response) {
+        const postId = req.params.id;
+        const { content } = req.body;
+        const userLogin = req.user!.login;
+        const userId = req.user!.userId
+        const post = await this.postsRepository.findPostById(postId)
+        if (!post) {
+            res.sendStatus(404)
+            return
+        }
+        const commentId = await this.commentsService.createComment(postId, content, userLogin, userId);
+        if (!commentId) {
+            res.sendStatus(500)
+            return
+        }
+        const newComment = await this.commentsQueryRepository.getCommentById(commentId)
+        if (!newComment) {
+            res.sendStatus(500)
+            return
+        } else {
+            res.status(201).send(newComment)
+        }
     }
 }
-)
 
-postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-    const isDeleted = await postsService.deletePostById(req.params.id)
-    if (isDeleted) {
-        res.sendStatus(204)
-    }
-    res.sendStatus(404)
-})
-
-postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
-    const postId = req.params.id
-    let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
-    let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
-    let sortBy = req.query.sortBy ? req.query.sortBy.toString() : 'createdAt'
-    let sortDirection: SortDirection =
-        req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
-            ? 'asc'
-            : 'desc'
-    const post = await postsRepository.findPostById(postId)
-    if (!post) {
-        res.sendStatus(404)
-        return
-    }
-    const comments = await commentsQueryRepository.getCommentsByPostId(postId, pageNumber,
-        pageSize, sortBy, sortDirection)
-    if (comments) {
-        res.status(200).send(comments)
-    }
-    else { res.sendStatus(404) }
-})
-
-postsRouter.post('/:id/comments', userAuthMiddleware, commentValidation, inputValidationMiddleware, async (req: Request, res: Response) => {
-    const postId = req.params.id;
-    const { content } = req.body;
-    const userLogin = req.user!.login;
-    const userId = req.user!.userId
-    const post = await postsRepository.findPostById(postId)
-    if (!post) {
-        res.sendStatus(404)
-        return
-    }
-    const commentId = await commentsService.createComment(postId, content, userLogin, userId);
-    if (!commentId) {
-        res.sendStatus(500)
-        return
-    }
-    const newComment = await commentsQueryRepository.getCommentById(commentId)
-    if (!newComment) {
-        res.sendStatus(500)
-        return
-    } else {
-    res.status(201).send(newComment)
-    }
-})
+export const postsController = new PostsController()

@@ -1,11 +1,13 @@
-import { ObjectId } from "mongodb";
-import { commentsQueryRepository } from "../queryRepository/commentsQueryRepository";
-import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
-import { commentsRepository } from "../Repository/commentsRepository";
+
+import { CommentsRepository } from "../Repository/commentsRepository";
 
 
 
-export const commentsService = {
+export class CommentsService  {
+   private commentsRepository : CommentsRepository
+    constructor() {
+        this.commentsRepository = new CommentsRepository()
+    }
 
     async createComment(postId: string, content: string, userLogin: string, userId: string): Promise<string> {
 
@@ -18,15 +20,15 @@ export const commentsService = {
             },
             createdAt: new Date().toISOString()
         }
-        return commentsRepository.createComment(newComment)
-    },
+        return this.commentsRepository.createComment(newComment)
+    }
 
     async deleteCommentById(id: string): Promise<boolean> {
-        return await commentsRepository.deleteCommentById(id)
-    },
+        return await this.commentsRepository.deleteCommentById(id)
+    }
 
     async updateComment(id: string, content: string): Promise<boolean> {
-        return await commentsRepository.updateComment(id, content)
+        return await this.commentsRepository.updateComment(id, content)
     }
 
 }

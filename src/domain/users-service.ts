@@ -1,22 +1,31 @@
-import { usersRepository } from "../Repository/usersRepository";
-import { usersQueryRepository } from "../queryRepository/usersQueryRepository";
+import { UsersRepository } from "../Repository/usersRepository";
 import { v4 as uuidv4 } from "uuid";
 import { add } from "date-fns";
-import { emailManager } from "../managers/email-manager";
+import { EmailManager } from "../managers/email-manager";
 import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
 import { Result } from "../types/result/result.type";
 import { ResultStatus } from "../types/result/resultCode";
-import { bcryptService } from "./bcrypt-service";
+import { BcryptService } from "../adapters/bcrypt-service";
+import { ObjectId } from "mongodb";
+import { UserDbType } from "../types/UserTypes/UserDBType";
 
 
 
 
-export const usersService = {
+export class UsersService {
+
+    private usersRepository: UsersRepository
+    private emailManager: EmailManager
+    private bcryptService: BcryptService
+    constructor() {
+        this.usersRepository = new UsersRepository()
+        this.emailManager = new EmailManager()
+        this.bcryptService = new BcryptService()
+    }
     async createUser(dto: CreateUserDto): Promise<Result<string | null>> {
         const { login, email, password } = dto
 
-
-        const existingUser = await usersRepository.findUserByLoginOrEmail(login, email)
+        const existingUser = await this.usersRepository.findUserByLoginOrEmail(login, email)
         if (existingUser) {
             const errors: Array<{ message: string; field: string }> = [];
 
@@ -33,23 +42,24 @@ export const usersService = {
                 extensions: errors
             }
         }
-        const passwordHash = await bcryptService.hashPassword(password)
+        const passwordHash = await this.bcryptService.hashPassword(password)
 
-        const newUser = {
-            login: login,
-            email: email,
-            password: passwordHash,
-            createdAt: new Date(),
-            confirmationCode: uuidv4(),
-            expirationDate: add(new Date(), {
+        let user = new UserDbType(
+            new ObjectId(),
+            login,
+            email,
+            passwordHash,
+            new Date(),
+            uuidv4(),
+            add(new Date(), {
                 hours: 1
             }),
-            isConfirmed: false
-        }
-        const newUserId = await usersRepository.createUser(newUser)
+            false
+        )
+        const newUserId = await this.usersRepository.createUser(user)
 
         try {
-            emailManager.sendEmailConfirmationMessage(newUser)
+            this.emailManager.sendEmailConfirmationMessage(user)
         } catch (error) {
             console.error(error)
             return {
@@ -64,11 +74,9 @@ export const usersService = {
             data: newUserId,
             extensions: []
         }
-    },
-
-
+    }
     async deleteUserById(id: string): Promise<Result<null>> {
-        const isDeleted = await usersRepository.deleteUserById(id)
+        const isDeleted = await this.usersRepository.deleteUserById(id)
         if (isDeleted) {
             return {
                 status: ResultStatus.Success,
@@ -86,176 +94,6 @@ export const usersService = {
                     message: 'User with this ID does not exist'
                 }]
             }
-        }
-    },
-
-    async checkCredentials(loginOrEmail: string, password: string): Promise<Result<any | null>> {
-        const user = await usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
-        if (!user) {
-            return {
-                status: ResultStatus.Unauthorized,
-                data: null,
-                errorMessage: 'Not found',
-                extensions: [{ field: 'loginOrEmail', message: 'Not found' }]
-            };
-        }
-
-        // if (!user.isConfirmed) {
-        //     const errors = []
-        //     errors.push({ message: 'access denied'})
-
-        //     return { errorsMessages: errors }
-        // }
-
-        const isPasswordCorrect = await bcryptService.checkPassword(password, user.password)
-        if (!isPasswordCorrect) {
-            return {
-                status: ResultStatus.Unauthorized,
-                data: null,
-                errorMessage: 'Unauthorized',
-                extensions: [{ field: 'password', message: 'Wrong password' }]
-            } }
-            else {
-        return {
-            status: ResultStatus.Success,
-            data: user,
-            extensions: []
-        }
-    }
-},
-
-    async confirmEmail(code: string): Promise<boolean | any> {
-        let user = await usersQueryRepository.findUserByConfirmationCode(code)
-        // if (!user) return false;
-        // if(user.isConfirmed) return false;
-
-        if (!user) {
-            const errors = []
-            errors.push({ message: 'code is invalid', field: 'code' })
-
-            return { errorsMessages: errors }
-        }
-        if (user.expirationDate < new Date()) return false;
-
-        if (user.isConfirmed) {
-            const errors = []
-            errors.push({ message: 'code is already confirmed', field: 'code' })
-
-
-            return { errorsMessages: errors }
-        }
-        let result = await usersRepository.updateConfirmation(user._id)
-        return result
-    },
-
-    async resendConfirmationEmail(email: string): Promise<boolean | any> {
-        let user = await usersQueryRepository.findUserByEmail(email)
-        // if (!user) return false;
-        // if (user.isConfirmed) return false;
-
-        if (!user) {
-            const errors = []
-            errors.push({ message: 'email is not exist', field: 'email' })
-
-            return { errorsMessages: errors }
-        }
-
-        if (user.isConfirmed) {
-            const errors = []
-            errors.push({ message: 'email is already confirmed', field: 'email' })
-
-
-            return { errorsMessages: errors }
-        }
-        const newConfirmationCode = uuidv4();
-        const newExpirationDate = add(new Date(), {
-            hours: 1
-        })
-
-        const updateResult = await usersRepository.updateUserConfirmationCode(user._id, newConfirmationCode, newExpirationDate)
-        if (!updateResult) return false;
-
-        const updateUser = await usersQueryRepository.findUserByEmail(email)
-        if (!updateUser) return false;
-
-        try {
-            emailManager.sendEmailConfirmationMessage(updateUser)
-        }
-        catch (error) {
-            console.error(error)
-            return null
-        }
-        return updateResult
-    },
-
-    async sendPasswordRecoveryEmail(email: string): Promise<boolean | any> {
-
-        let user = await usersQueryRepository.findUserByEmail(email)
-
-        if (!user) {
-            const errors = []
-            errors.push({ message: 'email is not exist', field: 'email' })
-
-            return {
-                status: ResultStatus.NotFound,
-                data: null,
-                errorMessage: 'User not found',
-                extensions: errors
-            }
-        }
-
-        const recoveryCode = uuidv4();
-        const recoveryCodeExpirationDate = add(new Date(), {
-            hours: 1
-        })
-
-        const saveRecoveryCode = await usersRepository.saveRecoveryCode(
-            user._id,
-            recoveryCode,
-            recoveryCodeExpirationDate)
-
-        if (saveRecoveryCode) {
-            try {
-                await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
-                return true
-            } catch (emailError) {
-                console.error('Error sending recovery email:', emailError)
-                return null
-            }
-        } else {
-            return null
-        }
-    },
-
-    async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean | any> {
-        const user = await usersQueryRepository.findUserByRecoveryCode(recoveryCode)
-        if (!user) {
-            return {
-                status: ResultStatus.BadRequest,
-                data: null,
-                errorMessage: 'Bad Request',
-                extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
-            }
-        }
-        const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
-        if (isSamePassword) {
-            return {
-                status: ResultStatus.Unauthorized,
-                data: null,
-                errorMessage: 'Unauthorized',
-                extensions: [{ message: 'password is incorrect', field: 'password' }]
-            }
-        }
-        const passwordHash = await bcryptService.hashPassword(newPassword)
-        if (user.recoveryCodeExpirationDate < new Date()) return {
-            status: ResultStatus.Unauthorized,
-            data: null,
-            errorMessage: 'Unauthorized',
-            extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
-        }
-        else {
-            const updatePassword = await usersRepository.updatePassword(user._id, passwordHash)
-            return updatePassword
         }
     }
 }

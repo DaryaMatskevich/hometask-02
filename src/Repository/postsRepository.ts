@@ -5,7 +5,7 @@ export async function clearPostsData() {
     await postsCollection.deleteMany({})
 }
 
-export const postsRepository = {
+export class PostsRepository  {
 
     async findPosts(
         pageNumber: number,
@@ -20,10 +20,11 @@ export const postsRepository = {
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray();
-    },
+    }
+
     async getPostsCount(filter: {} ): Promise<number> {
         return postsCollection.countDocuments(filter)
-    },
+    }
    
     async findPostById(id: string): Promise<PostViewType | null> {
         let post: PostViewType | null = await postsCollection.findOne({ id: id }, { projection: { _id: 0 } })
@@ -32,7 +33,7 @@ export const postsRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
 
@@ -54,7 +55,7 @@ export const postsRepository = {
         } else {
             return null;
         }
-    },
+    }
 
     async updatePost(id: string, title: string, shortDescription: string,
         content: string, blogId: string): Promise<boolean> {
@@ -67,7 +68,7 @@ export const postsRepository = {
             }
         })
         return result.matchedCount === 1;
-    },
+    }
 
     async deletePostById(id: string): Promise<boolean> {
         const result = await postsCollection.deleteOne({ id: id })

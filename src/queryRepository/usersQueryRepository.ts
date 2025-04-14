@@ -3,7 +3,9 @@ import { usersCollection } from "../Repository/db";
 import { UserDBType } from "../types/UserTypes/UserDBType";
 import { UserAuthType } from "../types/UserTypes/UserAuthType";
 
-export const usersQueryRepository = {
+
+export class UsersQueryRepository  {
+    
     async findUsers(
         pageNumber: number,
         pageSize: number,
@@ -42,7 +44,7 @@ export const usersQueryRepository = {
             items: mappedUsers
         }
 
-    },
+    }
 
     async findUserById(id: string ) {
         let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
@@ -56,7 +58,7 @@ export const usersQueryRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<any| null> {
         const user = await usersCollection.findOne({
@@ -75,7 +77,7 @@ export const usersQueryRepository = {
         }
         else {
             return null}
-    },
+    }
 
     async findUserByIdforAuth(id: string): Promise<UserAuthType | null> {
         let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
@@ -88,12 +90,12 @@ export const usersQueryRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async findUserByConfirmationCode(emailConfirmationCode: string) {
         const user = await usersCollection.findOne({ confirmationCode: emailConfirmationCode })
         return user
-    },
+    }
 
     async findUserByEmail(email: string): Promise<any | null> {
         try {
@@ -103,7 +105,7 @@ export const usersQueryRepository = {
         catch (error) {
             console.error("Ошибка при поиске пользователя:", error)
         }
-    },  
+    }
 
     async findUserByObjectId(id: string ) {
         let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
@@ -117,10 +119,11 @@ export const usersQueryRepository = {
         } else {
             return null
         }
-    },
+    }
 
     async findUserByRecoveryCode(recoveryCode: string) {
         const user = await usersCollection.findOne({ recoveryCode: recoveryCode })
         return user
-    },
+    }
 }
+

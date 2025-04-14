@@ -1,9 +1,16 @@
-import { blogsRepository } from "../Repository/blogsRepository";
+import { BlogsRepository} from "../Repository/blogsRepository";
 import { BlogViewType, PaginatedResponse } from "../types/BlogTypes/BlogTypes";
 
 
 
-export const blogsService = {
+export class BlogsService  {
+
+  private blogsRepository: BlogsRepository
+  
+  constructor(){
+    this.blogsRepository = new BlogsRepository()
+
+  }
 
   async findAllBlogs(
     pageNumber: number,
@@ -12,14 +19,14 @@ export const blogsService = {
     sortDirection: "asc" | "desc",
     searchNameTerm: string | null
   ): Promise<PaginatedResponse<BlogViewType>> {
-    const blogs = await blogsRepository.findAllBlogs(
+    const blogs = await this.blogsRepository.findAllBlogs(
       pageNumber,
       pageSize,
       sortBy,
       sortDirection,
       searchNameTerm
     )
-    const blogsCount = await blogsRepository.getBlogsCount(searchNameTerm)
+    const blogsCount = await this.blogsRepository.getBlogsCount(searchNameTerm)
 
     return {
       pagesCount: Math.ceil(blogsCount / pageSize),
@@ -28,11 +35,11 @@ export const blogsService = {
       totalCount: blogsCount,
       items: blogs
     }
-  },
+  }
 
   async findBlogById(id: string): Promise<BlogViewType | null> {
-    return blogsRepository.findBlogById(id)
-  },
+    return this.blogsRepository.findBlogById(id)
+  }
 
   async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogViewType | null> {
     const newBlog = {
@@ -43,16 +50,16 @@ export const blogsService = {
       createdAt: (new Date()).toISOString(),
       isMembership: false
     }
-    const createdBlog = await blogsRepository.createBlog(newBlog)
+    const createdBlog = await this.blogsRepository.createBlog(newBlog)
 
     return createdBlog
-  },
+  }
 
   async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise<boolean> {
-    return await blogsRepository.updateBlog(id, name, description, websiteUrl)
-  },
+    return await this.blogsRepository.updateBlog(id, name, description, websiteUrl)
+  }
 
   async deleteBlog(id: string): Promise<boolean> {
-    return await blogsRepository.deleteBlog(id)
-  },
+    return await this.blogsRepository.deleteBlog(id)
+  }
 }

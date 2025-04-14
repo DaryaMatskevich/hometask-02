@@ -19,11 +19,11 @@ export async function runDb(url: string): Promise<boolean> {
     let client = new MongoClient(url);
     let db = client.db(SETTINGS.DB_NAME)
 
-    blogsCollection = db.collection<BlogViewType>(SETTINGS.PATH.BLOGS)
-    postsCollection = db.collection<PostViewType>(SETTINGS.PATH.POSTS)
-    usersCollection = db.collection<any>(SETTINGS.PATH.USERS)
-    commentsCollection = db.collection<any>(SETTINGS.PATH.COMMENTS)
-    devicesCollection = db.collection<any>(SETTINGS.PATH.DEVICES)
+    blogsCollection = db.collection<BlogViewType>(SETTINGS.PATH.BLOGS.ROOT)
+    postsCollection = db.collection<PostViewType>(SETTINGS.PATH.POSTS.ROOT)
+    usersCollection = db.collection<any>(SETTINGS.PATH.USERS.ROOT)
+    commentsCollection = db.collection<any>(SETTINGS.PATH.COMMENTS.ROOT)
+    devicesCollection = db.collection<any>(SETTINGS.PATH.DEVICES.ROOT)
     apiRequestCountCollection = db.collection<any>(SETTINGS.PATH.REQUEST_COUNT)
     
 

@@ -1,6 +1,10 @@
-import { emailAdapter } from "../adapters/email-adapter"
+import { EmailAdapter } from "../adapters/email-adapter"
 
-export const emailManager = {
+export class EmailManager {
+    emailAdapter: EmailAdapter
+    constructor() {
+        this.emailAdapter = new EmailAdapter()
+    }
     async sendEmailRecoveryMessage(user: any) {
         const recoveryLink = `https://some-front.com/password-recovery?code=${user.confirmationCode}`;
 
@@ -11,9 +15,9 @@ export const emailManager = {
             <p>If you did not request a password reset, please ignore this email.</p>
         `;
 
-        await emailAdapter.sendEmail(user.email, "Password Recovery", message);
+        await this.emailAdapter.sendEmail(user.email, "Password Recovery", message);
 
-    },
+    }
 
     async sendEmailConfirmationMessage(user: any) {
         const confirmationLink = `https://some-front.com/confirm-registration?code=${user.confirmationCode}`;
@@ -23,8 +27,8 @@ export const emailManager = {
 <p>To finish registration, please follow the link below:</p>
 <a href='${confirmationLink}'>Complete registration</a>
 `;
-        await emailAdapter.sendEmail(user.email, "Confirm your email", message)
-    },
+        await this.emailAdapter.sendEmail(user.email, "Confirm your email", message)
+    }
 
     async sendPasswordRecoveryMessage(user: any, recoveryCode: string) {
         const confirmationLink = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode}`;
@@ -34,7 +38,7 @@ export const emailManager = {
 <p>To finish password recovery please follow the link below:
 <a href='${confirmationLink}'>Reset password</a></p>
 `;
-        await emailAdapter.sendEmail(user.email, "Password recovery", message)
+        await this.emailAdapter.sendEmail(user.email, "Password recovery", message)
     }
 
 }

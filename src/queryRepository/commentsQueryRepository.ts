@@ -3,7 +3,8 @@ import { commentsCollection } from "../Repository/db"
 import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
-export const commentsQueryRepository = {
+export class CommentsQueryRepository  {
+
     async getCommentsByPostId(postId: string,
         pageNumber: number,
         pageSize: number,
@@ -35,7 +36,7 @@ export const commentsQueryRepository = {
             items: mappedComments
         }
 
-    },
+    }
 
     async getCommentById(id: string): Promise<CommentViewType | null> {
         if (!ObjectId.isValid(id)) {
