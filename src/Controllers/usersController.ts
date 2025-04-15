@@ -3,17 +3,16 @@ import { UsersService } from "../domain/users-service";
 import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { SortDirection } from "mongodb";
 import { ResultStatus } from "../types/result/resultCode";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 @injectable()
 export class UsersController {
 
-    private usersQueryRepository: UsersQueryRepository
-    
-    constructor(private usersService: UsersService) {
-        
-        this.usersQueryRepository = new UsersQueryRepository()
-    }
+
+    constructor(
+        @inject(UsersService) private usersService: UsersService,
+        @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository) {
+}
     async getUsers(req: Request, res: Response): Promise<any> {
         let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
         let pageSize = req.query.pageSize ? +req.query.pageSize : 10;
