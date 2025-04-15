@@ -3,7 +3,7 @@ import { SETTINGS } from "../settings";
 import { setTimeout } from "node:timers";
 import { blogIdExistenseMiddleware, contentValidation, descriptionValidation, inputValidationMiddleware, nameValidation, shortDescriptionValidation, titleValidation, websiteUrlValidation } from "../Middlewares/middlewares";
 import { authMiddleware } from "../Middlewares/authMiddleware";
-import { blogsController } from "../Controllers/blogsController";
+import { blogsController } from "../composition-root";
 
 export const blogsRouter = Router()
 

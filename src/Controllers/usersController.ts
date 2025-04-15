@@ -3,14 +3,15 @@ import { UsersService } from "../domain/users-service";
 import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { SortDirection } from "mongodb";
 import { ResultStatus } from "../types/result/resultCode";
+import { injectable } from "inversify";
 
+@injectable()
 export class UsersController {
 
     private usersQueryRepository: UsersQueryRepository
-    private usersService: UsersService
     
-    constructor() {
-        this.usersService = new UsersService()
+    constructor(private usersService: UsersService) {
+        
         this.usersQueryRepository = new UsersQueryRepository()
     }
     async getUsers(req: Request, res: Response): Promise<any> {
@@ -58,4 +59,3 @@ export class UsersController {
         return res.sendStatus(204)
     }
 }
-export const usersController = new UsersController()

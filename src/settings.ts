@@ -7,41 +7,41 @@ export const SETTINGS = {
     PORT: process.env.PORT || 3003,
     PATH: {
         BLOGS: {
-            ROOT: '/blogs',
-            ID: '/blogs/:id',
-            ID_POSTS: '/blogs/:id/posts'
+            ROOT: '',
+            ID: '/:id',
+            ID_POSTS: '/:id/posts'
         },
         POSTS: {
-            ROOT: '/posts',
-            ID: '/posts/:id',
-            ID_COMMENTS: '/posts/:id/comments'
+            ROOT: '',
+            ID: '/:id',
+            ID_COMMENTS: '/:id/comments'
 
         },
         USERS: {
-            ROOT: '/users',
-            ID: '/users/:id'
+            ROOT: '',
+            ID: '/:id'
         },
         COMMENTS: {
-            ROOT: '/comments',
-            ID: '/comments/:id'
+            ROOT: '',
+            ID: '/:id'
         },
         DEVICES: {
-            ROOT: '/security/devices',
-            ID: '/security/devices/:id'
+            ROOT: '/devices',
+            ID: '/devices/:id'
         },
         REQUEST_COUNT: '/apiRequestCount',
         TESTING: '/testing',
         AUTH: {
-            ROOT: '/auth',
-            LOGIN: '/auth/login',
+            ROOT: '',
+            LOGIN: '/login',
             REGISTRATION: '/registration',
-            REGISTRATION_CONFIRMATION: '/auth/registration-confirmation',
-            REGISTRATION_EMAIL_RESENDING: 'auth/registration-email-resending',
-            REFRESH_TOKEN: '/auth/refresh-token',
-            LOGOUT: '/auth/logout',
-            PASSWORD_RECOVERY: '/auth/password-recovery',
-            NEW_PASSWORD: '/auth/new-password',
-            ME: '/auth/me'
+            REGISTRATION_CONFIRMATION: '/registration-confirmation',
+            REGISTRATION_EMAIL_RESENDING: '/registration-email-resending',
+            REFRESH_TOKEN: '/refresh-token',
+            LOGOUT: '/logout',
+            PASSWORD_RECOVERY: '/password-recovery',
+            NEW_PASSWORD: '/new-password',
+            ME: '/me'
         }
     },
     DB_NAME: process.env.DB_NAME || 'blog-platform',

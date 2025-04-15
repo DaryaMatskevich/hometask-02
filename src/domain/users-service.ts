@@ -8,19 +8,19 @@ import { ResultStatus } from "../types/result/resultCode";
 import { BcryptService } from "../adapters/bcrypt-service";
 import { ObjectId } from "mongodb";
 import { UserDbType } from "../types/UserTypes/UserDBType";
+import { inject, injectable } from "inversify";
 
 
 
-
+@injectable()
 export class UsersService {
+    
+    constructor(
+        @inject(UsersRepository) private usersRepository: UsersRepository,
+        @inject(EmailManager) private emailManager: EmailManager,
+        @inject (BcryptService) private bcryptService: BcryptService
+    ) {
 
-    private usersRepository: UsersRepository
-    private emailManager: EmailManager
-    private bcryptService: BcryptService
-    constructor() {
-        this.usersRepository = new UsersRepository()
-        this.emailManager = new EmailManager()
-        this.bcryptService = new BcryptService()
     }
     async createUser(dto: CreateUserDto): Promise<Result<string | null>> {
         const { login, email, password } = dto

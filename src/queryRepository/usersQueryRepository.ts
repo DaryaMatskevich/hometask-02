@@ -2,8 +2,9 @@ import { ObjectId } from "mongodb";
 import { usersCollection } from "../Repository/db";
 import { UserDBType } from "../types/UserTypes/UserDBType";
 import { UserAuthType } from "../types/UserTypes/UserAuthType";
+import { injectable } from "inversify";
 
-
+@injectable()
 export class UsersQueryRepository  {
     
     async findUsers(

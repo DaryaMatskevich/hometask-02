@@ -9,11 +9,9 @@ import { PostsService } from "../domain/posts-service";
 
 export class BlogsController {
 
-  private blogsService: BlogsService
-  private postsService: PostsService
-  constructor() {
-    this.blogsService = new BlogsService()
-    this.postsService = new PostsService()
+  constructor(private blogsService: BlogsService,
+    private postsService: PostsService) {
+
   }
 
   async getBlogs(req: Request, res: Response) {
@@ -103,4 +101,3 @@ export class BlogsController {
   }
 }
 
-export const blogsController = new BlogsController()

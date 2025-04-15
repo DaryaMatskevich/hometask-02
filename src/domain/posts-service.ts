@@ -3,10 +3,10 @@ import { PostsRepository } from "../Repository/postsRepository";
 
 
 export class PostsService  {
-    private postsRepository: PostsRepository
+    
 
-    constructor() {
-        this.postsRepository = new PostsRepository()
+    constructor(private postsRepository: PostsRepository) {
+        
     }
 
     async findPosts(

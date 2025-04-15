@@ -5,11 +5,8 @@ import { BlogViewType, PaginatedResponse } from "../types/BlogTypes/BlogTypes";
 
 export class BlogsService  {
 
-  private blogsRepository: BlogsRepository
-  
-  constructor(){
-    this.blogsRepository = new BlogsRepository()
-
+    constructor(private blogsRepository: BlogsRepository){
+   
   }
 
   async findAllBlogs(

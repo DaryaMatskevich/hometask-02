@@ -1,10 +1,11 @@
 import { ObjectId } from "mongodb"
 import { usersCollection } from "./db"
+import { injectable } from "inversify"
 
 export async function clearUsersData() {
     await usersCollection.deleteMany({})
 }
-
+@injectable()
 export class UsersRepository {
 
     async createUser(user: any): Promise<string> {

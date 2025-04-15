@@ -3,7 +3,11 @@ import { SETTINGS } from "../settings";
 import { authMiddleware } from "../Middlewares/authMiddleware";
 import { blogIdValidation, commentValidation, contentValidation, inputValidationMiddleware, shortDescriptionValidation, titleValidation } from "../Middlewares/middlewares";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
-import { postsController } from "../Controllers/postsController";
+import { PostsController} from "../Controllers/postsController";
+import { ioc } from "../composition-root";
+
+
+const postsController = ioc.getInstance<PostsController>(PostsController)
 
 export const postsRouter = Router()
 
