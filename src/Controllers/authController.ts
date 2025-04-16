@@ -20,7 +20,7 @@ export class AuthController {
       @inject(JwtService)  private jwtService: JwtService,
       @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
       @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
-      @inject(SecurityDevicesQueryRepository)private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
+      @inject(SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
       ) {
         }
    async login(req: Request, res: Response) {
