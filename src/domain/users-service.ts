@@ -9,6 +9,7 @@ import { bcryptService } from "../adapters/bcrypt-service";
 import { ObjectId } from "mongodb";
 import { UserDbType } from "../types/UserTypes/UserDBType";
 import { inject, injectable } from "inversify";
+import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 
 
 
@@ -17,10 +18,31 @@ export class UsersService {
 
     constructor(
         @inject(UsersRepository) private usersRepository: UsersRepository,
+        @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
     ) {
 
     }
-    async createUser(dto: CreateUserDto): Promise<Result<string | null>> {
+
+    async getUsers(pageNumber: number,
+        pageSize:number,
+        sortBy:string,
+        sortDirection:'asc' | 'desc',
+        searchLoginTerm:string | null,
+        searchEmailTerm: string | null) {
+        const users = await this.usersQueryRepository.findUsers(
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection,
+            searchLoginTerm,
+            searchEmailTerm
+        )
+        if(users) {
+            return users
+        } else {return null}
+    }
+
+    async createUser(dto: CreateUserDto): Promise<Result<any | null>> {
         const { login, email, password } = dto
 
         const existingUser = await this.usersRepository.findUserByLoginOrEmail(login, email)
@@ -56,6 +78,9 @@ export class UsersService {
         )
         const newUserId = await this.usersRepository.createUser(user)
 
+        if(newUserId) {
+    const newUser = await this.usersQueryRepository.findUserById(newUserId)
+
         try {
             emailManager.sendEmailConfirmationMessage(user)
         } catch (error) {
@@ -69,9 +94,13 @@ export class UsersService {
         }
         return {
             status: ResultStatus.Success,
-            data: newUserId,
+            data: newUser,
             extensions: []
-        }
+        }} else {
+            return {status: ResultStatus.Forbidden,
+            data: null,
+            extensions: []
+        }}
     }
     async deleteUserById(id: string): Promise<Result<null>> {
         const isDeleted = await this.usersRepository.deleteUserById(id)

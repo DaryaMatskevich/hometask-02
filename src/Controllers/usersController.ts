@@ -8,10 +8,10 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class UsersController {
 
-
     constructor(
-        @inject(UsersService) private usersService: UsersService,
-        @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository) {
+        @inject(UsersService) private usersService: UsersService
+    )
+      {
 }
     async getUsers(req: Request, res: Response): Promise<any> {
         let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
@@ -25,29 +25,39 @@ export class UsersController {
         let searchLoginTerm = req.query.searchLoginTerm ? req.query.searchLoginTerm.toString() : null
         let searchEmailTerm = req.query.searchEmailTerm ? req.query.searchEmailTerm.toString() : null
 
-        const foundUsers = await this.usersQueryRepository.findUsers(
-            pageNumber,
+        // const foundUsers = await this.usersQueryRepository.findUsers(
+        //     pageNumber,
+        //     pageSize,
+        //     sortBy,
+        //     sortDirection,
+        //     searchLoginTerm,
+        //     searchEmailTerm
+        // )
+        const users = await this.usersService.getUsers(pageNumber,
             pageSize,
             sortBy,
             sortDirection,
             searchLoginTerm,
-            searchEmailTerm
-        )
-        return res.status(200).json(foundUsers)
-    }
+            searchEmailTerm)
+            if(users) {
+        return res.status(200).json(users)
+    }else res.sendStatus(401)}
 
 
     async createUser(req: Request, res: Response): Promise<any> {
         const { login, email, password } = req.body;
         const createUserDto = { login, email, password }
         const result = await this.usersService.createUser(createUserDto)
+
         if (result.status === ResultStatus.Forbidden) {
             return res.status(400).json(result.extensions)
         }
 
-        const newUser = await this.usersQueryRepository.findUserById(result.data!);
-        return res.status(201).json(newUser)
-    }
+        // const newUser = await this.usersQueryRepository.findUserById(result.data!);
+        if(result.status === ResultStatus.Success) {
+        
+        return res.status(201).json(result.data)
+    }}
 
 
     async deleteUserById(req: Request, res: Response): Promise<any> {
