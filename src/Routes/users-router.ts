@@ -14,7 +14,7 @@ usersRouter.get(SETTINGS.PATH.USERS.ROOT,
 
 )
 
-usersRouter.post(SETTINGS.PATH.USERS.ID,
+usersRouter.post(SETTINGS.PATH.USERS.ROOT,
     authMiddleware, 
     loginValidation,
     passwordValidation,

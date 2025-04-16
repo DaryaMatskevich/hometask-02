@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response} from "express";
 import { UsersService } from "../domain/users-service";
 import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { SortDirection } from "mongodb";
