@@ -2,10 +2,11 @@ import { Router } from "express";
 import { SETTINGS } from "../settings";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
 import { commentValidation, inputValidationMiddleware } from "../Middlewares/middlewares";
-import { commentsController } from "../Controllers/commentsController";
+import { CommentsController} from "../Controllers/commentsController";
+import { ioc } from "../composition-root";
 
 export const commentsRouter = Router()
-
+const commentsController = ioc.getInstance<CommentsController>(CommentsController)
 commentsRouter.get(SETTINGS.PATH.COMMENTS.ID,
     commentsController.getCommentById.bind(commentsController)
 

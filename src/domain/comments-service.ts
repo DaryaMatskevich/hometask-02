@@ -4,9 +4,9 @@ import { CommentsRepository } from "../Repository/commentsRepository";
 
 
 export class CommentsService  {
-   private commentsRepository : CommentsRepository
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
+   
+    constructor(private commentsRepository : CommentsRepository) {
+        
     }
 
     async createComment(postId: string, content: string, userLogin: string, userId: string): Promise<string> {

@@ -61,7 +61,6 @@ export class BlogsController {
     }
   }
 
-
   async deleteBlogById(req: Request, res: Response) {
     const isDeleted = await this.blogsService.deleteBlog(req.params.id)
     if (isDeleted) {

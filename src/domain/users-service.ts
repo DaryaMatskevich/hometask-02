@@ -1,11 +1,11 @@
 import { UsersRepository } from "../Repository/usersRepository";
 import { v4 as uuidv4 } from "uuid";
 import { add } from "date-fns";
-import { EmailManager } from "../managers/email-manager";
+import { emailManager } from "../managers/email-manager";
 import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
 import { Result } from "../types/result/result.type";
 import { ResultStatus } from "../types/result/resultCode";
-import { BcryptService } from "../adapters/bcrypt-service";
+import { bcryptService } from "../adapters/bcrypt-service";
 import { ObjectId } from "mongodb";
 import { UserDbType } from "../types/UserTypes/UserDBType";
 import { inject, injectable } from "inversify";
@@ -17,9 +17,7 @@ export class UsersService {
     
     constructor(
         @inject(UsersRepository) private usersRepository: UsersRepository,
-        @inject(EmailManager) private emailManager: EmailManager,
-        @inject (BcryptService) private bcryptService: BcryptService
-    ) {
+           ) {
 
     }
     async createUser(dto: CreateUserDto): Promise<Result<string | null>> {
@@ -42,7 +40,7 @@ export class UsersService {
                 extensions: errors
             }
         }
-        const passwordHash = await this.bcryptService.hashPassword(password)
+        const passwordHash = await bcryptService.hashPassword(password)
 
         let user = new UserDbType(
             new ObjectId(),
@@ -59,7 +57,7 @@ export class UsersService {
         const newUserId = await this.usersRepository.createUser(user)
 
         try {
-            this.emailManager.sendEmailConfirmationMessage(user)
+            emailManager.sendEmailConfirmationMessage(user)
         } catch (error) {
             console.error(error)
             return {

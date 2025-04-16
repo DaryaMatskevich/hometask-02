@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import { CommentsService } from "../domain/comments-service";
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
 
@@ -6,12 +6,10 @@ import { CommentsQueryRepository } from "../queryRepository/commentsQueryReposit
 
 export class CommentsController {
 
-    private commentsService: CommentsService
-    private commentsQueryRepository: CommentsQueryRepository
-    
-    constructor() {
-        this.commentsService = new CommentsService()
-        this.commentsQueryRepository = new CommentsQueryRepository()
+    constructor(
+        private commentsService: CommentsService,
+        private commentsQueryRepository: CommentsQueryRepository
+    ) {
     }
 
     async getCommentById(req: Request, res: Response) {
@@ -67,5 +65,3 @@ export class CommentsController {
         }
     }
 }
-
-export const commentsController = new CommentsController()

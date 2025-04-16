@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
 import { blogsCollection } from "../Repository/db"
-import { blogsService } from "../domain/blogs-service"
+import { BlogsService } from "../domain/blogs-service"
+import { ioc } from "../composition-root"
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -18,7 +19,7 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     next()
   }
 }
-
+const blogsService = ioc.getInstance<BlogsService>(BlogsService)
 export const blogIdExistenseMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const blogId = req.params.id;
   const blog = await blogsService.findBlogById(blogId)

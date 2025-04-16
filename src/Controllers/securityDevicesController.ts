@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { SecurityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
-import { JwtService } from "../adapters/jwt-service";
+import { jwtService } from "../adapters/jwt-service";
 import { SecurityDevicesServiсe } from "../domain/securityDevices-service";
 import { inject, injectable } from "inversify";
 @injectable()
@@ -8,9 +8,8 @@ export class SecurityDevicesController {
 
    constructor( 
       @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
-      @inject (SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
-      @inject(JwtService) private jwtService: JwtService)
-       {
+      @inject (SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository
+          ){
    }
 
    async getAllDevices(req: Request, res: Response) {
@@ -20,7 +19,7 @@ export class SecurityDevicesController {
          return
       }
 
-      const resultJwt = await this.jwtService.getUserIdByRefreshToken(refreshToken);
+      const resultJwt = await jwtService.getUserIdByRefreshToken(refreshToken);
 
       if (!resultJwt) {
          res.sendStatus(401)
@@ -46,7 +45,7 @@ export class SecurityDevicesController {
          res.sendStatus(401)
          return
       }
-      const resultJwt = await this.jwtService.getUserIdByRefreshToken(refreshToken);
+      const resultJwt = await jwtService.getUserIdByRefreshToken(refreshToken);
       const userId = resultJwt?.userId
       const deviceId = resultJwt?.deviceId
       if (!userId) {
@@ -78,7 +77,7 @@ export class SecurityDevicesController {
          return
       }
 
-      const user = await this.jwtService.getUserIdByRefreshToken(refreshToken);
+      const user = await jwtService.getUserIdByRefreshToken(refreshToken);
 
       if (!user) {
          res.sendStatus(401)

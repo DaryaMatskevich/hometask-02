@@ -1,8 +1,7 @@
-import { injectable } from 'inversify'
 import nodemailer from 'nodemailer'
 
-@injectable()
-export class EmailAdapter {
+
+export const emailAdapter = {
     async sendEmail(email: string, subject: string, message: string) {
         let transport = nodemailer.createTransport({
             host: "smtp.mail.ru",

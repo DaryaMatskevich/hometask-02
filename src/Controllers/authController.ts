@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
-import { JwtService } from "../adapters/jwt-service";
+import { jwtService } from "../adapters/jwt-service";
 import { UsersService } from "../domain/users-service";
 import { ObjectId } from "mongodb";
 import { SecurityDevicesServiсe } from "../domain/securityDevices-service";
@@ -17,12 +17,11 @@ export class AuthController {
    constructor(
       @inject(UsersService) private usersService: UsersService,
       @inject(AuthService) private authService: AuthService,
-      @inject(JwtService)  private jwtService: JwtService,
       @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
       @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
       @inject(SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
-      ) {
-        }
+   ) {
+   }
    async login(req: Request, res: Response) {
       const { loginOrEmail, password } = req.body;
       const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
@@ -45,8 +44,8 @@ export class AuthController {
          const user = result.data
          const userId = user._id.toString()
          const deviceId = new ObjectId().toString()
-         const token = await this.jwtService.createJWT(userId, deviceId)
-         const refreshToken = await this.jwtService.createRefreshToken(userId, deviceId)
+         const token = await jwtService.createJWT(userId, deviceId)
+         const refreshToken = await jwtService.createRefreshToken(userId, deviceId)
          const createSecurityDevice = await this.securityDevicesService.createSecurityDevice(
             user._id,
             new ObjectId(deviceId),
@@ -130,7 +129,7 @@ export class AuthController {
          return
       }
 
-      const tokenPayload = await this.jwtService.getUserIdByRefreshToken(refreshToken);
+      const tokenPayload = await jwtService.getUserIdByRefreshToken(refreshToken);
       if (!tokenPayload) {
          res.sendStatus(401)
          return
@@ -156,8 +155,8 @@ export class AuthController {
          return
       }
 
-      const newAccessToken = await this.jwtService.createJWT(userId, deviceId);
-      const newRefreshToken = await this.jwtService.createRefreshToken(userId, deviceId);
+      const newAccessToken = await jwtService.createJWT(userId, deviceId);
+      const newRefreshToken = await jwtService.createRefreshToken(userId, deviceId);
 
 
 
@@ -182,7 +181,7 @@ export class AuthController {
          return
       }
 
-      const jwtPayload = await this.jwtService.getUserIdByRefreshToken(refreshToken)
+      const jwtPayload = await jwtService.getUserIdByRefreshToken(refreshToken)
 
       if (!jwtPayload) {
          res.sendStatus(401)

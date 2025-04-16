@@ -1,10 +1,10 @@
 import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { UsersRepository } from "../Repository/usersRepository";
 import { ResultStatus } from "../types/result/resultCode";
-import { BcryptService } from "../adapters/bcrypt-service";
+import { bcryptService } from "../adapters/bcrypt-service";
 import { v4 as uuidv4 } from "uuid";
 import { add } from "date-fns";
-import { EmailManager } from "../managers/email-manager";
+import { emailManager } from "../managers/email-manager";
 import { Result } from "../types/result/result.type";
 import { inject, injectable } from "inversify";
 @injectable()
@@ -13,8 +13,7 @@ export class AuthService {
     constructor(
         @inject(UsersRepository) private usersRepository: UsersRepository,
         @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
-        @inject(BcryptService) private bcryptService: BcryptService,
-        @inject(EmailManager) private emailManager: EmailManager
+      
     ) {
     }
     async checkCredentials(loginOrEmail: string, password: string): Promise<Result<any | null>> {
@@ -35,7 +34,7 @@ export class AuthService {
         //     return { errorsMessages: errors }
         // }
 
-        const isPasswordCorrect = await this.bcryptService.checkPassword(password, user.password)
+        const isPasswordCorrect = await bcryptService.checkPassword(password, user.password)
         if (!isPasswordCorrect) {
             return {
                 status: ResultStatus.Unauthorized,
@@ -108,7 +107,7 @@ export class AuthService {
         if (!updateUser) return false;
 
         try {
-            this.emailManager.sendEmailConfirmationMessage(updateUser)
+            emailManager.sendEmailConfirmationMessage(updateUser)
         }
         catch (error) {
             console.error(error)
@@ -145,7 +144,7 @@ export class AuthService {
 
         if (saveRecoveryCode) {
             try {
-                await this.emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
+                await emailManager.sendPasswordRecoveryMessage(user, recoveryCode)
                 return {
                     status: ResultStatus.Success,
                     data: null,
@@ -170,7 +169,7 @@ export class AuthService {
                 extensions: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
             }
         }
-        const isSamePassword = await this.bcryptService.checkPassword(newPassword, user.password);
+        const isSamePassword = await bcryptService.checkPassword(newPassword, user.password);
         if (isSamePassword) {
             return {
                 status: ResultStatus.Unauthorized,
@@ -179,7 +178,7 @@ export class AuthService {
                 extensions: [{ message: 'password is incorrect', field: 'password' }]
             }
         }
-        const passwordHash = await this.bcryptService.hashPassword(newPassword)
+        const passwordHash = await bcryptService.hashPassword(newPassword)
         if (user.recoveryCodeExpirationDate < new Date()) return {
             status: ResultStatus.Unauthorized,
             data: null,

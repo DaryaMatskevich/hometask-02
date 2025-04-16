@@ -1,7 +1,7 @@
 {
   "name": "blog-platform",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "/index.js",
   "license": "MIT",
   "dependencies": {
     "@types/nodemailer": "^6.4.17",

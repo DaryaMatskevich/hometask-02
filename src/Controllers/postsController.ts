@@ -1,22 +1,19 @@
 import { Request, Response } from "express"
 import { PostsService } from "../domain/posts-service"
 import { SortDirection } from "mongodb"
-import { CommentsService} from "../domain/comments-service"
+import { CommentsService } from "../domain/comments-service"
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository"
 import { PostsRepository } from "../Repository/postsRepository"
 
+
 export class PostsController {
 
-    private postsRepository: PostsRepository
-    private commentsQueryRepository: CommentsQueryRepository
-    private commentsService: CommentsService
-    private postsService: PostsService
+    constructor(private postsService: PostsService,
+        private commentsQueryRepository: CommentsQueryRepository,
+        private commentsService: CommentsService,
+        private postsRepository: PostsRepository
+    ) {
 
-    constructor() {
-        this.postsRepository = new PostsRepository()
-        this.commentsQueryRepository = new CommentsQueryRepository()
-        this.commentsService = new CommentsService()
-        this.postsService = new PostsService()
     }
 
     async getPosts(req: Request, res: Response) {
@@ -116,4 +113,3 @@ export class PostsController {
     }
 }
 
-export const postsController = new PostsController()

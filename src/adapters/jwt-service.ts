@@ -1,18 +1,18 @@
 import jwt from 'jsonwebtoken'
 import { SETTINGS } from '../settings'
-import { injectable } from 'inversify'
 
-@injectable()
-export class JwtService {
+
+
+export const jwtService = {
     async createJWT(userId: string, deviceId: string) {
         const token = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_SECRET, { expiresIn: '10s' })
         return token
-    }
+    },
 
     async createRefreshToken(userId: string, deviceId: string) {
         const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20s' })
         return refreshToken
-    }
+    },
 
     async getUserIdByToken(token: string) {
         try {
@@ -22,7 +22,7 @@ export class JwtService {
         catch (error) {
             return null
         }
-    }
+    },
 
     async getUserIdByRefreshToken(token: string) {
         try {
