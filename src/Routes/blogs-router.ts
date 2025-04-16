@@ -7,6 +7,7 @@ import { BlogsController } from "../Controllers/blogsController";
 
 export const blogsRouter = Router()
 const blogsController = ioc.getInstance<BlogsController>(BlogsController)
+
 blogsRouter.get(SETTINGS.PATH.BLOGS.ROOT,
     blogsController.getBlogs.bind(blogsController)
 )

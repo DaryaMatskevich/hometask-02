@@ -16,6 +16,7 @@ import { JwtService } from "./adapters/jwt-service";
 import { SecurityDevicesServiсe } from "./domain/securityDevices-service";
 import { SecurityDevicesQueryRepository } from "./queryRepository/securityDevicesQueryRepository";
 import { SecurityDevicesController } from "./Controllers/securityDevicesController";
+import { SecurityDevicesRepository } from "./Repository/securityDevicesRepository";
 
 
 const objects: any[] = []
@@ -42,15 +43,18 @@ export const ioc = {
 
 
 export const container = new Container()
+
+container.bind(EmailManager).to(EmailManager)
+container.bind(AuthService).to(AuthService)
+container.bind(JwtService).to(JwtService)
+container.bind(BcryptService).to(BcryptService)
+
 container.bind(UsersController).to(UsersController)
-container.bind(SecurityDevicesController).to(SecurityDevicesController)
 container.bind(UsersService).to(UsersService)
 container.bind(UsersRepository).to(UsersRepository)
 container.bind(UsersQueryRepository).to(UsersQueryRepository)
-container.bind(EmailManager).to(EmailManager)
-container.bind(BcryptService).to(BcryptService)
-container.bind(UsersQueryRepository).to(UsersQueryRepository)
-container.bind(AuthService).to(AuthService)
-container.bind(JwtService).to(JwtService)
+
+container.bind(SecurityDevicesController).to(SecurityDevicesController)
 container.bind(SecurityDevicesServiсe).to(SecurityDevicesServiсe)
 container.bind(SecurityDevicesQueryRepository).to(SecurityDevicesQueryRepository)
+container.bind(SecurityDevicesRepository).to(SecurityDevicesRepository)
