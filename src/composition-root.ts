@@ -11,6 +11,10 @@ import { UsersRepository } from "./Repository/usersRepository";
 import { UsersQueryRepository } from "./queryRepository/usersQueryRepository";
 import { EmailManager } from "./managers/email-manager";
 import { BcryptService } from "./adapters/bcrypt-service";
+import { AuthService } from "./domain/auth-service";
+import { JwtService } from "./adapters/jwt-service";
+import { SecurityDevicesServiсe } from "./domain/securityDevices-service";
+import { SecurityDevicesQueryRepository } from "./queryRepository/securityDevicesQueryRepository";
 
 
 const objects: any[] = []
@@ -44,3 +48,7 @@ container.bind(UsersQueryRepository).to(UsersQueryRepository)
 container.bind(EmailManager).to(EmailManager)
 container.bind(BcryptService).to(BcryptService)
 container.bind(UsersQueryRepository).to(UsersQueryRepository)
+container.bind(AuthService).to(AuthService)
+container.bind(JwtService).to(JwtService)
+container.bind(SecurityDevicesServiсe).to(SecurityDevicesServiсe)
+container.bind(SecurityDevicesQueryRepository).to(SecurityDevicesQueryRepository)

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { SETTINGS } from "../settings";
 import { emailValidation, inputValidationMiddleware, loginValidation, newPasswordValidation, passwordValidation } from "../Middlewares/middlewares";
-import { authController} from "../Controllers/authController";
+import { AuthController } from "../Controllers/authController";
 import { requestCountMiddleware } from "../Middlewares/requestCountMiddleware";
 import { userAuthMiddleware } from "../Middlewares/userAuthMiddleware";
+import { container } from "../composition-root";
 
 export const authRouter = Router()
+const authController = container.get(AuthController)
 
 authRouter.post(SETTINGS.PATH.AUTH.LOGIN, 
     requestCountMiddleware,

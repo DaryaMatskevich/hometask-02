@@ -9,25 +9,20 @@ import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
 import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
 import { ResultStatus } from "../types/result/resultCode";
 import { AuthService } from "../domain/auth-service";
+import { injectable, inject } from "inversify";
 
-
+@injectable()
 export class AuthController {
 
-   private jwtService: JwtService
-   private usersService: UsersService
-   private authService: AuthService
-   private usersQueryRepository: UsersQueryRepository
-   private securityDevicesService: SecurityDevicesServiсe
-   private securityDevicesQueryRepository: SecurityDevicesQueryRepository
-   
-   constructor() {
-      this.jwtService = new JwtService()
-      this.usersService = new UsersService()
-      this.authService = new AuthService()
-      this.usersQueryRepository = new UsersQueryRepository()
-      this.securityDevicesService = new SecurityDevicesServiсe()
-      this.securityDevicesQueryRepository = new SecurityDevicesQueryRepository()
-   }
+   constructor(
+      @inject(UsersService) private usersService: UsersService,
+      @inject(AuthService) private authService: AuthService,
+      @inject(JwtService)  private jwtService: JwtService,
+      @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
+      @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
+      @inject(SecurityDevicesQueryRepository)private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
+      ) {
+        }
    async login(req: Request, res: Response) {
       const { loginOrEmail, password } = req.body;
       const userAgent = req.headers['user-agent'] || 'Unknown device'; // Значение по умолчанию
@@ -247,4 +242,4 @@ export class AuthController {
    }
 }
 
-export const authController = new AuthController()
+
