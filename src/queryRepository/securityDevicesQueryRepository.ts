@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb"
 import { devicesCollection } from "../Repository/db"
 import { SecurityDeviceDBType, SecurityDeviceType, SecurityDeviceViewType } from "../types/SecurityDeviceTypes.ts/SecurityDeviceTypes"
-
+import { injectable } from "inversify"
+@injectable()
 export class SecurityDevicesQueryRepository {
     async findSecurityDevices(userId: string): Promise<SecurityDeviceViewType[]> {
         const result = await devicesCollection.find({userId: new ObjectId(userId)}).toArray()

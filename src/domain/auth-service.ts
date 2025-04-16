@@ -1,4 +1,4 @@
-import { UsersQueryRepository} from "../queryRepository/usersQueryRepository";
+import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { UsersRepository } from "../Repository/usersRepository";
 import { ResultStatus } from "../types/result/resultCode";
 import { BcryptService } from "../adapters/bcrypt-service";
@@ -6,21 +6,16 @@ import { v4 as uuidv4 } from "uuid";
 import { add } from "date-fns";
 import { EmailManager } from "../managers/email-manager";
 import { Result } from "../types/result/result.type";
-
+import { inject, injectable } from "inversify";
+@injectable()
 export class AuthService {
 
-    private usersRepository: UsersRepository
-    private usersQueryRepository: UsersQueryRepository
-    private bcryptService: BcryptService
-    private emailManager: EmailManager
-
-
-    constructor(){
-        this.usersRepository = new UsersRepository()
-        this.usersQueryRepository = new UsersQueryRepository()
-        this.bcryptService = new BcryptService()
-        this.emailManager = new EmailManager()
-
+    constructor(
+        @inject(UsersRepository) private usersRepository: UsersRepository,
+        @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
+        @inject(BcryptService) private bcryptService: BcryptService,
+        @inject(EmailManager) private emailManager: EmailManager
+    ) {
     }
     async checkCredentials(loginOrEmail: string, password: string): Promise<Result<any | null>> {
         const user = await this.usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
@@ -47,15 +42,16 @@ export class AuthService {
                 data: null,
                 errorMessage: 'Unauthorized',
                 extensions: [{ field: 'password', message: 'Wrong password' }]
-            } }
-            else {
-        return {
-            status: ResultStatus.Success,
-            data: user,
-            extensions: []
+            }
+        }
+        else {
+            return {
+                status: ResultStatus.Success,
+                data: user,
+                extensions: []
+            }
         }
     }
-}
 
     async confirmEmail(code: string): Promise<boolean | any> {
         let user = await this.usersQueryRepository.findUserByConfirmationCode(code)
@@ -197,7 +193,7 @@ export class AuthService {
                 data: updatePassword,
                 extensions: []
             }
-            
+
         }
     }
 }

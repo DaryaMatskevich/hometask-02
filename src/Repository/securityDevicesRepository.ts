@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb"
 import { devicesCollection } from "./db"
 import { SecurityDeviceInputType } from "../types/SecurityDeviceTypes.ts/SecurityDeviceTypes"
-
+import { injectable } from "inversify"
+@injectable()
 export class SecurityDevicesRepository {
 
     async createsecurityDevice(securityDevice: SecurityDeviceInputType): Promise<string | null> {

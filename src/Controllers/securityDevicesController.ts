@@ -2,17 +2,15 @@ import { Router, Request, Response } from "express";
 import { SecurityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
 import { JwtService } from "../adapters/jwt-service";
 import { SecurityDevicesServiсe } from "../domain/securityDevices-service";
-
+import { inject, injectable } from "inversify";
+@injectable()
 export class SecurityDevicesController {
 
-   private jwtService: JwtService
-   private securityDevicesService: SecurityDevicesServiсe;
-   private securityDevicesQueryRepository: SecurityDevicesQueryRepository
-   
-   constructor() {
-      this.jwtService = new JwtService()
-      this.securityDevicesService = new SecurityDevicesServiсe()
-      this.securityDevicesQueryRepository = new SecurityDevicesQueryRepository()
+   constructor( 
+      @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
+      @inject (SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
+      @inject(JwtService) private jwtService: JwtService)
+       {
    }
 
    async getAllDevices(req: Request, res: Response) {
@@ -105,4 +103,3 @@ export class SecurityDevicesController {
 
    }
 }
-export const securityDevicesController = new SecurityDevicesController()

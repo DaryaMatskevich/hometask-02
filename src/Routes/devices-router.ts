@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { SETTINGS } from "../settings";
-import { securityDevicesController } from "../Controllers/securityDevicesController";
+import { container} from "../composition-root";
+import {SecurityDevicesController } from "../Controllers/securityDevicesController"
 
+const securityDevicesController = container.get(SecurityDevicesController)
 export const securityDevicesRouter = Router()
 
 securityDevicesRouter.get(SETTINGS.PATH.DEVICES.ROOT,

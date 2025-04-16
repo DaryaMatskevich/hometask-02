@@ -2,16 +2,15 @@ import { ObjectId } from "mongodb"
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { SecurityDevicesRepository } from "../Repository/securityDevicesRepository";
 import { SecurityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
+import { inject, injectable } from "inversify";
 
-
+@injectable()
 export class SecurityDevicesServiсe {
 
-    private securityDevicesRepository: SecurityDevicesRepository
-    private securityDevicesQueryRepository: SecurityDevicesQueryRepository
-
-    constructor() {
-        this.securityDevicesRepository = new SecurityDevicesRepository()
-        this.securityDevicesQueryRepository = new SecurityDevicesQueryRepository()
+    constructor(
+        @inject(SecurityDevicesRepository) private securityDevicesRepository: SecurityDevicesRepository,
+        @inject (SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository
+    ) {
     }
     async createSecurityDevice(userId: ObjectId, deviceId: ObjectId,
         ip: string, title: string, refreshToken: string): Promise<string | null> {
