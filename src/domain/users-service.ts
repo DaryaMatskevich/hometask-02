@@ -14,10 +14,10 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class UsersService {
-    
+
     constructor(
         @inject(UsersRepository) private usersRepository: UsersRepository,
-           ) {
+    ) {
 
     }
     async createUser(dto: CreateUserDto): Promise<Result<string | null>> {

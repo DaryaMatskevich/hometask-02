@@ -6,6 +6,7 @@ import { container} from "../composition-root";
 import { UsersController } from "../Controllers/usersController";
 
 export const usersRouter = Router()
+
 const usersController = container.get(UsersController)
 
 usersRouter.get(SETTINGS.PATH.USERS.ROOT,
