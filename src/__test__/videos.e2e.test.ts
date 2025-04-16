@@ -1,4 +1,4 @@
-import { ADMIN_AUTH, SETTINGS} from '../src/settings'
+import { ADMIN_AUTH, SETTINGS} from '../settings'
 import { req } from './test-helpers'
 
 describe('/post', () => {

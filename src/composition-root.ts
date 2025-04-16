@@ -19,6 +19,7 @@ import { PostsController } from "./Controllers/postsController";
 import { CommentsRepository } from "./Repository/commentsRepository";
 import { BlogsController } from "./Controllers/blogsController";
 import { CommentsController } from "./Controllers/commentsController";
+import { AuthController } from "./Controllers/authController";
 
 
 const objects: any[] = []
@@ -66,6 +67,7 @@ export const ioc = {
 
 export const container = new Container()
 
+container.bind(AuthController).to(AuthController)
 container.bind(AuthService).to(AuthService)
 
 container.bind(UsersController).to(UsersController)
