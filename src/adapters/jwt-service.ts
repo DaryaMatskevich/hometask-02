@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { SETTINGS } from '../settings'
+import { injectable } from 'inversify'
 
-
+@injectable()
 export class JwtService {
     async createJWT(userId: string, deviceId: string) {
         const token = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_SECRET, { expiresIn: '10s' })
