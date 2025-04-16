@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { UsersRepository } from "../Repository/usersRepository";
 import { v4 as uuidv4 } from "uuid";
 import { add } from "date-fns";

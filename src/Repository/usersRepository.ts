@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { ObjectId } from "mongodb"
 import { usersCollection } from "./db"
 import { injectable } from "inversify"
