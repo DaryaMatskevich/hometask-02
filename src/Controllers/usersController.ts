@@ -1,7 +1,6 @@
 import "reflect-metadata"
 import { Request, Response} from "express";
 import { UsersService } from "../domain/users-service";
-import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { SortDirection } from "mongodb";
 import { ResultStatus } from "../types/result/resultCode";
 import { inject, injectable } from "inversify";

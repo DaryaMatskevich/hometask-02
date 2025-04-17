@@ -21,7 +21,7 @@ usersRouter.post(SETTINGS.PATH.USERS.ROOT,
     passwordValidation,
     emailValidation,
     inputValidationMiddleware,
-    usersController.createUser.bind(usersController)
+    usersController.createUser.bind(UsersController)
 )
 
 usersRouter.delete(SETTINGS.PATH.USERS.ID,
