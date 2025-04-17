@@ -1,8 +1,9 @@
 import { Request, Response} from "express";
+import { inject, injectable } from "inversify";
 import { UsersService } from "../domain/users-service";
 import { SortDirection } from "mongodb";
 import { ResultStatus } from "../types/result/resultCode";
-import { inject, injectable } from "inversify";
+
 
 @injectable()
 export class UsersController {
@@ -10,7 +11,7 @@ export class UsersController {
     constructor(
         @inject(UsersService) private usersService: UsersService
     )
-      {
+      {console.log('UsersService injected:', this.usersService);
 }
     async getUsers(req: Request, res: Response): Promise<any> {
         let pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1;
@@ -43,7 +44,7 @@ export class UsersController {
     }else res.sendStatus(401)}
 
 
-    async createUser(req: Request, res: Response): Promise<any> {
+    createUser = async (req: Request, res: Response): Promise<any> => {
         const { login, email, password } = req.body;
         const createUserDto = { login, email, password }
         const result = await this.usersService.createUser(createUserDto)
