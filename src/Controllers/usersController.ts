@@ -60,7 +60,7 @@ export class UsersController {
     }}
 
 
-    async deleteUserById(req: Request, res: Response): Promise<any> {
+    deleteUserById = async (req: Request, res: Response): Promise<any> => {
         const user = await this.usersService.deleteUserById(req.params.id)
         if (!user)
             return res.sendStatus(404)
