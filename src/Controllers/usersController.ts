@@ -1,4 +1,3 @@
-import "reflect-metadata"
 import { Request, Response} from "express";
 import { UsersService } from "../domain/users-service";
 import { SortDirection } from "mongodb";
