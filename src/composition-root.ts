@@ -67,14 +67,15 @@ export const ioc = {
 
 export const container = new Container()
 
-container.bind(AuthService).to(AuthService)
-container.bind(AuthController).to(AuthController)
+
 
 container.bind(UsersRepository).to(UsersRepository)
 container.bind(UsersQueryRepository).to(UsersQueryRepository)
 container.bind(UsersService).to(UsersService)
 container.bind(UsersController).to(UsersController)
 
+container.bind(AuthService).to(AuthService)
+container.bind(AuthController).to(AuthController)
 
 container.bind(SecurityDevicesRepository).to(SecurityDevicesRepository)
 container.bind(SecurityDevicesQueryRepository).to(SecurityDevicesQueryRepository)
