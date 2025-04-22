@@ -1,25 +1,25 @@
 import { ObjectId } from "mongodb"
-import { commentsCollection } from "./db"
+import { CommentModel } from "./db"
 import { CommentInputType } from "../types/CommentTypes/commentType"
 
 export async function clearCommentsData() {
-    await commentsCollection.deleteMany({})
+    await CommentModel.deleteMany({})
 }
 
 export class CommentsRepository  {
 
     async createComment (comment: CommentInputType): Promise<string>{
-        const newComment = await commentsCollection.insertOne(comment)
-return newComment.insertedId.toString()
+        const newComment = await CommentModel.insertOne(comment)
+return newComment._id.toString()
     }
 
     async deleteCommentById (id: string): Promise<boolean> {
-const result = await commentsCollection.deleteOne({_id: new ObjectId(id)})
+const result = await CommentModel.deleteOne({_id: new ObjectId(id)})
 return result.deletedCount === 1
     }
 
     async updateComment (id: string, content: string): Promise<boolean> {
-const result = await commentsCollection.updateOne({_id: new ObjectId(id)}, {
+const result = await CommentModel.updateOne({_id: new ObjectId(id)}, {
     $set: {
         content: content
     }

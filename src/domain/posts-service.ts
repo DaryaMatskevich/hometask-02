@@ -1,12 +1,38 @@
-import { PaginatedPosts, PostsFilter, PostViewType } from "../types/PostTypes/PostViewType";
+import { PaginatedPosts, PostsFilter, PostDBType } from "../types/PostTypes/PostDBType";
 import { PostsRepository } from "../Repository/postsRepository";
+import { BlogsRepository } from "../Repository/blogsRepository";
+import { WithId } from "mongodb";
 
 
 export class PostsService  {
     
 
-    constructor(private postsRepository: PostsRepository) {
+    constructor(private postsRepository: PostsRepository,
+        private blogsRepository: BlogsRepository
+    ) {
         
+    }
+
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostDBType | null>{
+        const blog = await this.blogsRepository.findBlogById(blogId)
+        if (blog) {
+                    const newPost = {
+                        id: (Date.now() + Math.random()).toString(),
+                        title: title,
+                        shortDescription: shortDescription,
+                        content: content,
+                        blogId: blogId,
+                        blogName: blog.name,
+                        createdAt: (new Date()).toISOString()
+                    };
+        const postId =  await this.postsRepository.createPost(newPost)
+        if(postId) {
+            const post = this.postsRepository.findPostById(postId)
+            return post
+        } else {
+            return null
+        }
+                }
     }
 
     async findPosts(
@@ -15,7 +41,7 @@ export class PostsService  {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         blogId?: string)
-        : Promise<PaginatedPosts<PostViewType>> {
+        : Promise<PaginatedPosts<PostDBType>> {
         const filter: PostsFilter = blogId ? {blogId}:{}
         const posts = await this.postsRepository.findPosts(
             pageNumber,
@@ -35,14 +61,11 @@ export class PostsService  {
         }
     }
 
-    async findPostById(id: string): Promise<PostViewType | null> {
+    async findPostById(id: string): Promise<PostDBType | null> {
         return await this.postsRepository.findPostById(id)
     }
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
-        return await this.postsRepository.createPost(title, shortDescription, content, blogId)
-
-    }
+   
 
     async updatePost(id: string, title: string, shortDescription: string,
         content: string, blogId: string): Promise<boolean> {

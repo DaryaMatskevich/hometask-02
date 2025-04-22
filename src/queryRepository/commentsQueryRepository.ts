@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { commentsCollection } from "../Repository/db"
+import { CommentModel} from "../Repository/db"
 import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
@@ -11,11 +11,11 @@ export class CommentsQueryRepository  {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
     ): Promise<PaginatedComments> {
-        const comments = await commentsCollection.find({ postId: postId }).sort(
+        const comments = await CommentModel.find({ postId: postId }).sort(
             { [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
-            .toArray();
+            .lean();
 
         const mappedComments: CommentViewType[] = comments.map(comment => ({
             id: comment._id.toString(), // Преобразуем ObjectId в строку
@@ -26,7 +26,7 @@ export class CommentsQueryRepository  {
             },
             createdAt: comment.createdAt,
         }));
-        const commentsCount = await commentsCollection.countDocuments({ postId: postId })
+        const commentsCount = await CommentModel.countDocuments({ postId: postId })
 
         return {
             pagesCount: Math.ceil(commentsCount / pageSize),
@@ -43,7 +43,7 @@ export class CommentsQueryRepository  {
             return null;
         }
 
-        const comment: any | null = await commentsCollection.findOne({ _id: new ObjectId(id) })
+        const comment: any | null = await CommentModel.findOne({ _id: new ObjectId(id) })
         if (comment) {
             return {
                 id: comment._id.toString(),

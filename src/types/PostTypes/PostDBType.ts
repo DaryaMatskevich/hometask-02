@@ -1,4 +1,4 @@
-export type PostViewType = {
+export type PostDBType = {
       id: string
       title: string
       shortDescription: string

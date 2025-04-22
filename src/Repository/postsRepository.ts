@@ -1,11 +1,12 @@
-import { PostViewType } from "../types/PostTypes/PostViewType";
-import { blogsCollection, postsCollection } from "./db";
+import { WithId } from "mongodb";
+import { PostDBType } from "../types/PostTypes/PostDBType";
+import { PostModel } from "./db";
 
 export async function clearPostsData() {
-    await postsCollection.deleteMany({})
+    await PostModel.deleteMany({})
 }
 
-export class PostsRepository  {
+export class PostsRepository {
 
     async findPosts(
         pageNumber: number,
@@ -13,21 +14,21 @@ export class PostsRepository  {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         filter: {},
-    ): Promise<PostViewType[]> {
-        
-        return postsCollection.find(filter, { projection: { _id: 0 } })
+    ): Promise<PostDBType[]> {
+
+        return PostModel.find(filter, { projection: { _id: 0 } })
             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
-            .toArray();
+            .lean();
     }
 
-    async getPostsCount(filter: {} ): Promise<number> {
-        return postsCollection.countDocuments(filter)
+    async getPostsCount(filter: {}): Promise<number> {
+        return PostModel.countDocuments(filter)
     }
-   
-    async findPostById(id: string): Promise<PostViewType | null> {
-        let post: PostViewType | null = await postsCollection.findOne({ id: id }, { projection: { _id: 0 } })
+
+    async findPostById(id: string): Promise<PostDBType | null> {
+        let post: PostDBType | null = await PostModel.findOne({ id: id }, { projection: { _id: 0 } })
         if (post) {
             return post
         } else {
@@ -35,31 +36,16 @@ export class PostsRepository  {
         }
     }
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostViewType | null> {
+    async createPost(post: PostDBType): Promise<string | null>{
 
-        const blog = await blogsCollection.findOne({ id: blogId })
-        if (blog) {
+        const result = await PostModel.create(post);
+        return result.id
+           } 
 
-            const newPost = {
-                id: (Date.now() + Math.random()).toString(),
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                blogId: blogId,
-                blogName: blog.name,
-                createdAt: (new Date()).toISOString()
-            };
-            const result = await postsCollection.insertOne(newPost);
-            const foundNewPost = await postsCollection.findOne({ _id: result.insertedId }, { projection: { _id: 0 } })
-            return foundNewPost;
-        } else {
-            return null;
-        }
-    }
 
-    async updatePost(id: string, title: string, shortDescription: string,
-        content: string, blogId: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({ id: id }, {
+async updatePost(id: string, title: string, shortDescription: string,
+    content: string, blogId: string): Promise < boolean > {
+        const result = await PostModel.updateOne({ id: id }, {
             $set: {
                 title: title,
                 shortDescription: shortDescription,
@@ -70,8 +56,8 @@ export class PostsRepository  {
         return result.matchedCount === 1;
     }
 
-    async deletePostById(id: string): Promise<boolean> {
-        const result = await postsCollection.deleteOne({ id: id })
+    async deletePostById(id: string): Promise < boolean > {
+    const result = await PostModel.deleteOne({ id: id })
         return result.deletedCount === 1
-    }
+}
 }

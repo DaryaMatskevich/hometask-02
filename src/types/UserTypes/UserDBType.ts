@@ -1,10 +1,13 @@
 import { ObjectId } from "mongodb";
 
 export type UserDBType = {
-    _id: ObjectId
     login: string
     email: string
-    createdAt: string
+    password: string,
+    createdAt: string,
+    confirmationCode: string,
+    expirationDate: Date,
+    isConfirmed: boolean
     };
 
     export class UserDbType {

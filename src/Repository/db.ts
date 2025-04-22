@@ -1,40 +1,99 @@
-import { Collection, MongoClient } from "mongodb";
+import { Collection, MongoClient, ObjectId } from "mongodb";
 import { SETTINGS } from "../settings";
-import { BlogViewType } from "../types/BlogTypes/BlogTypes";
-import { PostViewType } from "../types/PostTypes/PostViewType";
+import { BlogDBType } from "../types/BlogTypes/BlogTypes";
+import { PostDBType} from "../types/PostTypes/PostDBType";
 import * as dotenv from 'dotenv'
+import mongoose from "mongoose";
+import { WithId } from 'mongodb'
+import { CommentDBType } from "../types/CommentTypes/commentType";
+import { UserDBType } from "../types/UserTypes/UserDBType";
+
+
 
 
 dotenv.config()
 
-export let blogsCollection: Collection<BlogViewType>
-export let postsCollection: Collection<PostViewType>
-export let usersCollection: Collection<any>
-export let commentsCollection: Collection<any>
-export let devicesCollection: Collection<any>
-export let apiRequestCountCollection: Collection<any>
 
-export async function runDb(url: string): Promise<boolean> {
+export const BlogSchema = new mongoose.Schema<WithId<BlogDBType>>({
+    id: { type: String, require: true },
+    name: { type: String, require: true },
+    description: { type: String, require: true },
+    websiteUrl: { type: String, require: true },
+    createdAt: { type: String, require: true },
+    isMembership: { type: Boolean, require: true }
+})
 
-    let client = new MongoClient(url);
-    let db = client.db(SETTINGS.DB_NAME)
+export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
+    id: { type: String, require: true },
+    title: { type: String, require: true },
+    shortDescription: { type: String, require: true },
+    content: { type: String, require: true },
+    blogId: { type: String, require: true },
+    blogName: { type: String, require: true },
+    createdAt: { type: String, require: true }
+})
 
-    blogsCollection = db.collection<BlogViewType>('/blogs')
-    postsCollection = db.collection<PostViewType>('/posts')
-    usersCollection = db.collection<any>('/users')
-    commentsCollection = db.collection<any>('/comments')
-    devicesCollection = db.collection<any>('/devices')
-    apiRequestCountCollection = db.collection<any>('/apiRequestCount')
-    
+export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
+    postId: { type: String, require: true },
+    content: { type: String, require: true },
+    commentatorInfo: {userId: {type: String, require: true},
+userLogin: {type: String, require: true}
+    },
+    createdAt: { type: String, require: true },
+})
+
+export const UserSchema = new mongoose.Schema<WithId<UserDBType>>({
+    login: { type: String, require: true },
+    email: { type: String, require: true },
+    password: { type: String, require: true },
+    createdAt: { type: String, require: true },
+    confirmationCode: { type: String, require: true },
+    expirationDate: { type: Date, require: true },
+    isConfirmed: { type: Boolean, require: true }
+})
+
+export const BlogModel = mongoose.model<WithId<BlogDBType>>('blogs', BlogSchema)
+export const PostModel = mongoose.model<WithId<PostDBType>>('posts', PostSchema)
+export const CommentModel = mongoose.model<WithId<CommentDBType>>('comments', CommentSchema)
+export const UserModel = mongoose.model<WithId<UserDBType>>('users',UserSchema)
+
+
+
+// export let blogsCollection: Collection<BlogViewType>
+// export let postsCollection: Collection<PostViewType>
+// export let usersCollection: Collection<any>
+// export let commentsCollection: Collection<any>
+// export let devicesCollection: Collection<any>
+// export let apiRequestCountCollection: Collection<any>
+
+export async function runDb() {
+
+    // let client = new MongoClient(url);
+    // let db = client.db(SETTINGS.DB_NAME)
+
+    // blogsCollection = db.collection<BlogViewTDype>('/blogs')
+    // postsCollection = db.collection<PostViewType>('/posts')
+    // usersCollection = db.collection<any>('/users')
+    // commentsCollection = db.collection<any>('/comments')
+    // devicesCollection = db.collection<any>('/devices')
+    // apiRequestCountCollection = db.collection<any>('/apiRequestCount')
+
 
     try {
-        await client.connect();
-        await db.command({ ping: 1 })
+        // await client.connect();
+        // await db.command({ ping: 1 })
+
+        await mongoose.connect(SETTINGS.MONGO_URL)
+
         console.log("Connected successfully to mongo server")
-        return true
+
+        // return true
     } catch (e) {
-        console.log(e)
-        await client.close();
-        return false
+        console.log("no connection")
+
+        await mongoose.disconnect()
+
+        // await client.close();
+        // return false
     }
 }

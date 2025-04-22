@@ -1,5 +1,5 @@
 import { BlogsRepository} from "../Repository/blogsRepository";
-import { BlogViewType, PaginatedResponse } from "../types/BlogTypes/BlogTypes";
+import { BlogDBType, PaginatedResponse } from "../types/BlogTypes/BlogTypes";
 
 
 
@@ -15,7 +15,7 @@ export class BlogsService  {
     sortBy: string,
     sortDirection: "asc" | "desc",
     searchNameTerm: string | null
-  ): Promise<PaginatedResponse<BlogViewType>> {
+  ): Promise<PaginatedResponse<BlogDBType>> {
     const blogs = await this.blogsRepository.findAllBlogs(
       pageNumber,
       pageSize,
@@ -34,11 +34,11 @@ export class BlogsService  {
     }
   }
 
-  async findBlogById(id: string): Promise<BlogViewType | null> {
+  async findBlogById(id: string): Promise<BlogDBType | null> {
     return this.blogsRepository.findBlogById(id)
   }
 
-  async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogViewType | null> {
+  async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogDBType | null> {
     const newBlog = {
       id: (Date.now() + Math.random()).toString(),
       name: name,

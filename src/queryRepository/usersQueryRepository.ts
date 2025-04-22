@@ -1,6 +1,6 @@
 import "reflect-metadata"
-import { ObjectId } from "mongodb";
-import { usersCollection } from "../Repository/db";
+import { ObjectId, WithId } from "mongodb";
+import { UserModel} from "../Repository/db";
 import { UserDBType } from "../types/UserTypes/UserDBType";
 import { UserAuthType } from "../types/UserTypes/UserAuthType";
 import { injectable } from "inversify";
@@ -26,17 +26,17 @@ export class UsersQueryRepository  {
                 filter.$or.push({ email: { $regex: searchEmailTerm, $options: 'i' } })
             }
         }
-        const users = await usersCollection.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+        const users = await UserModel.find(filter).sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
-            .toArray();
+            .lean()
         const mappedUsers = users.map(user => ({
             id: user._id.toString(),
             login: user.login,
             email: user.email,
             createdAt: user.createdAt
         }))
-        const usersCount: any = await usersCollection.countDocuments(filter)
+        const usersCount: any = await UserModel.countDocuments(filter)
 
         return {
             pagesCount: Math.ceil(usersCount / pageSize),
@@ -49,7 +49,7 @@ export class UsersQueryRepository  {
     }
 
     async findUserById(id: string ) {
-        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        let user: any | null = await UserModel.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
                 id: user._id.toString(),
@@ -63,7 +63,7 @@ export class UsersQueryRepository  {
     }
 
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<any| null> {
-        const user = await usersCollection.findOne({
+        const user = await UserModel.findOne({
             $or: [
                 { login: loginOrEmail },
                  { email: loginOrEmail }
@@ -82,7 +82,7 @@ export class UsersQueryRepository  {
     }
 
     async findUserByIdforAuth(id: string): Promise<UserAuthType | null> {
-        let user: UserDBType | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        let user: WithId<UserDBType> | null = await UserModel.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
                 email: user.email,
@@ -95,13 +95,13 @@ export class UsersQueryRepository  {
     }
 
     async findUserByConfirmationCode(emailConfirmationCode: string) {
-        const user = await usersCollection.findOne({ confirmationCode: emailConfirmationCode })
+        const user = await UserModel.findOne({ confirmationCode: emailConfirmationCode })
         return user
     }
 
     async findUserByEmail(email: string): Promise<any | null> {
         try {
-            const user = await usersCollection.findOne({ email: email })
+            const user = await UserModel.findOne({ email: email })
             return user
         }
         catch (error) {
@@ -110,7 +110,7 @@ export class UsersQueryRepository  {
     }
 
     async findUserByObjectId(id: string ) {
-        let user: any | null = await usersCollection.findOne({ _id: new ObjectId(id) });
+        let user: any | null = await UserModel.findOne({ _id: new ObjectId(id) });
         if (user) {
             return {
                 _id: user._id,
@@ -124,7 +124,7 @@ export class UsersQueryRepository  {
     }
 
     async findUserByRecoveryCode(recoveryCode: string) {
-        const user = await usersCollection.findOne({ recoveryCode: recoveryCode })
+        const user = await UserModel.findOne({ recoveryCode: recoveryCode })
         return user
     }
 }
