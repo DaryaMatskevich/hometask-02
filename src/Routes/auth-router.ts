@@ -11,8 +11,6 @@ const authController = container.get(AuthController)
 
 authRouter.post(SETTINGS.PATH.AUTH.LOGIN, 
     requestCountMiddleware,
-    loginValidation,
-    emailValidation,
     passwordValidation,
     inputValidationMiddleware,
     authController.login.bind(authController)
