@@ -29,7 +29,7 @@ export class PostsRepository {
 
     async findPostById(id: string): Promise<PostDBType | null> {
         let post: PostDBType | null = await PostModel.findOne({ id: id }, { projection: { _id: 0 } })
-        if (post) {
+         if (post) {
             return post
         } else {
             return null
@@ -39,7 +39,9 @@ export class PostsRepository {
     async createPost(post: PostDBType): Promise<string | null>{
 
         const result = await PostModel.create(post);
-        return result.id
+        if(result) {
+        return result.id}
+        else {return null}
            } 
 
 

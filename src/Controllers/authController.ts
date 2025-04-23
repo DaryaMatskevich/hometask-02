@@ -3,8 +3,8 @@ import { UsersQueryRepository } from "../queryRepository/usersQueryRepository";
 import { jwtService } from "../adapters/jwt-service";
 import { UsersService } from "../domain/users-service";
 import { ObjectId } from "mongodb";
-import { SecurityDevicesServiсe } from "../domain/securityDevices-service";
-import { SecurityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
+import { SessionsServiсe } from "../domain/sessions-service";
+import { SessionsQueryRepository } from "../queryRepository/sessionsQueryRepository";
 import { CreateUserDto } from "../types/UserTypes/CreateUserDto";
 import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
 import { ResultStatus } from "../types/result/resultCode";
@@ -18,8 +18,8 @@ export class AuthController {
       @inject(UsersService) private usersService: UsersService,
       @inject(AuthService) private authService: AuthService,
       @inject(UsersQueryRepository) private usersQueryRepository: UsersQueryRepository,
-      @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
-      @inject(SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository,
+      @inject(SessionsServiсe) private securityDevicesService: SessionsServiсe,
+      @inject(SessionsQueryRepository) private securityDevicesQueryRepository: SessionsQueryRepository,
    ) {
    }
    async login(req: Request, res: Response) {
@@ -46,7 +46,7 @@ export class AuthController {
          const deviceId = new ObjectId().toString()
          const token = await jwtService.createJWT(userId, deviceId)
          const refreshToken = await jwtService.createRefreshToken(userId, deviceId)
-         const createSecurityDevice = await this.securityDevicesService.createSecurityDevice(
+         const createSecurityDevice = await this.securityDevicesService.createSession(
             user._id,
             new ObjectId(deviceId),
             ip,
@@ -149,7 +149,7 @@ export class AuthController {
          return
       }
 
-      const findDevice = await this.securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
+      const findDevice = await this.securityDevicesQueryRepository.findSessionByDeviceId(deviceId)
       if (!findDevice) {
          res.sendStatus(401)
          return
@@ -195,7 +195,7 @@ export class AuthController {
          res.sendStatus(401)
          return
       }
-      const deleteDevice = await this.securityDevicesService.deleteSecurityDeviceById(deviceId)
+      const deleteDevice = await this.securityDevicesService.deleteSessionById(deviceId)
 
       if (deleteDevice) {
 

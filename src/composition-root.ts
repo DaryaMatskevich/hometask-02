@@ -9,10 +9,10 @@ import { PostsRepository } from "./Repository/postsRepository";
 import { UsersRepository } from "./Repository/usersRepository";
 import { UsersQueryRepository } from "./queryRepository/usersQueryRepository";
 import { AuthService } from "./domain/auth-service";
-import { SecurityDevicesServiсe } from "./domain/securityDevices-service";
-import { SecurityDevicesQueryRepository } from "./queryRepository/securityDevicesQueryRepository";
-import { SecurityDevicesController } from "./Controllers/securityDevicesController";
-import { SecurityDevicesRepository } from "./Repository/securityDevicesRepository";
+import { SessionsServiсe } from "./domain/sessions-service";
+import { SessionsQueryRepository } from "./queryRepository/sessionsQueryRepository";
+import { SessionsController } from "./Controllers/sessionsController";
+import { SessionsRepository } from "./Repository/sessionsRepository";
 import { CommentsQueryRepository } from "./queryRepository/commentsQueryRepository";
 import { CommentsService } from "./domain/comments-service";
 import { PostsController } from "./Controllers/postsController";
@@ -34,7 +34,7 @@ objects.push(blogsService)
 const postsRepository = new PostsRepository()
 objects.push(postsRepository)
 
-const postsService = new PostsService(postsRepository)
+const postsService = new PostsService(postsRepository, blogsRepository)
 objects.push(postsService)
 
 const commentsQueryRepository = new CommentsQueryRepository()
@@ -77,9 +77,9 @@ container.bind(UsersController).to(UsersController)
 container.bind(AuthService).to(AuthService)
 container.bind(AuthController).to(AuthController)
 
-container.bind(SecurityDevicesRepository).to(SecurityDevicesRepository)
-container.bind(SecurityDevicesQueryRepository).to(SecurityDevicesQueryRepository)
-container.bind(SecurityDevicesServiсe).to(SecurityDevicesServiсe)
-container.bind(SecurityDevicesController).to(SecurityDevicesController)
+container.bind(SessionsRepository).to(SessionsRepository)
+container.bind(SessionsQueryRepository).to(SessionsQueryRepository)
+container.bind(SessionsServiсe).to(SessionsServiсe)
+container.bind(SessionsController).to(SessionsController)
 
 

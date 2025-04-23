@@ -9,7 +9,7 @@ import { clearUsersData } from './Repository/usersRepository'
 import { commentsRouter } from './Routes/comments-router'
 import { clearCommentsData } from './Repository/commentsRepository'
 import cookieParser from 'cookie-parser'
-import { securityDevicesRouter } from './Routes/devices-router'
+import { sessionsRouter } from './Routes/sessions-router'
 
 
 export const app = express()
@@ -22,7 +22,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
-app.use('/security', securityDevicesRouter)
+app.use('/security', sessionsRouter)
 
 
 

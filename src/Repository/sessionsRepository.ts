@@ -1,27 +1,27 @@
 import { ObjectId } from "mongodb"
-import { devicesCollection } from "./db"
-import { SecurityDeviceInputType } from "../types/SecurityDeviceTypes.ts/SecurityDeviceTypes"
+import { SessionModel } from "./db"
+import { SessionDBType } from "../types/SessionsTypes.ts/SessionsTypes"
 import { injectable } from "inversify"
 @injectable()
-export class SecurityDevicesRepository {
+export class SessionsRepository {
 
-    async createsecurityDevice(securityDevice: SecurityDeviceInputType): Promise<string | null> {
-        const result = await devicesCollection.insertOne({ ...securityDevice })
+    async createSession(session: SessionDBType): Promise<string | null> {
+        const result = await SessionModel.insertOne({ ...session })
         if (result) {
-            return result.insertedId.toString()
+            return result._id.toString()
         } else { return null }
     }
 
-    async deleteSecurityDeviceById(deviceId: string): Promise<boolean> {
-        const result = await devicesCollection.deleteOne({
+    async deleteSessionById(deviceId: string): Promise<boolean> {
+        const result = await SessionModel.deleteOne({
 
             deviceId: new ObjectId(deviceId)
         })
         return result.deletedCount === 1;
     }
 
-    async deleteAllSecurityDevicsExcludeCurrent(userId: string, deviceId: string): Promise<boolean> {
-        const result = await devicesCollection.deleteMany(
+    async deleteAllSessionsExcludeCurrent(userId: string, deviceId: string): Promise<boolean> {
+        const result = await SessionModel.deleteMany(
             {
                 userId: new ObjectId(userId),
                 deviceId: { $ne: new ObjectId(deviceId) }
@@ -31,7 +31,7 @@ export class SecurityDevicesRepository {
     }
 
     async updateRefreshToken(userId: string, deviceId: string, iatISOnew: string | null, expISOnew: string | null): Promise<boolean> {
-        const result = await devicesCollection.updateOne({
+        const result = await SessionModel.updateOne({
             userId: new ObjectId(userId),
             deviceId: new ObjectId(deviceId)
 

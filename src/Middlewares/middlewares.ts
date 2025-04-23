@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { body, validationResult } from "express-validator"
-import { blogsCollection } from "../Repository/db"
+import { BlogModel} from "../Repository/db"
 import { BlogsService } from "../domain/blogs-service"
 import { ioc } from "../composition-root"
 
@@ -31,7 +31,7 @@ export const blogIdExistenseMiddleware = async (req: Request, res: Response, nex
 }
 
 const blogExists = async (value: string) => {
-  const blog = await blogsCollection.findOne({ id: value })
+  const blog = await BlogModel.findOne({ id: value })
   if (!blog) {
     throw new Error('Блог не существует');
   }

@@ -1,18 +1,18 @@
-import { Router, Request, Response } from "express";
-import { SecurityDevicesQueryRepository } from "../queryRepository/securityDevicesQueryRepository";
+import { Request, Response } from "express";
+import { SessionsQueryRepository } from "../queryRepository/sessionsQueryRepository";
 import { jwtService } from "../adapters/jwt-service";
-import { SecurityDevicesServiсe } from "../domain/securityDevices-service";
+import { SessionsServiсe } from "../domain/sessions-service";
 import { inject, injectable } from "inversify";
 @injectable()
-export class SecurityDevicesController {
+export class SessionsController {
 
    constructor( 
-      @inject(SecurityDevicesServiсe) private securityDevicesService: SecurityDevicesServiсe,
-      @inject (SecurityDevicesQueryRepository) private securityDevicesQueryRepository: SecurityDevicesQueryRepository
+      @inject(SessionsServiсe) private sessionsService: SessionsServiсe,
+      @inject (SessionsQueryRepository) private sessionsQueryRepository: SessionsQueryRepository
           ){
    }
 
-   async getAllDevices(req: Request, res: Response) {
+   async getAllSessions(req: Request, res: Response) {
       const refreshToken = req.cookies.refreshToken;
       if (!refreshToken) {
          res.sendStatus(401)
@@ -28,7 +28,7 @@ export class SecurityDevicesController {
 
       const userId = resultJwt.userId
 
-      const result = await this.securityDevicesQueryRepository.findSecurityDevices(userId)
+      const result = await this.sessionsQueryRepository.findSessions(userId)
 
       if (result) {
          res.status(200).json(result)
@@ -39,7 +39,7 @@ export class SecurityDevicesController {
       }
    }
 
-   async deleteAllSecurityDevicesExcludeCurrent(req: Request, res: Response) {
+   async deleteAllSessionsExcludeCurrent(req: Request, res: Response) {
       const refreshToken = req.cookies.refreshToken;
       if (!refreshToken) {
          res.sendStatus(401)
@@ -52,7 +52,7 @@ export class SecurityDevicesController {
          res.sendStatus(401)
          return
       }
-      const result = await this.securityDevicesService.deleteAllSecurityDevicesExcludeCurrent(userId, deviceId)
+      const result = await this.sessionsService.deleteAllSessionsExcludeCurrent(userId, deviceId)
       if (result) {
          res.sendStatus(204)
          return
@@ -61,7 +61,7 @@ export class SecurityDevicesController {
          return
       }
    }
-   async deleteSecurityDeviceById(req: Request, res: Response) {
+   async deleteSessionById(req: Request, res: Response) {
       const refreshToken = req.cookies.refreshToken;
       const deviceId = req.params.id
 
@@ -70,7 +70,7 @@ export class SecurityDevicesController {
          return
       }
 
-      const result = await this.securityDevicesQueryRepository.findSecurityDeviceByDeviceId(deviceId)
+      const result = await this.sessionsQueryRepository.findSessionByDeviceId(deviceId)
 
       if (!result) {
          res.sendStatus(404)
@@ -90,7 +90,7 @@ export class SecurityDevicesController {
       }
 
 
-      const deleteDevice = await this.securityDevicesService.deleteSecurityDeviceById(deviceId)
+      const deleteDevice = await this.sessionsService.deleteSessionById(deviceId)
       if (deleteDevice) {
          res.sendStatus(204)
          return

@@ -13,8 +13,9 @@ export class PostsService  {
         
     }
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<PostDBType | null>{
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<any>{
         const blog = await this.blogsRepository.findBlogById(blogId)
+        if(!blog) {return null}
         if (blog) {
                     const newPost = {
                         id: (Date.now() + Math.random()).toString(),
@@ -27,12 +28,9 @@ export class PostsService  {
                     };
         const postId =  await this.postsRepository.createPost(newPost)
         if(postId) {
-            const post = this.postsRepository.findPostById(postId)
-            return post
-        } else {
-            return null
-        }
-                }
+            const post = await this.postsRepository.findPostById(postId)
+            return post || null
+        }}
     }
 
     async findPosts(

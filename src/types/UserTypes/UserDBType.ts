@@ -6,6 +6,7 @@ export type UserDBType = {
     password: string,
     createdAt: string,
     confirmationCode: string,
+    recoveryCodeExpirationDate: Date,
     expirationDate: Date,
     isConfirmed: boolean
     };

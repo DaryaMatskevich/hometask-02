@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 import { WithId } from 'mongodb'
 import { CommentDBType } from "../types/CommentTypes/commentType";
 import { UserDBType } from "../types/UserTypes/UserDBType";
-
+import { SessionDBType } from "../types/SessionsTypes.ts/SessionsTypes";
+import { ApiRequestCountType } from "../types/RequestCount.ts/RequestCountType";
 
 
 
@@ -48,15 +49,32 @@ export const UserSchema = new mongoose.Schema<WithId<UserDBType>>({
     password: { type: String, require: true },
     createdAt: { type: String, require: true },
     confirmationCode: { type: String, require: true },
+    recoveryCodeExpirationDate: { type: Date, require: true },
     expirationDate: { type: Date, require: true },
     isConfirmed: { type: Boolean, require: true }
 })
+
+export const SessionSchema = new mongoose.Schema<WithId<SessionDBType>>({
+    userId: { type: ObjectId, require: true },
+    deviceId: { type: ObjectId, require: true },
+    iatISO: { type: String, require: true },
+    title: { type: String, require: true },
+    ip: { type: String, require: true },
+    expISO: { type: String, require: true },
+    })
+
+    export const ApiRequestCountSchema = new mongoose.Schema<WithId<ApiRequestCountType>>({
+        IP: { type: String},
+        URL: { type: String, require: true },
+        date:  {type: Date, require: true },
+                })
 
 export const BlogModel = mongoose.model<WithId<BlogDBType>>('blogs', BlogSchema)
 export const PostModel = mongoose.model<WithId<PostDBType>>('posts', PostSchema)
 export const CommentModel = mongoose.model<WithId<CommentDBType>>('comments', CommentSchema)
 export const UserModel = mongoose.model<WithId<UserDBType>>('users',UserSchema)
-
+export const SessionModel = mongoose.model<WithId<SessionDBType>>('sessions', SessionSchema)
+export const ApiRequestCountModel = mongoose.model<WithId<ApiRequestCountType>>('sessions', ApiRequestCountSchema)
 
 
 // export let blogsCollection: Collection<BlogViewType>
