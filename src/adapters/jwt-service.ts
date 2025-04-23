@@ -5,12 +5,12 @@ import { SETTINGS } from '../settings'
 
 export const jwtService = {
     async createJWT(userId: string, deviceId: string) {
-        const token = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_SECRET, { expiresIn: '10s' })
+        const token = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_SECRET, { expiresIn: '10m' })
         return token
     },
 
     async createRefreshToken(userId: string, deviceId: string) {
-        const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20s' })
+        const refreshToken = jwt.sign({ userId: userId, deviceId: deviceId }, SETTINGS.JWT_REFRESH_SECRET, { expiresIn: '20m' })
         return refreshToken
     },
 
