@@ -1,7 +1,7 @@
 import { Collection, MongoClient, ObjectId } from "mongodb";
 import { SETTINGS } from "../settings";
 import { BlogDBType } from "../types/BlogTypes/BlogTypes";
-import { PostDBType} from "../types/PostTypes/PostDBType";
+import { PostDBType } from "../types/PostTypes/PostDBType";
 import * as dotenv from 'dotenv'
 import mongoose from "mongoose";
 import { WithId } from 'mongodb'
@@ -9,6 +9,7 @@ import { CommentDBType } from "../types/CommentTypes/commentType";
 import { UserDBType } from "../types/UserTypes/UserDBType";
 import { SessionDBType } from "../types/SessionsTypes.ts/SessionsTypes";
 import { ApiRequestCountType } from "../types/RequestCount.ts/RequestCountType";
+import { LikeStatusDBType } from "../types/LikeStatusType/LikeStatusDBType";
 
 
 
@@ -37,10 +38,13 @@ export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
 export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     postId: { type: String, require: true },
     content: { type: String, require: true },
-    commentatorInfo: {userId: {type: String, require: true},
-userLogin: {type: String, require: true}
+    commentatorInfo: {
+        userId: { type: String, require: true },
+        userLogin: { type: String, require: true }
     },
     createdAt: { type: String, require: true },
+    likeCount: { type: Number, require: true },
+    dislikeCount: { type: Number, require: true },
 })
 
 export const UserSchema = new mongoose.Schema<WithId<UserDBType>>({
@@ -61,20 +65,29 @@ export const SessionSchema = new mongoose.Schema<WithId<SessionDBType>>({
     title: { type: String, require: true },
     ip: { type: String, require: true },
     expISO: { type: String, require: true },
-    })
+})
 
-    export const ApiRequestCountSchema = new mongoose.Schema<WithId<ApiRequestCountType>>({
-        IP: { type: String},
-        URL: { type: String, require: true },
-        date:  {type: Date, require: true },
-                })
+export const ApiRequestCountSchema = new mongoose.Schema<WithId<ApiRequestCountType>>({
+    IP: { type: String },
+    URL: { type: String, require: true },
+    date: { type: Date, require: true },
+})
+
+export const LikeStatusSchema = new mongoose.Schema<WithId<LikeStatusDBType>>({
+    status: { type: String, require: true },
+    userId: { type: ObjectId, require: true },
+    commentId: { type: ObjectId, require: true },
+})
+
+
 
 export const BlogModel = mongoose.model<WithId<BlogDBType>>('blogs', BlogSchema)
 export const PostModel = mongoose.model<WithId<PostDBType>>('posts', PostSchema)
 export const CommentModel = mongoose.model<WithId<CommentDBType>>('comments', CommentSchema)
-export const UserModel = mongoose.model<WithId<UserDBType>>('users',UserSchema)
+export const UserModel = mongoose.model<WithId<UserDBType>>('users', UserSchema)
 export const SessionModel = mongoose.model<WithId<SessionDBType>>('sessions', SessionSchema)
 export const ApiRequestCountModel = mongoose.model<WithId<ApiRequestCountType>>('apiRequestCount', ApiRequestCountSchema)
+export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('apiRequestCount', LikeStatusSchema)
 
 
 // export let blogsCollection: Collection<BlogViewType>

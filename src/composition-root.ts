@@ -20,6 +20,8 @@ import { CommentsRepository } from "./Repository/commentsRepository";
 import { BlogsController } from "./Controllers/blogsController";
 import { CommentsController } from "./Controllers/commentsController";
 import { AuthController } from "./Controllers/authController";
+import { LikesRepository } from "./Repository/likesRepository";
+import { LikesQueryRepository } from "./queryRepository/likesQueryRepository";
 
 
 const objects: any[] = []
@@ -43,7 +45,13 @@ objects.push(commentsQueryRepository)
 const commentsRepository = new CommentsRepository()
 objects.push(commentsRepository)
 
-const commentsService = new CommentsService(commentsRepository)
+const likesRepository = new LikesRepository()
+objects.push(likesRepository)
+
+const likesQueryRepository = new LikesQueryRepository()
+objects.push(likesQueryRepository)
+
+const commentsService = new CommentsService(commentsRepository, likesRepository, likesQueryRepository)
 objects.push(commentsRepository)
 
 const postsController = new PostsController(postsService, commentsQueryRepository, commentsService, postsRepository)

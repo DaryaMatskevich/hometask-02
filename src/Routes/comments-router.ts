@@ -24,3 +24,8 @@ commentsRouter.delete(SETTINGS.PATH.COMMENTS.ID,
     commentsController.deleteCommentById.bind(commentsController)
 
 )
+
+commentsRouter.put(SETTINGS.PATH.COMMENTS.ID_LIKE_STATUS,
+    userAuthMiddleware,
+    commentsController.changeLikeStatus.bind(commentsController)
+)

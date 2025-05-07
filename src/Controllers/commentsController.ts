@@ -64,4 +64,18 @@ export class CommentsController {
             return res.sendStatus(404)
         }
     }
+
+    async changeLikeStatus(req: Request, res: Response) {
+        const commentId = req.params.id
+        const likeStatus = req.body.likeStatus
+        const userId = req.user!.userId
+        const changeLikeStatus = await this.commentsService.changeLikeStatus(userId, commentId, likeStatus)
+    if(changeLikeStatus) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(404)
+    }
+    
+    
+    }
 }

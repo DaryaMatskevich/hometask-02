@@ -35,4 +35,6 @@ export type CommentInputType = {
     content: string;
     commentatorInfo: CommentatorInfo;
     createdAt: string;
+    likeCount: number,
+    dislikeCount: number
   };

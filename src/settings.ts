@@ -23,7 +23,8 @@ export const SETTINGS = {
         },
         COMMENTS: {
             ROOT: '',
-            ID: '/:id'
+            ID: '/:id',
+            ID_LIKE_STATUS: '/:id/like-status'
         },
         DEVICES: {
             ROOT: '/devices',
