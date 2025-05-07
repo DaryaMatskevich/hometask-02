@@ -50,6 +50,8 @@ export class CommentsService {
             return true
         }
 
+        
+
         if (currentStatus === null && likeStatus === 'None') {
             const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
             return result;

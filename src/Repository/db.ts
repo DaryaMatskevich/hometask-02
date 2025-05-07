@@ -99,32 +99,15 @@ export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('likesSt
 
 export async function runDb() {
 
-    // let client = new MongoClient(url);
-    // let db = client.db(SETTINGS.DB_NAME)
-
-    // blogsCollection = db.collection<BlogViewTDype>('/blogs')
-    // postsCollection = db.collection<PostViewType>('/posts')
-    // usersCollection = db.collection<any>('/users')
-    // commentsCollection = db.collection<any>('/comments')
-    // devicesCollection = db.collection<any>('/devices')
-    // apiRequestCountCollection = db.collection<any>('/apiRequestCount')
-
-
     try {
-        // await client.connect();
-        // await db.command({ ping: 1 })
-
+        
         await mongoose.connect(SETTINGS.MONGO_URL)
-
         console.log("Connected successfully to mongo server")
 
-        // return true
+        
     } catch (e) {
         console.log("no connection")
-
         await mongoose.disconnect()
-
-        // await client.close();
-        // return false
+        
     }
 }
