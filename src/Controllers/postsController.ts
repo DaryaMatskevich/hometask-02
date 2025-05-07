@@ -100,12 +100,12 @@ export class PostsController {
         }
         const commentId = await this.commentsService.createComment(postId, content, userLogin, userId);
         if (!commentId) {
-            res.sendStatus(500)
+            res.sendStatus(404)
             return
         }
         const newComment = await this.commentsQueryRepository.getCommentById(commentId)
         if (!newComment) {
-            res.sendStatus(500)
+            res.sendStatus(404)
             return
         } else {
             res.status(201).send(newComment)
