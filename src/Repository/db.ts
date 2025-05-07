@@ -87,7 +87,7 @@ export const CommentModel = mongoose.model<WithId<CommentDBType>>('comments', Co
 export const UserModel = mongoose.model<WithId<UserDBType>>('users', UserSchema)
 export const SessionModel = mongoose.model<WithId<SessionDBType>>('sessions', SessionSchema)
 export const ApiRequestCountModel = mongoose.model<WithId<ApiRequestCountType>>('apiRequestCount', ApiRequestCountSchema)
-export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('apiRequestCount', LikeStatusSchema)
+export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('likesStatus', LikeStatusSchema)
 
 
 // export let blogsCollection: Collection<BlogViewType>
