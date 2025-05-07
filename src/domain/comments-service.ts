@@ -24,7 +24,12 @@ export class CommentsService {
                 userId: userId,
                 userLogin: userLogin
             },
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0, 
+                myStatus: 'None'
+            }
         }
         return this.commentsRepository.createComment(newComment)
     }
