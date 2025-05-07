@@ -3,12 +3,14 @@ import { ObjectId } from "mongodb";
 import { CommentsRepository } from "../Repository/commentsRepository";
 import { LikesRepository } from "../Repository/likesRepository";
 import { LikesQueryRepository } from "../queryRepository/likesQueryRepository";
+import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
 
 
 
 export class CommentsService {
 
     constructor(private commentsRepository: CommentsRepository,
+       private commentsQueryRepository: CommentsQueryRepository,
         private likesRepository: LikesRepository,
         private LikesQueryRepository: LikesQueryRepository
     ) {
@@ -46,6 +48,10 @@ export class CommentsService {
         commentId: string,
         likeStatus: string
     ): Promise<boolean | any> {
+        const comment = await this.commentsQueryRepository.getCommentById(commentId)
+        if(!comment) {
+            return null
+        }
         const userIdAsObjectId = new ObjectId(userId)
         const commentIdAsObjectId = new ObjectId(commentId)
         const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
