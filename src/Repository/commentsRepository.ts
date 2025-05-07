@@ -27,7 +27,5 @@ const result = await CommentModel.updateOne({_id: new ObjectId(id)}, {
 return result.matchedCount === 1
     }
 
-    async calculateLikeCount() {
-        
-    }
+   
 }

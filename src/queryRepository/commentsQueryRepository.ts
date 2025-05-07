@@ -25,6 +25,11 @@ export class CommentsQueryRepository  {
                 userLogin: comment.commentatorInfo.userLogin,
             },
             createdAt: comment.createdAt,
+            likesInfo: {
+                likesCount: comment.likesInfo.likesCount,
+                dislikesCount: comment.likesInfo.dislikesCount,
+                myStatus: comment.likesInfo.myStatus
+            }
         }));
         const commentsCount = await CommentModel.countDocuments({ postId: postId })
 
@@ -52,7 +57,13 @@ export class CommentsQueryRepository  {
                     userId: comment.commentatorInfo.userId,
                     userLogin: comment.commentatorInfo.userLogin
                 },
-                createdAt: comment.createdAt
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: comment.likesInfo.likesCount,
+                    dislikesCount: comment.likesInfo.dislikesCount,
+                    myStatus: comment.likesInfo.myStatus
+                }
+
             }
         }
         else {

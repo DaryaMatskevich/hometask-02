@@ -5,11 +5,18 @@ type CommentatorInfo = {
     userLogin: string;
   };
 
+  type LikesInfo = {
+    likesCount: number;
+     dislikesCount: number;
+     myStatus: string
+  };
+
 export type CommentInputType = {
     postId: string
     content: string
     commentatorInfo: CommentatorInfo
     createdAt: string
+    likesInfo: LikesInfo
 }
 
 
@@ -19,6 +26,7 @@ export type CommentInputType = {
     content: string;
     commentatorInfo: CommentatorInfo;
     createdAt: string;
+    likesInfo: LikesInfo;
   };
   
   export type PaginatedComments = {
@@ -35,6 +43,5 @@ export type CommentInputType = {
     content: string;
     commentatorInfo: CommentatorInfo;
     createdAt: string;
-    likeCount: number,
-    dislikeCount: number
+    likesInfo: LikesInfo
   };
