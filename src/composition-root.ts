@@ -51,7 +51,7 @@ objects.push(likesRepository)
 const likesQueryRepository = new LikesQueryRepository()
 objects.push(likesQueryRepository)
 
-const commentsService = new CommentsService(commentsRepository, likesRepository, likesQueryRepository)
+const commentsService = new CommentsService(commentsRepository, commentsQueryRepository, likesRepository, likesQueryRepository)
 objects.push(commentsRepository)
 
 const postsController = new PostsController(postsService, commentsQueryRepository, commentsService, postsRepository)
