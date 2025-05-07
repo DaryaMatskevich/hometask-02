@@ -70,7 +70,7 @@ export class UsersService {
             login,
             email,
             passwordHash,
-            new Date(),
+            new Date().toISOString(),
             uuidv4(),
             add(new Date(), {
                 hours: 1
