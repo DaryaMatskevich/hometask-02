@@ -17,7 +17,7 @@ export type UserDBType = {
             public login: string,
             public email: string,
             public password: string,
-            public createdAt: Date,
+            public createdAt: string,
             public confirmationCode: string,
             public expirationDate: Date,
             public isConfirmed: boolean){}
