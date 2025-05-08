@@ -85,7 +85,7 @@ export class CommentsController {
        return
         } 
         if (result.status === ResultStatus.BadRequest) {
-            res.sendStatus(resultCodeToHttpException(result.status))
+            res.status(resultCodeToHttpException(result.status)).json({errorsMessages: result.extensions})
        return
         } 
 
