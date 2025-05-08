@@ -70,12 +70,18 @@ export class CommentsController {
         const likeStatus = req.body.likeStatus
         const userId = req.user!.userId
         const changeLikeStatus = await this.commentsService.changeLikeStatus(userId, commentId, likeStatus)
-    if(changeLikeStatus) {
-        res.sendStatus(204)
-    } else {
-        res.sendStatus(404)
-    }
-    
-    
+
+
+
+        if (changeLikeStatus) {
+            res.sendStatus(204)
+        } else {
+            res.status(404).json({
+                errorsMessages: [{
+                    field: 'likeStatus',
+                    message: 'likeStatus not found'
+                }]
+            })
+        }
     }
 }

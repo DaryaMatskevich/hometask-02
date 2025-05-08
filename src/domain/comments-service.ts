@@ -4,13 +4,14 @@ import { CommentsRepository } from "../Repository/commentsRepository";
 import { LikesRepository } from "../Repository/likesRepository";
 import { LikesQueryRepository } from "../queryRepository/likesQueryRepository";
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
+import { ResultStatus } from "../types/result/resultCode";
 
 
 
 export class CommentsService {
 
     constructor(private commentsRepository: CommentsRepository,
-       private commentsQueryRepository: CommentsQueryRepository,
+        private commentsQueryRepository: CommentsQueryRepository,
         private likesRepository: LikesRepository,
         private LikesQueryRepository: LikesQueryRepository
     ) {
@@ -29,7 +30,7 @@ export class CommentsService {
             createdAt: new Date().toISOString(),
             likesInfo: {
                 likesCount: 0,
-                dislikesCount: 0, 
+                dislikesCount: 0,
                 myStatus: 'None'
             }
         }
@@ -49,64 +50,66 @@ export class CommentsService {
         likeStatus: string
     ): Promise<boolean | any> {
         const comment = await this.commentsQueryRepository.getCommentById(commentId)
-        if(!comment) {
-            return null
+        if (!comment) {
+            return {
+                status: ResultStatus.NotFound,
+                data: null,
+                errorMessage: 'Comment not found',
+                extensions: [{
+                    field: 'likeStatus',
+                    message: 'Comment not found'
+                }]
+            }
         }
+
+        if (!['Like', 'Dislike', 'None'].includes(likeStatus)) {
+            return {
+                status: ResultStatus.BadRequest,
+                data: null,
+                errorMessage: 'Invalid like status',
+                extensions: [{
+                    field: 'likeStatus',
+                    message: 'Status must be Like, Dislike or None'
+                }]
+            };
+        }
+
         const userIdAsObjectId = new ObjectId(userId)
         const commentIdAsObjectId = new ObjectId(commentId)
         const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
 
 
         if (likeStatus === currentStatus) {
-            return true
+            return{
+                status: ResultStatus.Success,
+                data: true,
+                extensions: []
+            }
+        }
+
+
+
+        if (currentStatus === null) {
+            const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
+            return result
+        }
+
+        if (likeStatus === 'None') {
+            const result = await this.likesRepository.setNoneStatus(userIdAsObjectId, commentIdAsObjectId)
+            return result
+        }
+
+ 
+        if (likeStatus === 'Like') {
+            const result = await this.likesRepository.setLikeStatus(userIdAsObjectId, commentIdAsObjectId)
+            return result
         }
 
         
-
-        if (currentStatus === null && likeStatus === 'None') {
-            const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-            return result;
-        }
-
-        if (currentStatus === null && likeStatus === 'Like') {
-            const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-            return result;
-        }
-
-        if (currentStatus === null && likeStatus === 'Dislike') {
-            const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-            return result;
-        }
-
-        if (likeStatus === 'None' && currentStatus === 'Like') {
-            const result = await this.likesRepository.setNoneStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-        if (likeStatus === 'None' && currentStatus === 'Dislike') {
-            const result = await this.likesRepository.setNoneStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-        if (likeStatus === 'Like' && currentStatus === 'None') {
-            const result = await this.likesRepository.setLikeStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-        if (likeStatus === 'Like' && currentStatus === 'Dislike') {
-            const result = await this.likesRepository.setLikeStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-        if (likeStatus === 'Dislike' && currentStatus === 'None') {
+        if (likeStatus === 'Dislike') {
             const result = await this.likesRepository.setDislikeStatus(userIdAsObjectId, commentIdAsObjectId)
             return result
         }
 
-        if (likeStatus === 'Dislike' && currentStatus === 'Like') {
-            const result = await this.likesRepository.setDislikeStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-         }
+    }
 }
