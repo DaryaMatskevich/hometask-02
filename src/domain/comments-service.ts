@@ -5,6 +5,7 @@ import { LikesRepository } from "../Repository/likesRepository";
 import { LikesQueryRepository } from "../queryRepository/likesQueryRepository";
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
 import { ResultStatus } from "../types/result/resultCode";
+import { Result } from "../types/result/result.type";
 
 
 
@@ -48,12 +49,12 @@ export class CommentsService {
     async changeLikeStatus(userId: string,
         commentId: string,
         likeStatus: string
-    ): Promise<boolean | any> {
+    ): Promise<Result<boolean>> {
         const comment = await this.commentsQueryRepository.getCommentById(commentId)
         if (!comment) {
             return {
                 status: ResultStatus.NotFound,
-                data: null,
+                data: false,
                 errorMessage: 'Comment not found',
                 extensions: [{
                     field: 'likeStatus',
@@ -65,7 +66,7 @@ export class CommentsService {
         if (!['Like', 'Dislike', 'None'].includes(likeStatus)) {
             return {
                 status: ResultStatus.BadRequest,
-                data: null,
+                data: false,
                 errorMessage: 'Invalid like status',
                 extensions: [{
                     field: 'likeStatus',
@@ -80,36 +81,52 @@ export class CommentsService {
 
 
         if (likeStatus === currentStatus) {
-            return{
+            return {
                 status: ResultStatus.Success,
                 data: true,
                 extensions: []
             }
         }
 
-
-
-        if (currentStatus === null) {
-            const result = await this.likesRepository.createStatus(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-            return result
-        }
-
-        if (likeStatus === 'None') {
-            const result = await this.likesRepository.setNoneStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
- 
-        if (likeStatus === 'Like') {
-            const result = await this.likesRepository.setLikeStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
-        
-        if (likeStatus === 'Dislike') {
-            const result = await this.likesRepository.setDislikeStatus(userIdAsObjectId, commentIdAsObjectId)
-            return result
-        }
-
+   
+    let result: boolean;
+    
+    if (currentStatus === null) {
+        result = await this.likesRepository.createStatus(
+            userIdAsObjectId, 
+            commentIdAsObjectId, 
+            likeStatus
+        );
+    } else if (likeStatus === 'None') {
+        result = await this.likesRepository.setNoneStatus(
+            userIdAsObjectId, 
+            commentIdAsObjectId
+        );
+    } else if (likeStatus === 'Like') {
+        result = await this.likesRepository.setLikeStatus(
+            userIdAsObjectId, 
+            commentIdAsObjectId
+        );
+    } else {
+        result = await this.likesRepository.setDislikeStatus(
+            userIdAsObjectId, 
+            commentIdAsObjectId
+        );
     }
+
+    if (!result) {
+        return {
+            status: ResultStatus.BadRequest,
+            data: false,
+            errorMessage: `Failed to update status to ${likeStatus}`,
+            extensions: []
+        };
+    }
+
+    return {
+        status: ResultStatus.Success,
+        data: true,
+        extensions: []
+    };
 }
+    }

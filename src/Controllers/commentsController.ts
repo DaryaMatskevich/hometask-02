@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { CommentsService } from "../domain/comments-service";
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
+import { ResultStatus } from "../types/result/resultCode";
+import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
 
 
 
@@ -69,19 +71,23 @@ export class CommentsController {
         const commentId = req.params.id
         const likeStatus = req.body.likeStatus
         const userId = req.user!.userId
-        const changeLikeStatus = await this.commentsService.changeLikeStatus(userId, commentId, likeStatus)
+        const result = await this.commentsService.changeLikeStatus(userId, commentId, likeStatus)
 
 
 
-        if (changeLikeStatus) {
-            res.sendStatus(204)
-        } else {
-            res.status(404).json({
-                errorsMessages: [{
-                    field: 'likeStatus',
-                    message: 'likeStatus not found'
-                }]
-            })
+        if (result.status === ResultStatus.NotFound) {
+            res.status(resultCodeToHttpException(result.status)).json({errorsMessages: result.extensions})
+       return
+        } 
+
+        if (result.status === ResultStatus.Success) {
+            res.sendStatus(resultCodeToHttpException(result.status))
+       return
+        } 
+        if (result.status === ResultStatus.BadRequest) {
+            res.sendStatus(resultCodeToHttpException(result.status))
+       return
+        } 
+
         }
     }
-}
