@@ -65,7 +65,7 @@ export class CommentsService {
 
         if (!['Like', 'Dislike', 'None'].includes(likeStatus)) {
             return {
-                status: ResultStatus.BadRequest,
+                status: ResultStatus.NotFound,
                 data: false,
                 errorMessage: 'Invalid like status',
                 extensions: [{
