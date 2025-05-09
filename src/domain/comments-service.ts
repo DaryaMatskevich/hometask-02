@@ -87,12 +87,48 @@ export class CommentsService {
                 data: true,
                 extensions: []
             }
+        } 
+
+        if(currentStatus === null || likeStatus === "Like") {
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+        }
+
+        if(currentStatus ===  null || likeStatus === "Dislike") {
+            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId)
+        }
+
+        if(currentStatus ===  "None" || likeStatus === "Like") {
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+        }
+
+        if(currentStatus ===  "None" || likeStatus === "Dislike") {
+            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId)
+        }
+
+        
+        if(currentStatus ===  "Like" || likeStatus === "Dislike") {
+            const result2 = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+        }
+
+        
+        if(currentStatus ===  "Dislike" || likeStatus === "Like") {
+            const result2 = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+        }
+
+        if(currentStatus ===  "Dislike" || likeStatus === "None") {
+            const result = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId)
+        }
+
+        if(currentStatus ===  "Like" || likeStatus === "None") {
+            const result = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId)
         }
 
    
     let result: boolean;
     
-    if (currentStatus === null) {
+    if (currentStatus === null) { 
         result = await this.likesRepository.createStatus(
             userIdAsObjectId, 
             commentIdAsObjectId, 
