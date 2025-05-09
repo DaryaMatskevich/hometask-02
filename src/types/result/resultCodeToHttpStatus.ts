@@ -3,7 +3,7 @@ import { ResultStatus } from "./resultCode";
 export function resultCodeToHttpException(status: ResultStatus): number {
     switch (status) {
         case ResultStatus.Success:
-            return 200; // OK
+            return 204; // OK
         case ResultStatus.BadRequest:
             return 400; // Bad Request
         case ResultStatus.Unauthorized:
