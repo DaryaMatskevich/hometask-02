@@ -20,15 +20,20 @@ export class CommentsController {
         const accessToken = req.cookies.accessToken;
         const jwtPayload = await jwtService.getUserIdByToken(accessToken)
         const userId = jwtPayload?.userId
-        if(userId) {
+        if (userId) {
             const comment = await this.commentsService.getCommentByIdforAuth(userId, commentId)
-        }
-        const comment = await this.commentsService.getCommentById(commentId)
-        if (comment) {
-            res.status(200).send(comment)
-        }
-        else {
+            if (comment) {
+                res.status(200).send(comment)
+                return
+            }
+            const comment2 = await this.commentsService.getCommentById(commentId)
+
+            if (comment2) {
+                res.status(200).send(comment2)
+                return
+            }
             res.sendStatus(404)
+            return
         }
     }
 
