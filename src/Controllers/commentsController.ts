@@ -17,11 +17,11 @@ export class CommentsController {
 
     async getCommentById(req: Request, res: Response) {
         const commentId = req.params.id
-        const accessToken = req.cookies.accessToken;
-        const jwtPayload = await jwtService.getUserIdByToken(accessToken)
-        const userId = jwtPayload?.userId
-        if (userId) {
-            const comment = await this.commentsService.getCommentByIdforAuth(userId, commentId)
+        // const accessToken = req.cookies.accessToken;
+        // const jwtPayload = await jwtService.getUserIdByToken(accessToken)
+        // const userId = jwtPayload?.userId
+        // if (userId) {
+            const comment = await this.commentsService.getCommentById(commentId)
             if (comment) {
                 res.status(200).send(comment)
                 return
@@ -29,7 +29,7 @@ export class CommentsController {
         else{
             res.sendStatus(404)
             return
-        }}
+        }
     }
 
     async updateCommentById(req: Request, res: Response) {
