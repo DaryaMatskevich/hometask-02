@@ -75,7 +75,7 @@ export class CommentsQueryRepository  {
 
     async increaseLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
         const updatedDoc = await CommentModel.findOneAndUpdate(
-            { _id: commentIdAsObjectId },           // критерий поиска
+            { _id: commentIdAsObjectId, userId: userIdAsObjectId},           // критерий поиска
             { $inc: { likesCount: 1 }, myStatus: likeStatus },   // увеличение поля likes на 1
             { new: true }             // вернуть обновлённый документ
           );
