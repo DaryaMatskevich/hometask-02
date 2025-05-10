@@ -81,6 +81,9 @@ export class CommentsService {
         const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
 
 
+
+
+
         if (likeStatus === currentStatus) {
             return {
                 status: ResultStatus.Success,
@@ -90,39 +93,39 @@ export class CommentsService {
         } 
 
         if(currentStatus === null || likeStatus === "Like") {
-            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId, likeStatus)
         }
 
         if(currentStatus ===  null || likeStatus === "Dislike") {
-            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId, likeStatus)
         }
 
         if(currentStatus ===  "None" || likeStatus === "Like") {
-            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId, likeStatus)
         }
 
         if(currentStatus ===  "None" || likeStatus === "Dislike") {
-            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.increaseDisLikes(commentIdAsObjectId, likeStatus)
         }
 
         
         if(currentStatus ===  "Like" || likeStatus === "Dislike") {
-            const result2 = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId)
-            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+            const result2 = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId, likeStatus)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId, likeStatus)
         }
 
         
         if(currentStatus ===  "Dislike" || likeStatus === "Like") {
-            const result2 = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId)
-            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId)
+            const result2 = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId, likeStatus)
+            const result = await this.commentsQueryRepository.increaseLikes(commentIdAsObjectId, likeStatus)
         }
 
         if(currentStatus ===  "Dislike" || likeStatus === "None") {
-            const result = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.dicreaseDislikes(commentIdAsObjectId, likeStatus)
         }
 
         if(currentStatus ===  "Like" || likeStatus === "None") {
-            const result = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId)
+            const result = await this.commentsQueryRepository.dicreaseLikes(commentIdAsObjectId, likeStatus)
         }
 
    
