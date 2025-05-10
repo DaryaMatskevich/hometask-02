@@ -140,4 +140,29 @@ if (likeStatus === 'Like') {
         extensions: []
     };
 }
+
+async getCommentById(commentId: string) {
+const comment = await this.commentsQueryRepository.getCommentById(commentId)
+if (!comment) {
+    return null 
+}
+else {
+    return comment
+}
     }
+
+    async getCommentByIdforAuth(userId: string, commentId: string) {
+
+        const userIdAsObjectId = new ObjectId(userId)
+        const commentIdAsObjectId = new ObjectId(commentId)
+        const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
+
+        const comment = await this.commentsQueryRepository.getCommentById(commentId, currentStatus)
+        if (!comment) {
+            return null 
+        }
+        else {
+            return comment
+        }
+            }
+}

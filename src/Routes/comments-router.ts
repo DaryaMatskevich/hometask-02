@@ -29,3 +29,7 @@ commentsRouter.put(SETTINGS.PATH.COMMENTS.ID_LIKE_STATUS,
     userAuthMiddleware,
     commentsController.changeLikeStatus.bind(commentsController)
 )
+
+commentsRouter.get(SETTINGS.PATH.COMMENTS.ID,
+    commentsController.getCommentById.bind(commentsController)
+)

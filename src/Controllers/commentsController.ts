@@ -3,6 +3,7 @@ import { CommentsService } from "../domain/comments-service";
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository";
 import { ResultStatus } from "../types/result/resultCode";
 import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus";
+import { jwtService } from "../adapters/jwt-service";
 
 
 
@@ -16,7 +17,13 @@ export class CommentsController {
 
     async getCommentById(req: Request, res: Response) {
         const commentId = req.params.id
-        const comment = await this.commentsQueryRepository.getCommentById(commentId)
+        const accessToken = req.cookies.accessToken;
+        const jwtPayload = await jwtService.getUserIdByToken(accessToken)
+        const userId = jwtPayload?.userId
+        if(userId) {
+            const comment = await this.commentsService.getCommentByIdforAuth(userId, commentId)
+        }
+        const comment = await this.commentsService.getCommentById(commentId)
         if (comment) {
             res.status(200).send(comment)
         }
@@ -76,18 +83,18 @@ export class CommentsController {
 
 
         if (result.status === ResultStatus.NotFound) {
-            res.status(resultCodeToHttpException(result.status)).json({errorsMessages: result.extensions})
-       return
-        } 
+            res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+            return
+        }
 
         if (result.status === ResultStatus.Success) {
             res.sendStatus(resultCodeToHttpException(result.status))
-       return
-        } 
-        if (result.status === ResultStatus.BadRequest) {
-            res.status(resultCodeToHttpException(result.status)).json({errorsMessages: result.extensions})
-       return
-        } 
-
+            return
         }
+        if (result.status === ResultStatus.BadRequest) {
+            res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+            return
+        }
+
     }
+}

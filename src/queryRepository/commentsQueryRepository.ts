@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import { CommentModel} from "../Repository/db"
+import { CommentModel } from "../Repository/db"
 import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
-export class CommentsQueryRepository  {
+export class CommentsQueryRepository {
 
     async getCommentsByPostId(postId: string,
         pageNumber: number,
@@ -43,7 +43,7 @@ export class CommentsQueryRepository  {
 
     }
 
-    async getCommentById(id: string, likeStatus: string): Promise<CommentViewType | null> {
+    async getCommentById(id: string, likeStatus?: string | null): Promise<CommentViewType | null> {
         if (!ObjectId.isValid(id)) {
             return null;
         }
@@ -69,12 +69,8 @@ export class CommentsQueryRepository  {
         else {
             return null
         }
-
-        
     }
-
-   
-    }
+}
 
 
 
