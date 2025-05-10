@@ -49,7 +49,7 @@ export class CommentsService {
         commentId: string,
         likeStatus: string
     ): Promise<Result<boolean>> {
-        const comment = await this.commentsQueryRepository.getCommentById(commentId)
+        const comment = await this.commentsQueryRepository.getCommentById(commentId, likeStatus)
         if (!comment) {
             return {
                 status: ResultStatus.NotFound,
