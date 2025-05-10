@@ -27,5 +27,45 @@ const result = await CommentModel.updateOne({_id: new ObjectId(id)}, {
 return result.matchedCount === 1
     }
 
-   
+    async increaseLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+        const updatedDoc = await CommentModel.findOneAndUpdate(
+            { _id: commentIdAsObjectId, userId: userIdAsObjectId},           // критерий поиска
+            { $inc: { likesCount: 1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+            { new: true }             // вернуть обновлённый документ
+          );
+      
+          return updatedDoc;
+        }
+
+        async increaseDisLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+            const updatedDoc = await CommentModel.findOneAndUpdate(
+                { _id: commentIdAsObjectId, userId: userIdAsObjectId },           // критерий поиска
+                { $inc: { dislikesCount: 1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+                { new: true }             // вернуть обновлённый документ
+              );
+          
+              return updatedDoc;
+            }
+    
+
+
+    async dicreaseLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+        const updatedDoc = await CommentModel.findOneAndUpdate(
+            {_id: commentIdAsObjectId, userId: userIdAsObjectId },           // критерий поиска
+            { $inc: { likesCount: -1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+            { new: true }             // вернуть обновлённый документ
+          );
+      
+          return updatedDoc;
+        }
+
+        async dicreaseDislikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+            const updatedDoc = await CommentModel.findOneAndUpdate(
+                { _id: commentIdAsObjectId, userId: userIdAsObjectId  },           // критерий поиска
+                { $inc: { dislikesCount: -1 }, myStatus: likeStatus},   // увеличение поля likes на 1
+                { new: true }             // вернуть обновлённый документ
+              );
+          
+              return updatedDoc;
+            }
 }

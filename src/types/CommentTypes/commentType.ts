@@ -9,6 +9,7 @@ type CommentatorInfo = {
     likesCount: number;
      dislikesCount: number;
      myStatus: string
+     
   };
 
 export type CommentInputType = {
@@ -16,7 +17,10 @@ export type CommentInputType = {
     content: string
     commentatorInfo: CommentatorInfo
     createdAt: string
-    likesInfo: LikesInfo
+    likesInfo: {
+      likesCount: number;
+     dislikesCount: number;
+    }
 }
 
 

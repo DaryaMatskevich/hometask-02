@@ -46,7 +46,7 @@ export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     likesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
-        myStatus: { type: String, default: 'None' }
+        // myStatus: { type: String, default: 'None' }
       }
 })
 
