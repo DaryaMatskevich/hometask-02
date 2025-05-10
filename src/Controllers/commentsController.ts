@@ -26,15 +26,10 @@ export class CommentsController {
                 res.status(200).send(comment)
                 return
             }
-            const comment2 = await this.commentsService.getCommentById(commentId)
-
-            if (comment2) {
-                res.status(200).send(comment2)
-                return
-            }
+        else{
             res.sendStatus(404)
             return
-        }
+        }}
     }
 
     async updateCommentById(req: Request, res: Response) {
