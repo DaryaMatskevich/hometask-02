@@ -61,7 +61,7 @@ export class CommentsQueryRepository  {
                 likesInfo: {
                     likesCount: comment.likesInfo.likesCount,
                     dislikesCount: comment.likesInfo.dislikesCount,
-                    myStatus: likeStatus
+                    myStatus: likeStatus || 'None'
                 }
 
             }
