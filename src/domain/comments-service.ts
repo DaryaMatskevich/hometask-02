@@ -86,42 +86,18 @@ export class CommentsService {
                 extensions: []
             }
         } 
+// Обновляем счетчики в комментарии
+if (currentStatus === 'Like') {
+    await this.commentsRepository.decreaseLikes(commentIdAsObjectId)
+} else if (currentStatus === 'Dislike') {
+    await this.commentsRepository.decreaseDislikes(commentIdAsObjectId)
+}
 
-        if(currentStatus === null || likeStatus === "Like") {
-            const result = await this.commentsRepository.increaseLikes(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-        }
-
-        if(currentStatus ===  null || likeStatus === "Dislike") {
-            const result = await this.commentsRepository.increaseDisLikes(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-        }
-
-        if(currentStatus ===  "None" || likeStatus === "Like") {
-            const result = await this.commentsRepository.increaseLikes(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-        }
-
-        if(currentStatus ===  "None" || likeStatus === "Dislike") {
-            const result = await this.commentsRepository.increaseDisLikes(userIdAsObjectId,commentIdAsObjectId, likeStatus)
-        }
-
-        
-        if(currentStatus ===  "Like" || likeStatus === "Dislike") {
-            const result2 = await this.commentsRepository.dicreaseLikes(userIdAsObjectId,commentIdAsObjectId, likeStatus)
-            const result = await this.commentsRepository.increaseLikes(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-        }
-
-        
-        if(currentStatus ===  "Dislike" || likeStatus === "Like") {
-            const result2 = await this.commentsRepository.dicreaseDislikes(userIdAsObjectId,commentIdAsObjectId, likeStatus)
-            const result = await this.commentsRepository.increaseLikes(userIdAsObjectId,commentIdAsObjectId, likeStatus)
-        }
-
-        if(currentStatus ===  "Dislike" || likeStatus === "None") {
-            const result = await this.commentsRepository.dicreaseDislikes(userIdAsObjectId,commentIdAsObjectId, likeStatus)
-        }
-
-        if(currentStatus ===  "Like" || likeStatus === "None") {
-            const result = await this.commentsRepository.dicreaseLikes(userIdAsObjectId, commentIdAsObjectId, likeStatus)
-        }
+if (likeStatus === 'Like') {
+    await this.commentsRepository.increaseLikes(commentIdAsObjectId)
+} else if (likeStatus === 'Dislike') {
+    await this.commentsRepository.increaseDisLikes(commentIdAsObjectId)
+}
 
    
     let result: boolean;

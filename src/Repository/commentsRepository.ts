@@ -27,20 +27,20 @@ const result = await CommentModel.updateOne({_id: new ObjectId(id)}, {
 return result.matchedCount === 1
     }
 
-    async increaseLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+    async increaseLikes(commentIdAsObjectId: ObjectId) {
         const updatedDoc = await CommentModel.findOneAndUpdate(
-            { _id: commentIdAsObjectId, userId: userIdAsObjectId},           // критерий поиска
-            { $inc: { likesCount: 1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+            { _id: commentIdAsObjectId},           // критерий поиска
+            { $inc: { likesCount: 1 }},   // увеличение поля likes на 1
             { new: true }             // вернуть обновлённый документ
           );
       
           return updatedDoc;
         }
 
-        async increaseDisLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+        async increaseDisLikes(commentIdAsObjectId: ObjectId) {
             const updatedDoc = await CommentModel.findOneAndUpdate(
-                { _id: commentIdAsObjectId, userId: userIdAsObjectId },           // критерий поиска
-                { $inc: { dislikesCount: 1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+                { _id: commentIdAsObjectId},           // критерий поиска
+                { $inc: { dislikesCount: 1 } },   // увеличение поля likes на 1
                 { new: true }             // вернуть обновлённый документ
               );
           
@@ -49,20 +49,20 @@ return result.matchedCount === 1
     
 
 
-    async dicreaseLikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+    async decreaseLikes(commentIdAsObjectId: ObjectId) {
         const updatedDoc = await CommentModel.findOneAndUpdate(
-            {_id: commentIdAsObjectId, userId: userIdAsObjectId },           // критерий поиска
-            { $inc: { likesCount: -1 }, myStatus: likeStatus },   // увеличение поля likes на 1
+            {_id: commentIdAsObjectId },           // критерий поиска
+            { $inc: { likesCount: -1 }},   // увеличение поля likes на 1
             { new: true }             // вернуть обновлённый документ
           );
       
           return updatedDoc;
         }
 
-        async dicreaseDislikes(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId, likeStatus: string) {
+        async decreaseDislikes(commentIdAsObjectId: ObjectId) {
             const updatedDoc = await CommentModel.findOneAndUpdate(
-                { _id: commentIdAsObjectId, userId: userIdAsObjectId  },           // критерий поиска
-                { $inc: { dislikesCount: -1 }, myStatus: likeStatus},   // увеличение поля likes на 1
+                { _id: commentIdAsObjectId},           // критерий поиска
+                { $inc: { dislikesCount: -1 }},   // увеличение поля likes на 1
                 { new: true }             // вернуть обновлённый документ
               );
           
