@@ -28,44 +28,44 @@ return result.matchedCount === 1
     }
 
     async increaseLikes(commentIdAsObjectId: ObjectId) {
-        const updatedDoc = await CommentModel.findOneAndUpdate(
+        const updatedDoc = await CommentModel.updateOne(
             { _id: commentIdAsObjectId},           // критерий поиска
             { $inc: { likesCount: 1 }},   // увеличение поля likes на 1
-            { new: true }             // вернуть обновлённый документ
+                      // вернуть обновлённый документ
           );
       
-          return updatedDoc;
+          return updatedDoc.modifiedCount>0;
         }
 
         async increaseDisLikes(commentIdAsObjectId: ObjectId) {
-            const updatedDoc = await CommentModel.findOneAndUpdate(
+            const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
                 { $inc: { dislikesCount: 1 } },   // увеличение поля likes на 1
-                { new: true }             // вернуть обновлённый документ
+                           // вернуть обновлённый документ
               );
           
-              return updatedDoc;
+              return updatedDoc.modifiedCount>0;
             }
     
 
 
     async decreaseLikes(commentIdAsObjectId: ObjectId) {
-        const updatedDoc = await CommentModel.findOneAndUpdate(
+        const updatedDoc = await CommentModel.updateOne(
             {_id: commentIdAsObjectId },           // критерий поиска
             { $inc: { likesCount: -1 }},   // увеличение поля likes на 1
-            { new: true }             // вернуть обновлённый документ
+                       // вернуть обновлённый документ
           );
       
-          return updatedDoc;
+          return updatedDoc.modifiedCount>0;
         }
 
         async decreaseDislikes(commentIdAsObjectId: ObjectId) {
-            const updatedDoc = await CommentModel.findOneAndUpdate(
+            const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
                 { $inc: { dislikesCount: -1 }},   // увеличение поля likes на 1
-                { new: true }             // вернуть обновлённый документ
+                          // вернуть обновлённый документ
               );
           
-              return updatedDoc;
+              return updatedDoc.modifiedCount>0;
             }
 }
