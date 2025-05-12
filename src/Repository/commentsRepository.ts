@@ -30,7 +30,7 @@ return result.matchedCount === 1
     async increaseLikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
         const updatedDoc = await CommentModel.updateOne(
             { _id: commentIdAsObjectId},           // критерий поиска
-            { $inc: { likesCount: 1 }},   // увеличение поля likes на 1
+            { $inc: { 'likesInfo.likesCount': 1 }},   // увеличение поля likes на 1
                       // вернуть обновлённый документ
           );
       
@@ -40,7 +40,7 @@ return result.matchedCount === 1
         async increaseDisLikes(commentIdAsObjectId: ObjectId) :Promise<boolean>{
             const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
-                { $inc: { dislikesCount: 1 } },   // увеличение поля likes на 1
+                { $inc: { 'likesInfo.dislikesCount': 1 } },   // увеличение поля likes на 1
                            // вернуть обновлённый документ
               );
           
@@ -52,7 +52,7 @@ return result.matchedCount === 1
     async decreaseLikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
         const updatedDoc = await CommentModel.updateOne(
             {_id: commentIdAsObjectId },           // критерий поиска
-            { $inc: { likesCount: -1 }},   // увеличение поля likes на 1
+            { $inc: { 'likesInfo.likesCount': -1 }},   // увеличение поля likes на 1
                        // вернуть обновлённый документ
           );
       
@@ -62,7 +62,7 @@ return result.matchedCount === 1
         async decreaseDislikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
             const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
-                { $inc: { dislikesCount: -1 }},   // увеличение поля likes на 1
+                { $inc: { 'likesInfo.dislikesCount': -1 }},   // увеличение поля likes на 1
                           // вернуть обновлённый документ
               );
           
