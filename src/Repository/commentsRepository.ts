@@ -27,7 +27,7 @@ const result = await CommentModel.updateOne({_id: new ObjectId(id)}, {
 return result.matchedCount === 1
     }
 
-    async increaseLikes(commentIdAsObjectId: ObjectId) {
+    async increaseLikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
         const updatedDoc = await CommentModel.updateOne(
             { _id: commentIdAsObjectId},           // критерий поиска
             { $inc: { likesCount: 1 }},   // увеличение поля likes на 1
@@ -37,7 +37,7 @@ return result.matchedCount === 1
           return updatedDoc.modifiedCount>0;
         }
 
-        async increaseDisLikes(commentIdAsObjectId: ObjectId) {
+        async increaseDisLikes(commentIdAsObjectId: ObjectId) :Promise<boolean>{
             const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
                 { $inc: { dislikesCount: 1 } },   // увеличение поля likes на 1
@@ -49,7 +49,7 @@ return result.matchedCount === 1
     
 
 
-    async decreaseLikes(commentIdAsObjectId: ObjectId) {
+    async decreaseLikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
         const updatedDoc = await CommentModel.updateOne(
             {_id: commentIdAsObjectId },           // критерий поиска
             { $inc: { likesCount: -1 }},   // увеличение поля likes на 1
@@ -59,7 +59,7 @@ return result.matchedCount === 1
           return updatedDoc.modifiedCount>0;
         }
 
-        async decreaseDislikes(commentIdAsObjectId: ObjectId) {
+        async decreaseDislikes(commentIdAsObjectId: ObjectId):Promise<boolean> {
             const updatedDoc = await CommentModel.updateOne(
                 { _id: commentIdAsObjectId},           // критерий поиска
                 { $inc: { dislikesCount: -1 }},   // увеличение поля likes на 1

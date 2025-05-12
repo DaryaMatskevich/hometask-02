@@ -14,7 +14,7 @@ export class CommentsService {
     constructor(private commentsRepository: CommentsRepository,
         private commentsQueryRepository: CommentsQueryRepository,
         private likesRepository: LikesRepository,
-        private LikesQueryRepository: LikesQueryRepository
+        private likesQueryRepository: LikesQueryRepository
     ) {
 
     }
@@ -77,7 +77,7 @@ export class CommentsService {
 
         const userIdAsObjectId = new ObjectId(userId)
         const commentIdAsObjectId = new ObjectId(commentId)
-        const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
+        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
 
         if (likeStatus === currentStatus) {
             return {
@@ -155,7 +155,7 @@ else {
 
         const userIdAsObjectId = new ObjectId(userId)
         const commentIdAsObjectId = new ObjectId(commentId)
-        const currentStatus = await this.LikesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
+        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
 
         const comment = await this.commentsQueryRepository.getCommentById(commentId, currentStatus)
         if (!comment) {
