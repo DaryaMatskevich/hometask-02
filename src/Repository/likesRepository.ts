@@ -18,7 +18,7 @@ export class LikesRepository {
     async setNoneStatus(userIdAsObjectId: ObjectId,
         commentIdAsObjectId: ObjectId,
     ) {
-        const result = await LikeStatusModel.findOneAndUpdate({
+        const result = await LikeStatusModel.updateOne({
             userId: userIdAsObjectId,
             commentId: commentIdAsObjectId
         },
@@ -32,7 +32,7 @@ export class LikesRepository {
     async setLikeStatus(userIdAsObjectId: ObjectId,
         commentIdAsObjectId: ObjectId,
     ) {
-        const result = await LikeStatusModel.findOneAndUpdate({
+        const result = await LikeStatusModel.updateOne({
             userId: userIdAsObjectId,
             commentId: commentIdAsObjectId
         },
@@ -46,7 +46,7 @@ export class LikesRepository {
     async setDislikeStatus(userIdAsObjectId: ObjectId,
         commentIdAsObjectId: ObjectId,
     ) {
-        const result = await LikeStatusModel.findOneAndUpdate({
+        const result = await LikeStatusModel.updateOne({
             userId: userIdAsObjectId,
             commentId: commentIdAsObjectId
         },
