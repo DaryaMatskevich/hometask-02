@@ -24,6 +24,8 @@ export class CommentsController {
         if (accessToken) {
             const jwtPayload = await jwtService.getUserIdByToken(accessToken);
             userId = jwtPayload?.userId || null;
+            res.sendStatus(400)
+            return
         }
 
         const comment = userId
