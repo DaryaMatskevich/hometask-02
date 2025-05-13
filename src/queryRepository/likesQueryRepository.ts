@@ -4,11 +4,11 @@ import { LikeStatusModel } from "../Repository/db";
 
 export class LikesQueryRepository {
 
-    async getLikeStatusByUserId(userIdAsObjectId: ObjectId, commentIdAsObjectId: ObjectId) {
+    async getLikeStatusByUserId(userId: string, commentId: string): Promise<string |  null> {
         const likeStatus = await LikeStatusModel.findOne({
-            userId: userIdAsObjectId,
-            commentId: commentIdAsObjectId
+            userId: new ObjectId(userId),
+            commentId: new ObjectId(commentId)
         }).lean()
-        return likeStatus ? likeStatus.status : null;
+        return likeStatus && likeStatus.status ? likeStatus.status : null;
     }
 }

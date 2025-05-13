@@ -47,7 +47,7 @@ export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
         // myStatus: { type: String, default: 'None' }
-      }
+    }
 })
 
 export const UserSchema = new mongoose.Schema<WithId<UserDBType>>({
@@ -77,9 +77,9 @@ export const ApiRequestCountSchema = new mongoose.Schema<WithId<ApiRequestCountT
 })
 
 export const LikeStatusSchema = new mongoose.Schema<WithId<LikeStatusDBType>>({
-    status: { type: String, require: true },
     userId: { type: ObjectId, require: true },
     commentId: { type: ObjectId, require: true },
+    status: { type: String, require: true },
 })
 
 
@@ -103,14 +103,14 @@ export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('likesSt
 export async function runDb() {
 
     try {
-        
+
         await mongoose.connect(SETTINGS.MONGO_URL)
         console.log("Connected successfully to mongo server")
 
-        
+
     } catch (e) {
         console.log("no connection")
         await mongoose.disconnect()
-        
+
     }
 }

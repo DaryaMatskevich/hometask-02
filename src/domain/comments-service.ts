@@ -1,5 +1,5 @@
 
-import { ObjectId } from "mongodb";
+
 import { CommentsRepository } from "../Repository/commentsRepository";
 import { LikesRepository } from "../Repository/likesRepository";
 import { LikesQueryRepository } from "../queryRepository/likesQueryRepository";
@@ -75,9 +75,7 @@ export class CommentsService {
             };
         }
 
-        const userIdAsObjectId = new ObjectId(userId)
-        const commentIdAsObjectId = new ObjectId(commentId)
-        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
+        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userId, commentId)
 
         if (likeStatus === currentStatus) {
             return {
@@ -88,15 +86,15 @@ export class CommentsService {
         } 
 // Обновляем счетчики в комментарии
 if (currentStatus === 'Like') {
-    await this.commentsRepository.decreaseLikes(commentIdAsObjectId)
+    await this.commentsRepository.decreaseLikes(commentId)
 } else if (currentStatus === 'Dislike') {
-    await this.commentsRepository.decreaseDislikes(commentIdAsObjectId)
+    await this.commentsRepository.decreaseDislikes(commentId)
 }
 
 if (likeStatus === 'Like') {
-    await this.commentsRepository.increaseLikes(commentIdAsObjectId)
+    await this.commentsRepository.increaseLikes(commentId)
 } else if (likeStatus === 'Dislike') {
-    await this.commentsRepository.increaseDisLikes(commentIdAsObjectId)
+    await this.commentsRepository.increaseDisLikes(commentId)
 }
 
    
@@ -104,26 +102,18 @@ if (likeStatus === 'Like') {
     
     if (currentStatus === null) { 
         result = await this.likesRepository.createStatus(
-            userIdAsObjectId, 
-            commentIdAsObjectId, 
+            userId, 
+            commentId, 
             likeStatus
         );
-    } else if (likeStatus === 'None') {
-        result = await this.likesRepository.setNoneStatus(
-            userIdAsObjectId, 
-            commentIdAsObjectId
+    } else  {
+        result = await this.likesRepository.setStatus(
+            userId,
+            commentId,
+            likeStatus
         );
-    } else if (likeStatus === 'Like') {
-        result = await this.likesRepository.setLikeStatus(
-            userIdAsObjectId, 
-            commentIdAsObjectId
-        );
-    } else {
-        result = await this.likesRepository.setDislikeStatus(
-            userIdAsObjectId, 
-            commentIdAsObjectId
-        );
-    }
+
+    } 
 
     if (!result) {
         return {
@@ -153,9 +143,8 @@ else {
 
     async getCommentByIdforAuth(userId: string, commentId: string) {
 
-        const userIdAsObjectId = new ObjectId(userId)
-        const commentIdAsObjectId = new ObjectId(commentId)
-        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userIdAsObjectId, commentIdAsObjectId)
+        
+        const currentStatus = await this.likesQueryRepository.getLikeStatusByUserId(userId, commentId)
 
         const comment = await this.commentsQueryRepository.getCommentById(commentId, currentStatus)
         if (!comment) {

@@ -3,55 +3,28 @@ import { LikeStatusModel } from "./db";
 
 export class LikesRepository {
 
-    async createStatus(userIdAsObjectId: ObjectId,
-        commentIdAsObjectId: ObjectId, likeStatus: string
+    async createStatus(userId: string,
+        commentId: string, likeStatus: string
     ) {
         const result = await LikeStatusModel.create({
-            userId: userIdAsObjectId,
-            commentId: commentIdAsObjectId,
+            userId: new ObjectId(userId),
+            commentId: new ObjectId(commentId),
             status: likeStatus
         }
         )
         return !!result
     }
 
-    async setNoneStatus(userIdAsObjectId: ObjectId,
-        commentIdAsObjectId: ObjectId,
+    async setStatus(userId: string,
+        commentId: string,
+        likeStatus: string
     ) {
         const result = await LikeStatusModel.updateOne({
-            userId: userIdAsObjectId,
-            commentId: commentIdAsObjectId
+            userId: new ObjectId(userId),
+            commentId: new ObjectId(commentId)
         },
             {
-                $set: { status: 'None' }
-            }
-        ).exec()
-        return !!result
-    }
-
-    async setLikeStatus(userIdAsObjectId: ObjectId,
-        commentIdAsObjectId: ObjectId,
-    ) {
-        const result = await LikeStatusModel.updateOne({
-            userId: userIdAsObjectId,
-            commentId: commentIdAsObjectId
-        },
-            {
-                $set: { status: 'Like' }
-            }
-        ).exec()
-        return !!result
-    }
-
-    async setDislikeStatus(userIdAsObjectId: ObjectId,
-        commentIdAsObjectId: ObjectId,
-    ) {
-        const result = await LikeStatusModel.updateOne({
-            userId: userIdAsObjectId,
-            commentId: commentIdAsObjectId
-        },
-            {
-                $set: { status: 'Dislike' }
+                $set: { status: likeStatus }
             }).exec()
         return !!result
     }
