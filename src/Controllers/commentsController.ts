@@ -19,10 +19,10 @@ export class CommentsController {
         const commentId = req.params.id;
 
         let userId: string | null = null;
-        const accessToken = req.cookies.accessToken;
+        const refreshToken= req.cookies.refreshToken;
 
-        if (accessToken) {
-            const jwtPayload = await jwtService.getUserIdByToken(accessToken);
+        if (refreshToken) {
+            const jwtPayload = await jwtService.getUserIdByRefreshToken(refreshToken);
             userId = jwtPayload?.userId || null;
             res.sendStatus(400)
             return
