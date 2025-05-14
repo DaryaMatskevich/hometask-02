@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CommentModel } from "../Repository/db"
+import { CommentModel, LikeStatusModel } from "../Repository/db"
 import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
@@ -21,7 +21,22 @@ export class CommentsQueryRepository {
             .limit(pageSize)
             .lean();
 
-        const mappedComments: CommentViewType[] = comments.map(comment => ({
+            let userLikeStatuses: Record<string, string> = {};
+            if (userId) {
+                const commentIds = comments.map(c => c._id);
+                const userLikes = await LikeStatusModel.find({
+                    userId: new ObjectId(userId),
+                    commentId: { $in: commentIds }
+                }).lean();
+        
+                userLikes.forEach(like => {
+                    userLikeStatuses[like.commentId.toString()] = like.status;
+                });
+            }
+
+        const mappedComments: CommentViewType[] = comments.map(comment => {
+            const likeStatus = userId ? userLikeStatuses[comment._id.toString()] || 'None' : 'None';
+        return {
             id: comment._id.toString(), // Преобразуем ObjectId в строку
             content: comment.content,
             commentatorInfo: {
@@ -34,7 +49,7 @@ export class CommentsQueryRepository {
                 dislikesCount: comment.likesInfo.dislikesCount,
                 myStatus: likeStatus || 'None'
             }
-        }));
+        }});
         const commentsCount = await CommentModel.countDocuments({ postId: postId })
 
         return {
