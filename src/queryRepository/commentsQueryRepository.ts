@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { CommentModel } from "../Repository/db"
-import { CommentViewType, CommentViewTypeByPost, PaginatedComments } from "../types/CommentTypes/commentType";
+import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commentType";
 
 
 export class CommentsQueryRepository {
@@ -17,7 +17,7 @@ export class CommentsQueryRepository {
             .limit(pageSize)
             .lean();
 
-        const mappedComments: CommentViewTypeByPost[] = comments.map(comment => ({
+        const mappedComments: CommentViewType[] = comments.map(comment => ({
             id: comment._id.toString(), // Преобразуем ObjectId в строку
             content: comment.content,
             commentatorInfo: {
@@ -28,6 +28,7 @@ export class CommentsQueryRepository {
             likesInfo: {
                 likesCount: comment.likesInfo.likesCount,
                 dislikesCount: comment.likesInfo.dislikesCount,
+                myStatus: comment.likesInfo.myStatus || 'None'
             }
         }));
         const commentsCount = await CommentModel.countDocuments({ postId: postId })
