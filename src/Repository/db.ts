@@ -46,7 +46,7 @@ export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     likesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
-        // myStatus: { type: String, default: 'None' }
+        
     }
 })
 
@@ -80,7 +80,7 @@ export const LikeStatusSchema = new mongoose.Schema<WithId<LikeStatusDBType>>({
     userId: { type: ObjectId, require: true },
     commentId: { type: ObjectId, require: true },
     status: { type: String, require: true },
-})
+})  
 
 
 

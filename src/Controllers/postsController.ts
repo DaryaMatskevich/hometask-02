@@ -4,6 +4,7 @@ import { SortDirection } from "mongodb"
 import { CommentsService } from "../domain/comments-service"
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository"
 import { PostsRepository } from "../Repository/postsRepository"
+import { jwtService } from "../adapters/jwt-service"
 
 
 export class PostsController {
@@ -75,18 +76,37 @@ export class PostsController {
             req.query.sortDirection && req.query.sortDirection.toString() === 'asc'
                 ? 'asc'
                 : 'desc'
+
+        let userId: string | null = null;
+
+        const token = req.headers?.authorization?.split(' ')[1]
+
+
+        if (token) {
+            const jwtPayload = await jwtService.getUserIdByToken(token);
+            userId = jwtPayload?.userId || null;
+        }
+
         const post = await this.postsRepository.findPostById(postId)
         if (!post) {
             res.sendStatus(404)
             return
         }
-        const comments = await this.commentsQueryRepository.getCommentsByPostId(postId, pageNumber,
-            pageSize, sortBy, sortDirection)
-        if (comments) {
-            res.status(200).send(comments)
+
+        const comments = userId
+            ? await this.postsService.getCommentsByPostIdforAuth(userId, postId, pageNumber,
+                pageSize, sortBy, sortDirection)
+            : await this.postsService.getCommentsByPostId(postId, pageNumber,
+                pageSize, sortBy, sortDirection)
+                
+        if (!comments) {
+            res.sendStatus(404)
+            return
         }
-        else { res.sendStatus(404) }
+        res.status(200).send(comments)
+        return
     }
+
 
     async createCommentForPost(req: Request, res: Response) {
         const postId = req.params.id;

@@ -36,11 +36,11 @@ objects.push(blogsService)
 const postsRepository = new PostsRepository()
 objects.push(postsRepository)
 
-const postsService = new PostsService(postsRepository, blogsRepository)
-objects.push(postsService)
-
 const commentsQueryRepository = new CommentsQueryRepository()
 objects.push(commentsQueryRepository)
+
+const postsService = new PostsService(postsRepository, blogsRepository, commentsQueryRepository)
+objects.push(postsService)
 
 const commentsRepository = new CommentsRepository()
 objects.push(commentsRepository)

@@ -5,11 +5,15 @@ import { CommentViewType, PaginatedComments } from "../types/CommentTypes/commen
 
 export class CommentsQueryRepository {
 
-    async getCommentsByPostId(postId: string,
+    async getCommentsByPostId(
+        postId: string,
         pageNumber: number,
         pageSize: number,
         sortBy: string,
         sortDirection: 'asc' | 'desc',
+        userId?: string,
+        likeStatus?: string
+        
     ): Promise<PaginatedComments> {
         const comments = await CommentModel.find({ postId: postId }).sort(
             { [sortBy]: sortDirection === 'asc' ? 1 : -1 })
@@ -28,7 +32,7 @@ export class CommentsQueryRepository {
             likesInfo: {
                 likesCount: comment.likesInfo.likesCount,
                 dislikesCount: comment.likesInfo.dislikesCount,
-                myStatus: comment.likesInfo.myStatus || 'None'
+                myStatus: likeStatus || 'None'
             }
         }));
         const commentsCount = await CommentModel.countDocuments({ postId: postId })
