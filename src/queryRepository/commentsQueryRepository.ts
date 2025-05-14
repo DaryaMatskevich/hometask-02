@@ -12,7 +12,6 @@ export class CommentsQueryRepository {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         userId?: string,
-        likeStatus?: string
         
     ): Promise<PaginatedComments> {
         const comments = await CommentModel.find({ postId: postId }).sort(
@@ -47,7 +46,7 @@ export class CommentsQueryRepository {
             likesInfo: {
                 likesCount: comment.likesInfo.likesCount,
                 dislikesCount: comment.likesInfo.dislikesCount,
-                myStatus: likeStatus || 'None'
+                myStatus: likeStatus
             }
         }});
         const commentsCount = await CommentModel.countDocuments({ postId: postId })

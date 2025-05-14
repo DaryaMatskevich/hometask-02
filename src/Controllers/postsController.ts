@@ -94,8 +94,8 @@ export class PostsController {
         }
 
         const comments = userId
-            ? await this.postsService.getCommentsByPostIdforAuth(userId, postId, pageNumber,
-                pageSize, sortBy, sortDirection)
+            ? await this.postsService.getCommentsByPostIdforAuth(postId, pageNumber,
+                pageSize, sortBy, sortDirection, userId)
             : await this.postsService.getCommentsByPostId(postId, pageNumber,
                 pageSize, sortBy, sortDirection)
                 
