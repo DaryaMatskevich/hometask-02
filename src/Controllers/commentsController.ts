@@ -40,8 +40,6 @@ export class CommentsController {
     return
     }
 
-    
-
     async updateCommentById(req: Request, res: Response) {
     const { content } = req.body;
     const commentId = req.params.id

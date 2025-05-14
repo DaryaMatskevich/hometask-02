@@ -23,7 +23,16 @@ export type CommentInputType = {
     }
 }
 
-
+export type CommentViewTypeByPost = {
+  id: string;
+  content: string;
+  commentatorInfo: CommentatorInfo;
+  createdAt: string;
+  likesInfo: {
+    likesCount: number;
+   dislikesCount: number;
+  }
+}
   
   export type CommentViewType = {
     id: string;
@@ -38,7 +47,7 @@ export type CommentInputType = {
     page: number;
     pageSize: number;
     totalCount: number;
-    items: CommentViewType[];
+    items: CommentViewTypeByPost[];
   };
 
 
