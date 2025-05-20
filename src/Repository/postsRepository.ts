@@ -58,9 +58,9 @@ export class PostsRepository {
                 blogId: post.blogId,
                 blogName: post.blogName,
                 createdAt: post.createdAt,
-                extendeslikesInfo: {
-                    likesCount: post.extendedlikesInfo.likesCount || 0,
-                    dislikesCount: post.extendedlikesInfo.dislikesCount || 0,
+                extendedlikesInfo: {
+                    likesCount: post.extendedlikesInfo.likesCount ?? 0,
+                    dislikesCount: post.extendedlikesInfo.dislikesCount ?? 0,
                     myStatus: likeStatus || 'None',
                     newestLikes: newestLikes
 
