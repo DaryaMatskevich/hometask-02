@@ -123,10 +123,10 @@ export class PostsService {
             return {
                 status: ResultStatus.NotFound,
                 data: false,
-                errorMessage: 'Comment not found',
+                errorMessage: 'Post not found',
                 extensions: [{
-                    field: 'likeStatus',
-                    message: 'Comment not found'
+                    field: 'uri param',
+                    message: 'Post not found'
                 }]
             }
         }
