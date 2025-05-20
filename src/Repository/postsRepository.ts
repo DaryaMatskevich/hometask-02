@@ -39,7 +39,7 @@ export class PostsRepository {
 
         if (!post) return null;
 
-        const newestLikes = (post.extendedlikesInfo?.newestLikes || [])
+        const newestLikes = (post.extendedLikesInfo?.newestLikes || [])
             .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
             .slice(0, 3)
             .map(like => ({
@@ -58,9 +58,9 @@ export class PostsRepository {
                 blogId: post.blogId,
                 blogName: post.blogName,
                 createdAt: post.createdAt,
-                extendedlikesInfo: {
-                    likesCount: post.extendedlikesInfo.likesCount ?? 0,
-                    dislikesCount: post.extendedlikesInfo.dislikesCount ?? 0,
+                extendedLikesInfo: {
+                    likesCount: post.extendedLikesInfo.likesCount ?? 0,
+                    dislikesCount: post.extendedLikesInfo.dislikesCount ?? 0,
                     myStatus: likeStatus ?? 'None',
                     newestLikes: newestLikes
 
@@ -145,7 +145,7 @@ export class PostsRepository {
                 { _id: new ObjectId(postId) },
                 {
                     $pull: {
-                        'extendedlikesInfo.newestLikes': { userId } // удаляем старый лайк юзера, если есть
+                        'extendedLikesInfo.newestLikes': { userId } // удаляем старый лайк юзера, если есть
                     }
                 }
             );
@@ -154,7 +154,7 @@ export class PostsRepository {
                 { _id: new ObjectId(postId) },
                 {
                     $push: {
-                        'extendedlikesInfo.newestLikes': {
+                        'extendedLikesInfo.newestLikes': {
                             $each: [{
                                 addedAt: new Date().toISOString(),
                                 userId,
@@ -172,7 +172,7 @@ export class PostsRepository {
                 { _id: new ObjectId(postId) },
                 {
                     $pull: {
-                        'extendedlikesInfo.newestLikes': { userId }
+                        'extendedLikesInfo.newestLikes': { userId }
                     }
                 }
             );

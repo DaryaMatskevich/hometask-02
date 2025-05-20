@@ -5,7 +5,7 @@ export type PostDBType = {
   blogId: string
   blogName: string
   createdAt: string
-  extendedlikesInfo: {
+  extendedLikesInfo: {
     likesCount: number,
     dislikesCount: number,
     newestLikes: 
