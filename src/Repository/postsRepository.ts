@@ -61,7 +61,7 @@ export class PostsRepository {
                 extendedlikesInfo: {
                     likesCount: post.extendedlikesInfo.likesCount ?? 0,
                     dislikesCount: post.extendedlikesInfo.dislikesCount ?? 0,
-                    myStatus: likeStatus || 'None',
+                    myStatus: likeStatus ?? 'None',
                     newestLikes: newestLikes
 
                 }

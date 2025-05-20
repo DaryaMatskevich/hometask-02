@@ -36,12 +36,7 @@ export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
     extendedlikesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
-        newestLikes: [
-            {
-                addedAt: {type: String, require: true },
-                userId: {type: String,require: true },
-                login: {type: String, require: true }
-            }]
+        newestLikes: {  type: Array, default: [] }
     }
 })
 
