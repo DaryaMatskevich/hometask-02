@@ -55,4 +55,7 @@ postsRouter.post(SETTINGS.PATH.POSTS.ID_COMMENTS,
     postsController.createCommentForPost.bind(postsController)
 )
 
-
+postsRouter.put(SETTINGS.PATH.POSTS.ID_LIKE_STATUS,
+    userAuthMiddleware,
+    postsController.changeLikeStatus.bind(postsController)
+)

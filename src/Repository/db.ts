@@ -10,6 +10,7 @@ import { UserDBType } from "../types/UserTypes/UserDBType";
 import { SessionDBType } from "../types/SessionsTypes.ts/SessionsTypes";
 import { ApiRequestCountType } from "../types/RequestCount.ts/RequestCountType";
 import { LikeStatusDBType } from "../types/LikeStatusType/LikeStatusDBType";
+import { LikeStatusForPostDBType } from "../types/LikeStatusForPost/LikeStatusForPostDBType";
 
 
 
@@ -26,13 +27,22 @@ export const BlogSchema = new mongoose.Schema<WithId<BlogDBType>>({
 })
 
 export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
-    id: { type: String, require: true },
     title: { type: String, require: true },
     shortDescription: { type: String, require: true },
     content: { type: String, require: true },
     blogId: { type: String, require: true },
     blogName: { type: String, require: true },
-    createdAt: { type: String, require: true }
+    createdAt: { type: String, require: true },
+    extendedlikesInfo: {
+        likesCount: { type: Number, default: 0 },
+        dislikesCount: { type: Number, default: 0 },
+        newestLikes: [
+            {
+                addedAt: {type: String, require: true },
+                userId: {type: String,require: true },
+                login: {type: String, require: true }
+            }]
+    }
 })
 
 export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
@@ -46,7 +56,7 @@ export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
     likesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
-        
+
     }
 })
 
@@ -80,7 +90,13 @@ export const LikeStatusSchema = new mongoose.Schema<WithId<LikeStatusDBType>>({
     userId: { type: ObjectId, require: true },
     commentId: { type: ObjectId, require: true },
     status: { type: String, require: true },
-})  
+})
+
+export const LikeStatusforPostSchema = new mongoose.Schema<WithId<LikeStatusForPostDBType>>({
+    userId: { type: ObjectId, require: true },
+    postId: { type: ObjectId, require: true },
+    status: { type: String, require: true },
+})
 
 
 
@@ -91,6 +107,8 @@ export const UserModel = mongoose.model<WithId<UserDBType>>('users', UserSchema)
 export const SessionModel = mongoose.model<WithId<SessionDBType>>('sessions', SessionSchema)
 export const ApiRequestCountModel = mongoose.model<WithId<ApiRequestCountType>>('apiRequestCount', ApiRequestCountSchema)
 export const LikeStatusModel = mongoose.model<WithId<LikeStatusDBType>>('likesStatus', LikeStatusSchema)
+export const LikeStatusForPostModel = mongoose.model<WithId<LikeStatusForPostDBType>>('likeStatusForPost', LikeStatusforPostSchema)
+
 
 
 // export let blogsCollection: Collection<BlogViewType>

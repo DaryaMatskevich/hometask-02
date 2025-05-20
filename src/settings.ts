@@ -14,6 +14,7 @@ export const SETTINGS = {
         POSTS: {
             ROOT: '',
             ID: '/:id',
+            ID_LIKE_STATUS: '/:id/like-status',
             ID_COMMENTS: '/:id/comments'
 
         },

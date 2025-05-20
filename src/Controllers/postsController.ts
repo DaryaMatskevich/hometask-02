@@ -5,6 +5,8 @@ import { CommentsService } from "../domain/comments-service"
 import { CommentsQueryRepository } from "../queryRepository/commentsQueryRepository"
 import { PostsRepository } from "../Repository/postsRepository"
 import { jwtService } from "../adapters/jwt-service"
+import { ResultStatus } from "../types/result/resultCode"
+import { resultCodeToHttpException } from "../types/result/resultCodeToHttpStatus"
 
 
 export class PostsController {
@@ -36,7 +38,20 @@ export class PostsController {
     }
 
     async getPostById(req: Request, res: Response) {
-        let post = await this.postsService.findPostById(req.params.id)
+        const postId = req.params.id
+
+        let userId: string | null = null;
+
+        const token = req.headers?.authorization?.split(' ')[1]
+
+        if (token) {
+            const jwtPayload = await jwtService.getUserIdByToken(token);
+            userId = jwtPayload?.userId || null;
+        }
+
+        const post = userId
+            ? await this.postsService.getPostByIdforAuth(userId, postId)
+            : await this.postsService.getPostById(postId)
         if (post) {
             res.status(200).send(post)
         }
@@ -87,7 +102,7 @@ export class PostsController {
             userId = jwtPayload?.userId || null;
         }
 
-        const post = await this.postsRepository.findPostById(postId)
+        const post = await this.postsRepository.getPostById(postId)
         if (!post) {
             res.sendStatus(404)
             return
@@ -98,7 +113,7 @@ export class PostsController {
                 pageSize, sortBy, sortDirection, userId)
             : await this.postsService.getCommentsByPostId(postId, pageNumber,
                 pageSize, sortBy, sortDirection)
-                
+
         if (!comments) {
             res.sendStatus(404)
             return
@@ -113,7 +128,7 @@ export class PostsController {
         const { content } = req.body;
         const userLogin = req.user!.login;
         const userId = req.user!.userId
-        const post = await this.postsRepository.findPostById(postId)
+        const post = await this.postsRepository.getPostById(postId)
         if (!post) {
             res.sendStatus(404)
             return
@@ -130,6 +145,31 @@ export class PostsController {
         } else {
             res.status(201).send(newComment)
         }
+    }
+
+    async changeLikeStatus(req: Request, res: Response) {
+        const postId = req.params.id
+        const likeStatus = req.body.likeStatus
+        const userId = req.user!.userId
+        const login = req.user!.login
+        const result = await this.postsService.changeLikeStatus(postId, userId, login, likeStatus)
+
+
+
+        if (result.status === ResultStatus.NotFound) {
+            res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+            return
+        }
+
+        if (result.status === ResultStatus.Success) {
+            res.sendStatus(resultCodeToHttpException(result.status))
+            return
+        }
+        if (result.status === ResultStatus.BadRequest) {
+            res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+            return
+        }
+
     }
 }
 

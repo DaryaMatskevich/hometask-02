@@ -1,6 +1,7 @@
-import { WithId } from "mongodb";
-import { PostDBType } from "../types/PostTypes/PostDBType";
-import { PostModel } from "./db";
+
+import { ObjectId } from "mongodb";
+import { PostDBType, PostViewType } from "../types/PostTypes/PostDBType";
+import { LikeStatusForPostModel, LikeStatusforPostSchema, PostModel } from "./db";
 
 export async function clearPostsData() {
     await PostModel.deleteMany({})
@@ -14,40 +15,73 @@ export class PostsRepository {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         filter: {},
-    ): Promise<PostDBType[]> {
+        userId?: string
+    ): Promise<PostViewType[] | any> {
 
-        return PostModel.find(filter, { projection: { _id: 0 } })
+        const posts = await PostModel.find(filter)
             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .lean();
+
+
+
+        return posts
     }
+
 
     async getPostsCount(filter: {}): Promise<number> {
         return PostModel.countDocuments(filter)
     }
 
-    async findPostById(id: string): Promise<PostDBType | null> {
-        let post: PostDBType | null = await PostModel.findOne({ id: id }, { projection: { _id: 0 } })
-         if (post) {
-            return post
-        } else {
-            return null
+    async getPostById(id: string, likeStatus?: string | null): Promise<any | null> {
+        const post = await PostModel.findOne({ _id: new ObjectId(id) }).lean()
+
+        if (!post) return null;
+
+        const newestLikes = (post.extendedlikesInfo?.newestLikes || [])
+            .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
+            .slice(0, 3)
+            .map(like => ({
+                addedAt: like.addedAt,
+                userId: like.userId,
+                login: like.login
+            }
+            ))
+
+        if (post) {
+            return {
+                id: post._id.toString(),
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName,
+                createdAt: post.createdAt,
+                extendeslikesInfo: {
+                    likesCount: post.extendedlikesInfo.likesCount,
+                    dislikesCount: post.extendedlikesInfo.dislikesCount,
+                    myStatus: likeStatus || 'None',
+                    newestLikes: newestLikes
+
+                }
+            }
         }
     }
 
-    async createPost(post: PostDBType): Promise<string | null>{
+    async createPost(post: any): Promise<string | null> {
 
         const result = await PostModel.create(post);
-        if(result) {
-        return result.id}
-        else {return null}
-           } 
+        if (result) {
+            return result._id.toString()
+        }
+        else { return null }
+    }
 
 
-async updatePost(id: string, title: string, shortDescription: string,
-    content: string, blogId: string): Promise < boolean > {
-        const result = await PostModel.updateOne({ id: id }, {
+    async updatePost(id: string, title: string, shortDescription: string,
+        content: string, blogId: string): Promise<boolean> {
+        const result = await PostModel.updateOne({ _id: new ObjectId(id) }, {
             $set: {
                 title: title,
                 shortDescription: shortDescription,
@@ -58,8 +92,90 @@ async updatePost(id: string, title: string, shortDescription: string,
         return result.matchedCount === 1;
     }
 
-    async deletePostById(id: string): Promise < boolean > {
-    const result = await PostModel.deleteOne({ id: id })
+    async deletePostById(id: string): Promise<boolean> {
+        const result = await PostModel.deleteOne({ _id: new ObjectId(id) })
         return result.deletedCount === 1
-}
+    }
+
+
+    async increaseLikes(postId: string): Promise<boolean> {
+        const updatedDoc = await PostModel.updateOne(
+            { _id: new ObjectId(postId) },           // критерий поиска
+            { $inc: { 'likesInfo.likesCount': 1 } },   // увеличение поля likes на 1
+            // вернуть обновлённый документ
+        );
+
+        return updatedDoc.modifiedCount > 0;
+    }
+
+    async increaseDisLikes(postId: string): Promise<boolean> {
+        const updatedDoc = await PostModel.updateOne(
+            { _id: new ObjectId(postId) },           // критерий поиска
+            { $inc: { 'likesInfo.dislikesCount': 1 } },   // увеличение поля likes на 1
+            // вернуть обновлённый документ
+        );
+
+        return updatedDoc.modifiedCount > 0;
+    }
+
+
+    async decreaseLikes(postId: string): Promise<boolean> {
+        const updatedDoc = await PostModel.updateOne(
+            { _id: new ObjectId(postId) },           // критерий поиска
+            { $inc: { 'likesInfo.likesCount': -1 } },   // увеличение поля likes на 1
+            // вернуть обновлённый документ
+        );
+
+        return updatedDoc.modifiedCount > 0;
+    }
+
+    async decreaseDislikes(postId: string): Promise<boolean> {
+        const updatedDoc = await PostModel.updateOne(
+            { _id: new ObjectId(postId) },           // критерий поиска
+            { $inc: { 'likesInfo.dislikesCount': -1 } },   // увеличение поля likes на 1
+            // вернуть обновлённый документ
+        );
+
+        return updatedDoc.modifiedCount > 0;
+    }
+
+    async updateNewestLikes(postId: string, userId: string, login: string, likeStatus: string): Promise<void> {
+        if (likeStatus === 'Like') {
+            await PostModel.updateOne(
+                { _id: new ObjectId(postId) },
+                {
+                    $pull: {
+                        'extendedlikesInfo.newestLikes': { userId } // удаляем старый лайк юзера, если есть
+                    }
+                }
+            );
+
+            await PostModel.updateOne(
+                { _id: new ObjectId(postId) },
+                {
+                    $push: {
+                        'extendedlikesInfo.newestLikes': {
+                            $each: [{
+                                addedAt: new Date().toISOString(),
+                                userId,
+                                login
+                            }],
+                            $position: 0, // добавляем в начало
+                            $slice: 3     // ограничиваем тремя элементами
+                        }
+                    }
+                }
+            );
+        } else {
+            // если статус не Like — удаляем пользователя из newestLikes
+            await PostModel.updateOne(
+                { _id: new ObjectId(postId) },
+                {
+                    $pull: {
+                        'extendedlikesInfo.newestLikes': { userId }
+                    }
+                }
+            );
+        }
+    }
 }

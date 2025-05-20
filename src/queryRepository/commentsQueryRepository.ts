@@ -21,6 +21,7 @@ export class CommentsQueryRepository {
             .lean();
 
             let userLikeStatuses: Record<string, string> = {};
+            
             if (userId) {
                 const commentIds = comments.map(c => c._id);
                 const userLikes = await LikeStatusModel.find({
