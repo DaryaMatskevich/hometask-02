@@ -31,7 +31,7 @@ export class PostsService {
                 blogId: blogId,
                 blogName: blog.name,
                 createdAt: (new Date()).toISOString(),
-                extendeslikesInfo: {
+                extendedlikesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     newestLikes: []
