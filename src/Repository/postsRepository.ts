@@ -35,6 +35,7 @@ export class PostsRepository {
     }
 
     async getPostById(id: string, likeStatus?: string | null): Promise<any | null> {
+      if(!ObjectId.isValid(id)) return null;
         const post = await PostModel.findOne({ _id: new ObjectId(id) }).lean()
 
         if (!post) return null;
