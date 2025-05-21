@@ -155,7 +155,7 @@ export class PostsController {
         const result = await this.postsService.changeLikeStatus(postId, userId, login, likeStatus)
 
         if (result.status === ResultStatus.NotFound) {
-            res.status(resultCodeToHttpException(result.status)).json({ errorsMessages: result.extensions })
+            res.sendStatus(resultCodeToHttpException(result.status))
             return
         }
 
