@@ -112,7 +112,7 @@ export class PostsRepository {
     async increaseDisLikes(postId: string): Promise<boolean> {
         const updatedDoc = await PostModel.updateOne(
             { _id: new ObjectId(postId) },           // критерий поиска
-            { $inc: { 'likesInfo.dislikesCount': 1 } },   // увеличение поля likes на 1
+            { $inc: { 'extendedLikesInfo.dislikesCount': 1 } },   // увеличение поля likes на 1
             // вернуть обновлённый документ
         );
 
@@ -123,7 +123,7 @@ export class PostsRepository {
     async decreaseLikes(postId: string): Promise<boolean> {
         const updatedDoc = await PostModel.updateOne(
             { _id: new ObjectId(postId) },           // критерий поиска
-            { $inc: { 'likesInfo.likesCount': -1 } },   // увеличение поля likes на 1
+            { $inc: { 'extendedLikesInfo.likesCount': -1 } },   // увеличение поля likes на 1
             // вернуть обновлённый документ
         );
 
@@ -133,7 +133,7 @@ export class PostsRepository {
     async decreaseDislikes(postId: string): Promise<boolean> {
         const updatedDoc = await PostModel.updateOne(
             { _id: new ObjectId(postId) },           // критерий поиска
-            { $inc: { 'likesInfo.dislikesCount': -1 } },   // увеличение поля likes на 1
+            { $inc: { 'extendedLikesInfo.dislikesCount': -1 } },   // увеличение поля likes на 1
             // вернуть обновлённый документ
         );
 

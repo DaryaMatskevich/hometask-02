@@ -8,7 +8,7 @@ export class LikesPostRepository {
     ) {
         const result = await LikeStatusForPostModel.create({
             userId: new ObjectId(userId),
-            commentId: new ObjectId(postId),
+            postId: new ObjectId(postId),
             status: likeStatus
         }
         )
@@ -21,7 +21,7 @@ export class LikesPostRepository {
     ) {
         const result = await LikeStatusForPostModel.updateOne({
             userId: new ObjectId(userId),
-            commentId: new ObjectId(postId)
+            postId: new ObjectId(postId)
         },
             {
                 $set: { status: likeStatus }
