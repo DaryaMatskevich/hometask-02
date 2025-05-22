@@ -14,6 +14,6 @@ export class LikesPostQueryRepository {
             userId: new ObjectId(userId),
             postId: new ObjectId(postId)
         }).lean()
-        return likeStatus?.status || null;
+        return likeStatus?.status || "None";
     }
 }
