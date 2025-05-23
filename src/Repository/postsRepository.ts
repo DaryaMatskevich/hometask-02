@@ -24,9 +24,75 @@ export class PostsRepository {
             .limit(pageSize)
             .lean();
 
+const userStatuses = userId 
+            ? await LikeStatusForPostModel.find({
+                userId: new ObjectId(userId),
+                postId: { $in: posts.map(p => p._id) }
+            }).lean()
+            : [];
+
+        const statusMap = new Map(
+            userStatuses.map(status => [
+                status.postId.toString(), 
+                status.status
+            ])
+        );
+          const newestLikes = await LikeStatusForPostModel.aggregate([
+            { $match: { 
+                postId: { $in: posts.map(p => p._id) },
+                status: 'Like'
+            }},
+            { $sort: { addedAt: -1 } },
+            { $group: {
+                _id: "$postId",
+                likes: { $push: {
+                    userId: "$userId",
+                    login: "$userLogin",
+                    addedAt: "$addedAt"
+                }},
+                count: { $sum: 1 }
+            }},
+            { $project: {
+                postId: "$_id",
+                newestLikes: { $slice: ["$likes", 3] },
+                likesCount: "$count"
+            }}
+        ]);
+
+        const likesMap = new Map(
+            newestLikes.map(item => [
+                item.postId.toString(),
+                {
+                    newestLikes: item.newestLikes,
+                    likesCount: item.likesCount
+                }
+            ])
+        );
+             const items = posts.map(post => {
+            const postIdStr = post._id.toString();
+            const likesInfo = likesMap.get(postIdStr) || {
+                newestLikes: [],
+                likesCount: 0
+            };
+
+            return {
+                id: postIdStr,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                blogId: post.blogId,
+                blogName: post.blogName,
+                createdAt: post.createdAt,
+                extendedLikesInfo: {
+                    likesCount: likesInfo.likesCount,
+                    dislikesCount: post.extendedLikesInfo?.dislikesCount || 0,
+                    myStatus: userId ? statusMap.get(postIdStr) || 'None' : 'None',
+                    newestLikes: likesInfo.newestLikes
+                }
+            };
+        });
 
 
-        return posts
     }
 
 
