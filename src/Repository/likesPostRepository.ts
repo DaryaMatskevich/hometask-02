@@ -12,7 +12,7 @@ export class LikesPostRepository {
             status: likeStatus
         }
         )
-        return !!result
+        return true
     }
 
     async setStatus(userId: string,
@@ -26,7 +26,6 @@ export class LikesPostRepository {
             {
                 $set: { status: likeStatus }
             }).exec()
-        return !!result
-    }
+        return result.matchedCount>0}
 
 }
