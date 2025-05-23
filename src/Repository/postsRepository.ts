@@ -102,7 +102,7 @@ export class PostsRepository {
     async increaseLikes(postId: string): Promise<boolean> {
         const updatedDoc = await PostModel.updateOne(
             { _id: new ObjectId(postId) },           // критерий поиска
-            { $inc: { 'likesInfo.likesCount': 1 } },   // увеличение поля likes на 1
+            { $inc: { 'extendedLikesInfo.likesCount': 1 } },   // увеличение поля likes на 1
             // вернуть обновлённый документ
         );
 
