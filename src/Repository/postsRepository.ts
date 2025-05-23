@@ -1,7 +1,7 @@
 
 import { ObjectId } from "mongodb";
-import { PostDBType, PostViewType } from "../types/PostTypes/PostDBType";
-import { LikeStatusForPostModel, LikeStatusforPostSchema, PostModel } from "./db";
+import { PostViewType } from "../types/PostTypes/PostDBType";
+import { LikeStatusForPostModel, PostModel } from "./db";
 
 export async function clearPostsData() {
     await PostModel.deleteMany({})
