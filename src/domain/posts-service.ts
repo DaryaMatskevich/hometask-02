@@ -118,7 +118,7 @@ export class PostsService {
         login: string,
         likeStatus: string
     ): Promise<Result<boolean>> {
-        const post = await this.postsRepository.getPostById(postId)
+        const post = await this.postsRepository.getPostById(postId, likeStatus)
         if (!post) {
             return {
                 status: ResultStatus.NotFound,
