@@ -1,6 +1,6 @@
 
 import { ObjectId } from "mongodb";
-import { PostViewType } from "../types/PostTypes/PostDBType";
+import { PostDBType, PostViewType } from "../types/PostTypes/PostDBType";
 import { LikeStatusForPostModel, PostModel } from "./db";
 
 export async function clearPostsData() {
@@ -91,8 +91,8 @@ const userStatuses = userId
                 }
             };
         });
-
 return items
+
     }
 
 
