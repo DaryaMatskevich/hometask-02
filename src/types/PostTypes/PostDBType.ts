@@ -16,7 +16,11 @@ export type PostDBType = {
       }[];
   }
 };
-
+export enum LikeStatus {
+    Like = 'Like',
+    Dislike = 'Dislike',
+    None = 'None'
+}
 export type PostViewType = {
   id: string,
   title: string
@@ -28,13 +32,13 @@ export type PostViewType = {
   extendeslikesInfo: {
     likesCount: number,
     dislikesCount: number,
-    myStatus: string,
-    newestLikes: 
+    myStatus: LikeStatus;
+    newestLikes: Array<
       {
         addedAt: string,
         userId: string,
         login: string
-      }[];
+      }>;
   }
 };
 

@@ -51,7 +51,7 @@ export class PostsService {
         sortBy: string,
         sortDirection: 'asc' | 'desc',
         blogId?: string)
-        : Promise<PaginatedPosts<PostDBType>> {
+        : Promise<PaginatedPosts<any>> {
         const filter: PostsFilter = blogId ? { blogId } : {}
         const posts = await this.postsRepository.findPosts(
             pageNumber,

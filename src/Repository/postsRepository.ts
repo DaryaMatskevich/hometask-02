@@ -1,11 +1,35 @@
 
 import { ObjectId } from "mongodb";
-import { PostDBType, PostViewType } from "../types/PostTypes/PostDBType";
+// import { PostViewType, LikeStatus } from "../types/PostTypes/PostDBType";
 import { LikeStatusForPostModel, PostModel } from "./db";
+import {LikeStatus, PostViewType} from "../types/PostTypes/PostDBType";
 
 export async function clearPostsData() {
     await PostModel.deleteMany({})
 }
+
+
+
+// models.ts
+interface LikeStatusForPostDBType {
+    userId: ObjectId;
+    postId: ObjectId;
+    status: LikeStatus;
+    userLogin: string;
+    addedAt: Date;
+}
+interface AggregationLikeItem {
+    addedAt: Date;
+    userId: ObjectId;  // или другой тип, в зависимости от вашей БД
+    userLogin: string;
+}
+
+interface AggregationResultItem {
+    _id: ObjectId;
+    likesCount: number;
+    newestLikes: AggregationLikeItem[];
+}
+
 
 export class PostsRepository {
 
@@ -16,67 +40,106 @@ export class PostsRepository {
         sortDirection: 'asc' | 'desc',
         filter: {},
         userId?: string
-    ): Promise<PostViewType[] | any> {
+    ): Promise<any> {
 
-        const posts = await PostModel.find(filter)
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize)
-            .lean();
+//         const posts = await PostModel.find(filter)
+//             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+//             .skip((pageNumber - 1) * pageSize)
+//             .limit(pageSize)
+//             .lean();
+// return posts
+try {
+            // 1. Получаем посты с пагинацией
+            const posts = await PostModel.find(filter)
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .lean();
 
-const userStatuses = userId 
-            ? await LikeStatusForPostModel.find({
-                userId: new ObjectId(userId),
-                postId: { $in: posts.map(p => p._id) }
-            }).lean()
-            : [];
+            if (posts.length === 0) {
+                return [];
+            }
 
-        const statusMap = new Map(
-            userStatuses.map(status => [
-                status.postId.toString(), 
-                status.status
+            const postIds = posts.map(p => p._id);
+
+           const [userStatuses, likesAggregation, dislikesAggregation] = await Promise.all([
+            userId
+                ? LikeStatusForPostModel.find({
+                    userId: new ObjectId(userId),
+                    postId: { $in: postIds }
+                }).lean()
+                : Promise.resolve([]),
+
+            LikeStatusForPostModel.aggregate([
+                { $match: { postId: { $in: postIds }, status: LikeStatus.Like } },
+                { $sort: { addedAt: -1 } },
+                {
+                    $group: {
+                        _id: "$postId",
+                        likesCount: { $sum: 1 },
+                        newestLikes: {
+                            $push: {
+                                addedAt: "$addedAt",
+                                userId: "$userId",
+                                userLogin: "$userLogin"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        likesCount: 1,
+                        newestLikes: { $slice: ["$newestLikes", 3] }
+                    }
+                }
+            ]),
+
+            LikeStatusForPostModel.aggregate([
+                { $match: { postId: { $in: postIds }, status: LikeStatus.Dislike } },
+                {
+                    $group: {
+                        _id: "$postId",
+                        dislikesCount: { $sum: 1 }
+                    }
+                }
             ])
-        );
-          const newestLikes = await LikeStatusForPostModel.aggregate([
-            { $match: { 
-                postId: { $in: posts.map(p => p._id) },
-                status: 'Like'
-            }},
-            { $sort: { addedAt: -1 } },
-            { $group: {
-                _id: "$postId",
-                likes: { $push: {
-                    userId: "$userId",
-                    login: "$userLogin",
-                    addedAt: "$addedAt"
-                }},
-                count: { $sum: 1 }
-            }},
-            { $project: {
-                postId: "$_id",
-                newestLikes: { $slice: ["$likes", 3] },
-                likesCount: "$count"
-            }}
         ]);
 
+        // 4. Преобразуем результаты в Map для быстрого доступа
+        const statusMap = new Map(
+            userStatuses.map(status => [status.postId.toString(), status.status])
+        );
+
         const likesMap = new Map(
-            newestLikes.map(item => [
-                item.postId.toString(),
+            likesAggregation.map(item => [
+                item._id.toString(),
                 {
-                    newestLikes: item.newestLikes,
-                    likesCount: item.likesCount
+                    likesCount: item.likesCount,
+                    newestLikes: item.newestLikes.map((like: AggregationLikeItem )=> ({
+                        addedAt: like.addedAt,
+                        userId: like.userId.toString(),
+                        login: like.userLogin
+                    }))
                 }
             ])
         );
-             const items = posts.map(post => {
-            const postIdStr = post._id.toString();
-            const likesInfo = likesMap.get(postIdStr) || {
-                newestLikes: [],
-                likesCount: 0
-            };
+
+        const dislikesMap = new Map(
+            dislikesAggregation.map(item => [
+                item._id.toString(),
+                item.dislikesCount
+            ])
+        );
+
+        // 5. Формируем финальный результат
+        return posts.map(post => {
+            const postId = post._id.toString();
+            const likesData = likesMap.get(postId) || { likesCount: 0, newestLikes: [] };
+            const dislikesCount = dislikesMap.get(postId) || 0;
+            const myStatus = userId ? (statusMap.get(postId) || LikeStatus.None) : LikeStatus.None;
 
             return {
-                id: postIdStr,
+                id: postId,
                 title: post.title,
                 shortDescription: post.shortDescription,
                 content: post.content,
@@ -84,16 +147,20 @@ const userStatuses = userId
                 blogName: post.blogName,
                 createdAt: post.createdAt,
                 extendedLikesInfo: {
-                    likesCount: likesInfo.likesCount,
-                    dislikesCount: post.extendedLikesInfo?.dislikesCount || 0,
-                    myStatus: userId ? statusMap.get(postIdStr) || 'None' : 'None',
-                    newestLikes: likesInfo.newestLikes
+                    likesCount: likesData.likesCount,
+                    dislikesCount,
+                    myStatus,
+                    newestLikes: likesData.newestLikes
                 }
             };
         });
-return items
 
+    } catch (error) {
+        console.error('Ошибка в findPosts:', error);
+        throw new Error('Не удалось получить посты');
     }
+}
+    
 
 
     async getPostsCount(filter: {}): Promise<number> {
