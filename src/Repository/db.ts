@@ -91,6 +91,8 @@ export const LikeStatusforPostSchema = new mongoose.Schema<WithId<LikeStatusForP
     userId: { type: ObjectId, require: true },
     postId: { type: ObjectId, require: true },
     status: { type: String, require: true },
+    userLogin: { type: String, require: true },
+    addedAt: { type: String, require: true },
 })
 
 

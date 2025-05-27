@@ -173,15 +173,17 @@ export class PostsService {
             result = await this.likesPostRepository.createStatus(
                 userId,
                 postId,
-                likeStatus
+                likeStatus,
+                login,
+                
             );
         } else {
             result = await this.likesPostRepository.setStatus(
                 userId,
                 postId,
-                likeStatus
-            );
-
+                likeStatus,
+                login,
+            )
         }
 const updateNewestLikes = await this.postsRepository.updateNewestLikes(postId, userId, login, likeStatus)
 
