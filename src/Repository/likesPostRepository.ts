@@ -27,7 +27,7 @@ export class LikesPostRepository {
         const result = await LikeStatusForPostModel.updateOne({
             userId: new ObjectId(userId),
             postId: new ObjectId(postId),
-            login: login
+        
         },
             {
                 $set: { status: likeStatus,
