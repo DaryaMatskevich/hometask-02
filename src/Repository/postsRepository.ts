@@ -62,16 +62,21 @@ try {
 
             const postIds = posts.map(p => p._id);
 
-           const [userStatuses, likesAggregation, dislikesAggregation] = await Promise.all([
-            userId
-                ? LikeStatusForPostModel.find({
+           const userStatuses = userId 
+                ? await LikeStatusForPostModel.find({
                     userId: new ObjectId(userId),
                     postId: { $in: postIds }
                 }).lean()
-                : Promise.resolve([]),
+                : [];
 
-            LikeStatusForPostModel.aggregate([
-                { $match: { postId: { $in: postIds }, status: LikeStatus.Like } },
+           // 3. Получаем агрегацию лайков (количество и последние 3 лайка)
+            const likesAggregation = await LikeStatusForPostModel.aggregate([
+                { 
+                    $match: { 
+                        postId: { $in: postIds }, 
+                        status: LikeStatus.Like 
+                    } 
+                },
                 { $sort: { addedAt: -1 } },
                 {
                     $group: {
@@ -92,75 +97,95 @@ try {
                         newestLikes: { $slice: ["$newestLikes", 3] }
                     }
                 }
-            ]),
+            ]);
 
-            LikeStatusForPostModel.aggregate([
-                { $match: { postId: { $in: postIds }, status: LikeStatus.Dislike } },
+            // 4. Получаем количество дизлайков
+            const dislikesAggregation = await LikeStatusForPostModel.aggregate([
+                { 
+                    $match: { 
+                        postId: { $in: postIds }, 
+                        status: LikeStatus.Dislike 
+                    } 
+                },
                 {
                     $group: {
                         _id: "$postId",
                         dislikesCount: { $sum: 1 }
                     }
                 }
-            ])
-        ]);
+            ]);
 
-        // 4. Преобразуем результаты в Map для быстрого доступа
-        const statusMap = new Map(
-            userStatuses.map(status => [status.postId.toString(), status.status])
-        );
+            // 5. Создаем мапы для быстрого доступа
+            const statusMap = new Map(
+                userStatuses.map(status => [
+                    status.postId.toString(), 
+                    status.status
+                ])
+            );
 
-        const likesMap = new Map(
-            likesAggregation.map(item => [
-                item._id.toString(),
-                {
-                    likesCount: item.likesCount,
-                    newestLikes: item.newestLikes.map((like: AggregationLikeItem )=> ({
-                        addedAt: like.addedAt,
-                        userId: like.userId.toString(),
-                        login: like.userLogin
-                    }))
+            const likesMap = new Map(
+                likesAggregation.map(item => [
+                    item._id.toString(),
+                    {
+                        likesCount: item.likesCount,
+                        newestLikes: item.newestLikes.map((like:AggregationLikeItem)  => ({
+                            addedAt: like.addedAt,
+                            userId: like.userId.toString(),
+                            login: like.userLogin
+                        }))
+                    }
+                ])
+            );
+
+            const dislikesMap = new Map(
+                dislikesAggregation.map(item => [
+                    item._id.toString(),
+                    item.dislikesCount
+                ])
+            );
+
+            // 6. Формируем финальный результат
+            return posts.map(post => {
+                const postId = post._id.toString();
+                const likesData = likesMap.get(postId) || { 
+                    likesCount: 0, 
+                    newestLikes: [] 
+                };
+                const dislikesCount = dislikesMap.get(postId) || 0;
+                
+                // Исправлено: правильно определяем myStatus
+                let myStatus: LikeStatus = LikeStatus.None;
+                if (userId) {
+                    // Проверяем сначала статус текущего пользователя
+                    const userStatus = statusMap.get(postId);
+                    if (userStatus) {
+                        myStatus = userStatus as LikeStatus;
+                    }
                 }
-            ])
-        );
 
-        const dislikesMap = new Map(
-            dislikesAggregation.map(item => [
-                item._id.toString(),
-                item.dislikesCount
-            ])
-        );
+                return {
+                    id: postId,
+                    title: post.title,
+                    shortDescription: post.shortDescription,
+                    content: post.content,
+                    blogId: post.blogId,
+                    blogName: post.blogName,
+                    createdAt: post.createdAt,
+                    extendedLikesInfo: {
+                        likesCount: likesData.likesCount,
+                        dislikesCount: dislikesCount,
+                        myStatus: myStatus,
+                        newestLikes: likesData.newestLikes
+                    }
+                };
+            });
 
-        // 5. Формируем финальный результат
-        return posts.map(post => {
-            const postId = post._id.toString();
-            const likesData = likesMap.get(postId) || { likesCount: 0, newestLikes: [] };
-            const dislikesCount = dislikesMap.get(postId) || 0;
-            const myStatus = userId ? (statusMap.get(postId) || LikeStatus.None) : LikeStatus.None;
-
-            return {
-                id: postId,
-                title: post.title,
-                shortDescription: post.shortDescription,
-                content: post.content,
-                blogId: post.blogId,
-                blogName: post.blogName,
-                createdAt: post.createdAt,
-                extendedLikesInfo: {
-                    likesCount: likesData.likesCount,
-                    dislikesCount,
-                    myStatus,
-                    newestLikes: likesData.newestLikes
-                }
-            };
-        });
-
-    } catch (error) {
-        console.error('Ошибка в findPosts:', error);
-        throw new Error('Не удалось получить посты');
+        } catch (error) {
+            console.error('Ошибка в findPosts:', error);
+            throw new Error('Не удалось получить посты');
+        }
     }
-}
-    
+
 
 
     async getPostsCount(filter: {}): Promise<number> {
