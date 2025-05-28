@@ -28,7 +28,26 @@ export class PostsController {
                 ? 'asc'
                 : 'desc'
 
-        const foundPosts = await this.postsService.findPosts(
+
+       let userId: string | null = null;
+
+        const token = req.headers?.authorization?.split(' ')[1]
+
+        if (token) {
+            const jwtPayload = await jwtService.getUserIdByToken(token);
+            userId = jwtPayload?.userId || null;
+        }
+         
+        const foundPosts= userId
+       
+        ? await this.postsService.findPostsForAuth(
+            userId,
+             pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection
+        )
+         : await this.postsService.findPosts(
             pageNumber,
             pageSize,
             sortBy,

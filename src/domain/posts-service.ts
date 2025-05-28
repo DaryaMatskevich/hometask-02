@@ -71,6 +71,35 @@ export class PostsService {
         }
     }
 
+     async findPostsForAuth(
+        userId: string,
+        pageNumber: number,
+        pageSize: number,
+        sortBy: string,
+        sortDirection: 'asc' | 'desc',
+        blogId?: string)
+        : Promise<PaginatedPosts<any>> {
+        const filter: PostsFilter = blogId ? { blogId } : {}
+        const posts = await this.postsRepository.findPosts(
+            pageNumber,
+            pageSize,
+            sortBy,
+            sortDirection,
+            filter,
+            userId
+        );
+        const postsCount = await this.postsRepository.getPostsCount(filter)
+        return {
+            pagesCount: Math.ceil(postsCount / pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: postsCount,
+            items: posts
+
+        }
+    }
+
+
     async getPostById(id: string): Promise<PostDBType | null> {
         const result = await this.postsRepository.getPostById(id)
         return result
