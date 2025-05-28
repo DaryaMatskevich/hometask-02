@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { BlogsService } from "../domain/blogs-service";
 import { SortDirection } from "mongodb";
 import { PostsService } from "../domain/posts-service";
+import { jwtService } from "../adapters/jwt-service";
 
 
 
@@ -88,7 +89,25 @@ export class BlogsController {
         ? 'asc'
         : 'desc'
 
-    const foundPostsForSpesificBlog = await this.postsService.findPosts(
+ let userId: string | null = null;
+
+        const token = req.headers?.authorization?.split(' ')[1]
+
+        if (token) {
+            const jwtPayload = await jwtService.getUserIdByToken(token);
+            userId = jwtPayload?.userId || null;
+        }
+         
+    const foundPostsForSpesificBlog = userId
+    ? await this.postsService.findPostsForAuth(
+      userId,
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+      blogId
+    )
+    :await this.postsService.findPosts(
       pageNumber,
       pageSize,
       sortBy,
