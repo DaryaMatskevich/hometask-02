@@ -16,7 +16,8 @@ export class LikesPostRepository {
             addedAt: (new Date()).toISOString()
         }
         )
-        return true
+        if(result) {
+        return true} else return false
     }
 
     async setStatus(userId: string,

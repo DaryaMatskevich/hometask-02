@@ -18,21 +18,21 @@ dotenv.config()
 
 
 export const BlogSchema = new mongoose.Schema<WithId<BlogDBType>>({
-    id: { type: String, require: true },
-    name: { type: String, require: true },
-    description: { type: String, require: true },
-    websiteUrl: { type: String, require: true },
-    createdAt: { type: String, require: true },
-    isMembership: { type: Boolean, require: true }
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    websiteUrl: { type: String, required: true },
+    createdAt: { type: String, required: true },
+    isMembership: { type: Boolean, required: true }
 })
 
 export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
-    title: { type: String, require: true },
-    shortDescription: { type: String, require: true },
-    content: { type: String, require: true },
-    blogId: { type: String, require: true },
-    blogName: { type: String, require: true },
-    createdAt: { type: String, require: true },
+    title: { type: String, required: true },
+    shortDescription: { type: String, required: true },
+    content: { type: String, required: true },
+    blogId: { type: String, required: true },
+    blogName: { type: String, required: true },
+    createdAt: { type: String, required: true },
     extendedLikesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
@@ -41,13 +41,13 @@ export const PostSchema = new mongoose.Schema<WithId<PostDBType>>({
 })
 
 export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
-    postId: { type: String, require: true },
-    content: { type: String, require: true },
+    postId: { type: String, required: true },
+    content: { type: String, required: true },
     commentatorInfo: {
-        userId: { type: String, require: true },
-        userLogin: { type: String, require: true }
+        userId: { type: String, required: true },
+        userLogin: { type: String, required: true }
     },
-    createdAt: { type: String, require: true },
+    createdAt: { type: String, required: true },
     likesInfo: {
         likesCount: { type: Number, default: 0 },
         dislikesCount: { type: Number, default: 0 },
@@ -56,43 +56,43 @@ export const CommentSchema = new mongoose.Schema<WithId<CommentDBType>>({
 })
 
 export const UserSchema = new mongoose.Schema<WithId<UserDBType>>({
-    login: { type: String, require: true },
-    email: { type: String, require: true },
-    password: { type: String, require: true },
-    createdAt: { type: String, require: true },
-    confirmationCode: { type: String, require: true },
+    login: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    createdAt: { type: String, required: true },
+    confirmationCode: { type: String, required: true },
     recoveryCodeExpirationDate: { type: Date, require: true },
-    expirationDate: { type: Date, require: true },
-    isConfirmed: { type: Boolean, require: true }
+    expirationDate: { type: Date, required: true },
+    isConfirmed: { type: Boolean, required: true }
 })
 
 export const SessionSchema = new mongoose.Schema<WithId<SessionDBType>>({
-    userId: { type: ObjectId, require: true },
-    deviceId: { type: ObjectId, require: true },
-    iatISO: { type: String, require: true },
-    title: { type: String, require: true },
-    ip: { type: String, require: true },
-    expISO: { type: String, require: true },
+    userId: { type: ObjectId, required: true },
+    deviceId: { type: ObjectId, required: true },
+    iatISO: { type: String, required: true },
+    title: { type: String, required: true },
+    ip: { type: String, required: true },
+    expISO: { type: String, required: true },
 })
 
 export const ApiRequestCountSchema = new mongoose.Schema<WithId<ApiRequestCountType>>({
     IP: { type: String },
-    URL: { type: String, require: true },
-    date: { type: Date, require: true },
+    URL: { type: String, required: true },
+    date: { type: Date, required: true },
 })
 
 export const LikeStatusSchema = new mongoose.Schema<WithId<LikeStatusDBType>>({
-    userId: { type: ObjectId, require: true },
-    commentId: { type: ObjectId, require: true },
-    status: { type: String, require: true },
+    userId: { type: ObjectId, required: true },
+    commentId: { type: ObjectId, required: true },
+    status: { type: String, required: true },
 })
 
 export const LikeStatusforPostSchema = new mongoose.Schema<WithId<LikeStatusForPostDBType>>({
-    userId: { type: ObjectId, require: true },
-    postId: { type: ObjectId, require: true },
-    status: { type: String, require: true },
-    userLogin: { type: String, require: true },
-    addedAt: { type: String, require: true },
+    userId: { type: ObjectId, required: true },
+    postId: { type: ObjectId, required: true },
+    status: { type: String, required: true },
+    userLogin: { type: String, required: true },
+    addedAt: { type: String, required: true },
 })
 
 
