@@ -9,27 +9,11 @@ export async function clearPostsData() {
 }
 
 
-
-// models.ts
-interface LikeStatusForPostDBType {
-    userId: ObjectId;
-    postId: ObjectId;
-    status: LikeStatus;
-    userLogin: string;
-    addedAt: Date;
-}
 interface AggregationLikeItem {
     addedAt: String;
     userId: ObjectId;  // или другой тип, в зависимости от вашей БД
     userLogin: string;
 }
-
-interface AggregationResultItem {
-    _id: ObjectId;
-    likesCount: number;
-    newestLikes: AggregationLikeItem[];
-}
-
 
 export class PostsRepository {
 
@@ -42,12 +26,7 @@ export class PostsRepository {
         userId?: string
     ): Promise<any> {
 
-//         const posts = await PostModel.find(filter)
-//             .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-//             .skip((pageNumber - 1) * pageSize)
-//             .limit(pageSize)
-//             .lean();
-// return posts
+
 try {
             // 1. Получаем посты с пагинацией
             const posts = await PostModel.find(filter)
@@ -71,6 +50,7 @@ try {
             : [];
 
         // 3. Создаем мапу статусов пользователя {postId: status}
+        
         const userStatusMap = new Map(
             userStatuses.map(status => [
                 status.postId.toString(), 
